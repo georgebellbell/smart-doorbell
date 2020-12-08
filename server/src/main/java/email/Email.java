@@ -6,6 +6,7 @@ public class Email {
 
 	private HashSet<String> recipients;
 	private String subject;
+	private String contents;
 
 	public Email() {
 		recipients = new HashSet<String>();
@@ -28,10 +29,10 @@ public class Email {
 	}
 
 	public void setContents(String contents) {
-
+		this.contents = contents;
 	}
 
 	public String getContents() {
-		return "";
+		return contents;
 	}
 }
