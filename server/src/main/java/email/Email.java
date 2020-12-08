@@ -4,7 +4,8 @@ import java.util.HashSet;
 
 public class Email {
 
-	HashSet<String> recipients;
+	private HashSet<String> recipients;
+	private String subject;
 
 	public Email() {
 		recipients = new HashSet<String>();
@@ -19,10 +20,10 @@ public class Email {
 	}
 
 	public void setSubject(String subject) {
-
+		this.subject = subject;
 	}
 
 	public String getSubject() {
-		return "";
+		return subject;
 	}
 }
