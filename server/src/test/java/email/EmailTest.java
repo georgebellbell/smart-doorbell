@@ -55,4 +55,13 @@ class EmailTest {
 		email.setContents(text);
 		assertEquals(email.getContents(), text);
 	}
+
+	@Test
+	void testEmailSend() {
+		email.setSubject("Test Email");
+		email.setContents("<b>Test email message</b>");
+		boolean sent = email.send();
+		assertEquals(sent, true);
+
+	}
 }

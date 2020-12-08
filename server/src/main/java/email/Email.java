@@ -35,4 +35,8 @@ public class Email {
 	public String getContents() {
 		return contents;
 	}
+
+	public boolean send() {
+		return false;
+	}
 }
