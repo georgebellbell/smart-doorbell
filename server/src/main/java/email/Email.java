@@ -17,4 +17,12 @@ public class Email {
 	public HashSet<String> getRecipients() {
 		return recipients;
 	}
+
+	public void setSubject(String subject) {
+
+	}
+
+	public String getSubject() {
+		return "";
+	}
 }

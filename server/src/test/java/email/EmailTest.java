@@ -41,4 +41,11 @@ class EmailTest {
 		email.addRecipient(recipient);
 		assertEquals(email.getRecipients().size(), 1);
 	}
+
+	@Test
+	void testSetEmailSubject() {
+		String subject = "Test";
+		email.setSubject(subject);
+		assertEquals(email.getSubject(), subject);
+	}
 }
