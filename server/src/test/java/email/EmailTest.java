@@ -3,6 +3,9 @@ package email;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class EmailTest {
@@ -58,9 +61,21 @@ class EmailTest {
 
 	@Test
 	void testEmailSend() {
+		email.addRecipient("quicksolutions.doorbell@gmail.com");
+
+		// Set subject of email
 		email.setSubject("Test Email");
-		email.setContents("<b>Test email message</b>");
+
+		// Set contents with current time
+		LocalDateTime date = LocalDateTime.now();
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+
+		email.setContents("<b>Test email message</b><br>" +
+				"Message was sent at " + date.format(dateFormat));
+
+		// Send email
 		boolean sent = email.send();
+
 		assertEquals(sent, true);
 
 	}
