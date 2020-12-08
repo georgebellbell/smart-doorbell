@@ -35,6 +35,9 @@ public class Email {
 		createSession();
 	}
 
+	/**
+	 * Set properties for connection settings
+	 */
 	private void setupProperties() {
 		properties = new Properties();
 		properties.put("mail.smtp.host", SERVER);
@@ -43,6 +46,9 @@ public class Email {
 		properties.put("mail.smtp.ssl.enable", "true");
 	}
 
+	/**
+	 * Creates session for email to be sent
+	 */
 	private void createSession() {
 		session = Session.getInstance(properties,
 				new javax.mail.Authenticator() {
@@ -52,6 +58,10 @@ public class Email {
 				});
 	}
 
+	/**
+	 * Adds a recipient for email to be sent to
+	 * @param email - Email address of recipient
+	 */
 	public void addRecipient(String email) {
 		recipients.add(email);
 	}
@@ -69,6 +79,10 @@ public class Email {
 		return addresses;
 	}
 
+	/**
+	 * Set the subject header of the email
+	 * @param subject - Subject of email
+	 */
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
@@ -77,6 +91,10 @@ public class Email {
 		return subject;
 	}
 
+	/**
+	 * Sets the HTML contents of the email
+	 * @param contents - HTML contents
+	 */
 	public void setContents(String contents) {
 		this.contents = contents;
 	}
@@ -85,6 +103,10 @@ public class Email {
 		return contents;
 	}
 
+	/**
+	 * Sends the email to assigned recipients with subject and contents
+	 * @return whether the email was sent successfully
+	 */
 	public boolean send() {
 		try {
 			// Create message
