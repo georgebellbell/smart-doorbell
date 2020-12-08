@@ -26,4 +26,12 @@ public class Email {
 	public String getSubject() {
 		return subject;
 	}
+
+	public void setContents(String contents) {
+
+	}
+
+	public String getContents() {
+		return "";
+	}
 }

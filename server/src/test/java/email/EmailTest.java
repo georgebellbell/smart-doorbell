@@ -48,4 +48,11 @@ class EmailTest {
 		email.setSubject(subject);
 		assertEquals(email.getSubject(), subject);
 	}
+
+	@Test
+	void testSetEmailContents() {
+		String text = "Test message";
+		email.setContents(text);
+		assertEquals(email.getContents(), text);
+	}
 }
