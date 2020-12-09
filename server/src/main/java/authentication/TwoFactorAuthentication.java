@@ -2,11 +2,13 @@ package authentication;
 
 public class TwoFactorAuthentication {
 
-	public TwoFactorAuthentication(String email) {
+	private final String email;
 
+	public TwoFactorAuthentication(String email) {
+		this.email = email;
 	}
 
 	public String getUserEmail() {
-		return "";
+		return email;
 	}
 }
