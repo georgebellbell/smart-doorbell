@@ -11,4 +11,8 @@ public class TwoFactorAuthentication {
 	public String getUserEmail() {
 		return email;
 	}
+
+	public String generateCode() {
+		return "";
+	}
 }
