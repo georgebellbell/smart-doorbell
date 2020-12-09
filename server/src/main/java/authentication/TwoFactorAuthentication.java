@@ -1,5 +1,7 @@
 package authentication;
 
+import email.Email;
+
 import java.security.SecureRandom;
 
 public class TwoFactorAuthentication {
@@ -34,8 +36,22 @@ public class TwoFactorAuthentication {
 		return generatedCode;
 	}
 
+	/**
+	 * Sends generated 2FA to email
+	 * @return if email was sent successfully
+	 */
 	public boolean sendEmail() {
-		return false;
+		if (generatedCode == null) {
+			// Code needs to be generated before email is sent
+			return false;
+		}
+
+		// Create and send email
+		Email authCodeEmail = new Email();
+		authCodeEmail.addRecipient(email);
+		authCodeEmail.setSubject("2 Factor Verification Code");
+		authCodeEmail.setContents(String.format("Hello,<br>Your code is: <b>%s</b>", generatedCode));
+		return authCodeEmail.send();
 	}
 
 }
