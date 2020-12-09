@@ -50,4 +50,11 @@ class TwoFactorAuthenticationTest {
 		assertNotEquals(code1, code2);
 	}
 
+	@Test
+	void testSendEmail() {
+		twoFactor.generateCode();
+		boolean sent = twoFactor.sendEmail();
+		assertTrue(sent);
+	}
+
 }

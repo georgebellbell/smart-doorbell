@@ -34,4 +34,8 @@ public class TwoFactorAuthentication {
 		return generatedCode;
 	}
 
+	public boolean sendEmail() {
+		return false;
+	}
+
 }
