@@ -5,6 +5,7 @@ import java.security.SecureRandom;
 public class TwoFactorAuthentication {
 
 	private final String email;
+	private String generatedCode;
 
 	public TwoFactorAuthentication(String email) {
 		this.email = email;
@@ -15,10 +16,9 @@ public class TwoFactorAuthentication {
 	}
 
 	/**
-	 * Generates a 6 digit code that is securely random
-	 * @return generated 6 digit code
+	 * Generates 6 digit code that is securely random
 	 */
-	public String generateCode() {
+	public void generateCode() {
 		SecureRandom secureRandom = new SecureRandom();
 		StringBuilder generatedCode = new StringBuilder();
 
@@ -27,6 +27,11 @@ public class TwoFactorAuthentication {
 			generatedCode.append(secureRandom.nextInt(10));
 		}
 
-		return generatedCode.toString();
+		this.generatedCode = generatedCode.toString();
 	}
+
+	public String getGeneratedCode() {
+		return generatedCode;
+	}
+
 }

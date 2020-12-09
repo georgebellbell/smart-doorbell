@@ -26,7 +26,8 @@ class TwoFactorAuthenticationTest {
 
 	@Test
 	void testGeneratedCodeIs6DigitsLong() {
-		String code = twoFactor.generateCode();
+		twoFactor.generateCode();
+		String code = twoFactor.getGeneratedCode();
 
 		// Check if generated code is 6 digits long
 		Pattern pattern = Pattern.compile("^\\d{6}$");
@@ -37,8 +38,13 @@ class TwoFactorAuthenticationTest {
 
 	@Test
 	void testGeneratedCodeIsRandom() {
-		String code1 = twoFactor.generateCode();
-		String code2 = twoFactor.generateCode();
+		// 1st code
+		twoFactor.generateCode();
+		String code1 = twoFactor.getGeneratedCode();
+
+		// 2nd code
+		twoFactor.generateCode();
+		String code2 = twoFactor.getGeneratedCode();
 
 		// Codes should be random and be different to each other
 		assertNotEquals(code1, code2);
