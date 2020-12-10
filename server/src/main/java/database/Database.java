@@ -8,14 +8,14 @@ import java.util.Properties;
 
 public class Database {
 	public static void main(String[] args) {
-		int lport = 22;
+		int lport = 3306;
 		String host = "linux.cs.ncl.ac.uk";
 		String rhost = "cs-db.ncl.ac.uk";
 		int rport = 3306;
 		String user = "b9021925";
 		String dbuserName = "t2033t17";
 		String dbpassword = "KnewBut+(Fin";
-		String dburl = "jdbc:mysql://cs-db.ncl.ac.uk:3306/t2033t17";
+		String dburl = "jdbc:mysql://localhost:3306/t2033t17";
 		String driverName = "com.mysql.cj.jdbc.Driver";
 
 		Connection conn;
@@ -28,29 +28,24 @@ public class Database {
 			java.util.Properties config = new java.util.Properties();
 			config.put("StrictHostKeyChecking", "no");
 			session = jsch.getSession(user, host, 22);
-			session.setPassword("");
+			session.setPassword("unipassword");
 			session.setConfig(config);
 			session.connect();
 			assigned_port = session.setPortForwardingL(lport, rhost, rport);
 			System.out.println("Connected");
 
 			Class.forName(driverName).newInstance();
-			//String connectionString = "jdbc:mysql://cs-db.ncl.ac.uk:3306/" + dbuserName + "?user=" + dbuserName + "&password=" + dbpassword + "&useUnicode=true&characterEncoding=UTF-8";
-			//conn = DriverManager.getConnection(connectionString);
 			conn = DriverManager.getConnection(dburl, dbuserName, dbpassword);
 			stmt = conn.createStatement();
+			System.out.println ("Database connection established");
 			ResultSet rs = stmt.executeQuery("SELECT * FROM accounts");
 			while (rs.next()) {
-				System.out.println(assigned_port);
-				System.out.println("Working!");
+				System.out.println(rs.getString("Username"));
 			}
-			System.out.println ("Database connection established");
-			System.out.println("DONE");
-		} catch (SQLException | ClassNotFoundException | JSchException throwables) {
-			throwables.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
+			stmt.close();
+			conn.close();
+			System.out.println("Connection closed");
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
