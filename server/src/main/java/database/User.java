@@ -1,7 +1,8 @@
 package database;
 
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class User {
 	private String username;
@@ -9,16 +10,20 @@ public class User {
 	private String password;
 	private String salt;
 	private String role;
-	private Timestamp created_at;
+	private String created_at;
 
-	public User(String username, String email, String password, String salt, String role) {
+	public User(String username, String email, String password, String salt, String role, String created_at) {
 		this.username = username;
 		this.email = email;
 		this.password = password;
 		this.salt = salt;
 		this.role = role;
-		this.created_at = Timestamp.from(Instant.now());
+		this.created_at = created_at;
 	}
+	public User(String username, String email, String password, String salt, String role) {
+		this(username, email, password, salt, role, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+	}
+
 	@Override
 	public String toString() {
 		return "User{" +
@@ -60,10 +65,24 @@ public class User {
 	public void setRole(String role) {
 		this.role = role;
 	}
-	public Timestamp getCreated_at() {
-		return created_at;
+	public String getCreated_at() { return created_at; }
+	public void setCreated_at(String created_at) { this.created_at = created_at; }
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		User user = (User) o;
+		return Objects.equals(username, user.username) &&
+				Objects.equals(email, user.email) &&
+				Objects.equals(password, user.password) &&
+				Objects.equals(salt, user.salt) &&
+				Objects.equals(role, user.role) &&
+				Objects.equals(created_at, user.created_at);
 	}
-	public void setCreated_at(Timestamp created_at) {
-		this.created_at = created_at;
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(username, email, password, salt, role, created_at);
 	}
 }
