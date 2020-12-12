@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 
-public class AccountDatabase {
+public class AccountTable {
 	DatabaseConnection databaseConnection = new DatabaseConnection();
 	PreparedStatement statement;
 

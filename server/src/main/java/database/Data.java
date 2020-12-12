@@ -2,20 +2,26 @@ package database;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class Data {
 	private int id;
 	private String image;
 	private String username;
 	private String person_name;
-	private Timestamp created_at;
+	private String created_at;
 
 	public Data(int id, String username, String image, String person_name) {
+		this(id, username, image, person_name, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+	}
+	public Data(int id, String username, String image, String person_name, String created_at) {
 		this.id = id;
 		this.username = username;
 		this.image = image;
 		this.person_name = person_name;
-		this.created_at = Timestamp.from(Instant.now());
+		this.created_at = created_at;
 	}
 	@Override
 	public String toString() {
@@ -51,10 +57,27 @@ public class Data {
 	public void setPerson_name(String person_name) {
 		this.person_name = person_name;
 	}
-	public Timestamp getCreated_at() {
+	public String getCreated_at() {
 		return created_at;
 	}
-	public void setCreated_at(Timestamp created_at) {
+	public void setCreated_at(String created_at) {
 		this.created_at = created_at;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Data data = (Data) o;
+		return id == data.id &&
+				Objects.equals(image, data.image) &&
+				Objects.equals(username, data.username) &&
+				Objects.equals(person_name, data.person_name) &&
+				Objects.equals(created_at, data.created_at);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, image, username, person_name, created_at);
 	}
 }
