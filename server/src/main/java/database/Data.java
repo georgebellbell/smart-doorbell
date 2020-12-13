@@ -1,18 +1,18 @@
 package database;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Data {
+	// Object properties
 	private int id;
 	private String image;
 	private String username;
 	private String person_name;
 	private String created_at;
 
+	// Double constructor for when retrieving data from database and when adding to the database
 	public Data(int id, String username, String image, String person_name) {
 		this(id, username, image, person_name, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 	}

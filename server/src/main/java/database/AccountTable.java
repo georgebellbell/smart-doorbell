@@ -8,6 +8,9 @@ public class AccountTable {
 	DatabaseConnection databaseConnection = new DatabaseConnection();
 	PreparedStatement statement;
 
+	/**
+	 * Add user record to accounts table
+	 */
 	public boolean addRecord(User user) {
 		try {
 			String query = "INSERT INTO accounts (Username, Email, Password, Salt, Role, Created_at)"
@@ -27,6 +30,9 @@ public class AccountTable {
 		}
 		return true;
 	}
+	/**
+	 * Get record by username, returns User object
+	 */
 	public User getRecord(String username){
 		User user = null;
 		try {
@@ -51,6 +57,9 @@ public class AccountTable {
 		}
 		return user;
 	}
+	/**
+	 * Delete record by username if exists
+	 */
 	public boolean deleteRecord(String username) {
 		try {
 			String query = "DELETE FROM accounts WHERE Username=?";

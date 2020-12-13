@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class User {
+	// Object properties
 	private String username;
 	private String email;
 	private String password;
@@ -12,6 +13,7 @@ public class User {
 	private String role;
 	private String created_at;
 
+	// Double constructor, when retrieving user from database and when adding user to database.
 	public User(String username, String email, String password, String salt, String role, String created_at) {
 		this.username = username;
 		this.email = email;

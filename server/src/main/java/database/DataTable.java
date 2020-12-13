@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 public class DataTable {
 	DatabaseConnection databaseConnection = new DatabaseConnection();
 	PreparedStatement statement;
-
+	/**
+	 * Add record to the data table with necessary data
+	 */
 	public boolean addRecord(Data data) {
 		try {
 			String query = "INSERT INTO data (Id, Username, Image, Person, Created_at)"
@@ -25,6 +27,9 @@ public class DataTable {
 		}
 		return true;
 	}
+	/**
+	 * Get record by id, returns data object
+	 */
 	public Data getRecord(int id){
 		Data data = null;
 		try {
@@ -47,6 +52,9 @@ public class DataTable {
 		}
 		return data;
 	}
+	/**
+	 * Delete a record from the data table if exists
+	 */
 	public boolean deleteRecord(int id) {
 		try {
 			String query = "DELETE FROM data WHERE Id=?";
