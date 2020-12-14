@@ -58,7 +58,6 @@ public class DatabaseConnection {
 	 * Close connection with the database
 	 */
 	public boolean closeConnection() {
-
 		try {
 			conn.close();
 			session.disconnect();
