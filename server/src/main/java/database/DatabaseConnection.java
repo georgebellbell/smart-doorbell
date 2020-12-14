@@ -48,7 +48,7 @@ public class DatabaseConnection {
 	 * Connect to the database via SSH
 	 * @return if connection established
 	 */
-	public boolean connectToDatabase() {
+	public boolean connect() {
 		establishSSH();
 		try {
 			Class.forName(DRIVERNAME).newInstance();
@@ -62,7 +62,7 @@ public class DatabaseConnection {
 	/**
 	 * @return if connection closed
 	 */
-	public boolean closeConnection() {
+	public boolean disconnect() {
 		try {
 			conn.close();
 			session.disconnect();
