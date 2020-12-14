@@ -22,6 +22,9 @@ public class DatabaseConnection {
 	private final String DBURL = "jdbc:mysql://localhost:3306/t2033t17";
 	private final String DRIVERNAME = "com.mysql.cj.jdbc.Driver";
 
+	/**
+	 * Connect via SSH tunnel forwarding local port to remote host and port
+	 */
 	public void establishSSH() {
 		try {
 			// Not verify the public key of the HOST
@@ -40,8 +43,10 @@ public class DatabaseConnection {
 			e.printStackTrace();
 		}
 	}
+
 	/**
-	* Connect to database if SSH established between user and host
+	 * Connect to the database via SSH
+	 * @return if connection established
 	 */
 	public boolean connectToDatabase() {
 		establishSSH();
@@ -55,17 +60,16 @@ public class DatabaseConnection {
 		return true;
 	}
 	/**
-	 * Close connection with the database
+	 * @return if connection closed
 	 */
 	public boolean closeConnection() {
-
 		try {
 			conn.close();
 			session.disconnect();
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
 	}
 }

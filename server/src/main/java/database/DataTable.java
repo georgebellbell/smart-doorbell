@@ -3,17 +3,18 @@ package database;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class DataTable {
-	DatabaseConnection databaseConnection = new DatabaseConnection();
+public class DataTable extends DatabaseConnection {
 	PreparedStatement statement;
+
 	/**
-	 * Add record to the data table with necessary data
+	 * @param data - add data object to the database
+	 * @return if data inserted into the record
 	 */
 	public boolean addRecord(Data data) {
 		try {
 			String query = "INSERT INTO data (Id, Username, Image, Person, Created_at)"
 					+ " VALUES (?, ?, ?, ?, ?)";
-			statement = databaseConnection.conn.prepareStatement(query);
+			statement = conn.prepareStatement(query);
 			statement.setInt(1, data.getId());
 			statement.setString(2,data.getUsername());
 			statement.setString(3, data.getImage());
@@ -27,14 +28,16 @@ public class DataTable {
 		}
 		return true;
 	}
+
 	/**
-	 * Get record by id, returns data object
+	 * @param id - id of data to retrieve
+	 * @return data object if exists in the database
 	 */
 	public Data getRecord(int id){
 		Data data = null;
 		try {
 			String query = "SELECT Id, Username, Image, Person, Created_at FROM data WHERE Id=?";
-			statement = databaseConnection.conn.prepareStatement(query);
+			statement = conn.prepareStatement(query);
 			statement.setInt(1, id);
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
@@ -52,23 +55,22 @@ public class DataTable {
 		}
 		return data;
 	}
+
 	/**
-	 * Delete a record from the data table if exists
+	 * @param id - id of data record to delete
+	 * @return if record deleted
 	 */
 	public boolean deleteRecord(int id) {
 		try {
 			String query = "DELETE FROM data WHERE Id=?";
-			statement = databaseConnection.conn.prepareStatement(query);
+			statement = conn.prepareStatement(query);
 			statement.setInt(1, id);
 			statement.execute();
 			statement.close();
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
-	}
-	public DatabaseConnection getDatabaseConnection() {
-		return databaseConnection;
 	}
 }
