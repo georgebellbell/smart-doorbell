@@ -68,4 +68,7 @@ public class DataTable {
 		}
 		return true;
 	}
+	public DatabaseConnection getDatabaseConnection() {
+		return databaseConnection;
+	}
 }

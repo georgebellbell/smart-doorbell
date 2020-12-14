@@ -13,14 +13,14 @@ class AccountTableTest {
 	@BeforeEach
 	void setup() {
 		accountTable = new AccountTable();
-		accountTable.databaseConnection.connectToDatabase();
+		accountTable.getDatabaseConnection().connectToDatabase();
 		user = new User("John", "john@jeff.com", "password", "salt", "role");
 	}
 
 	@AfterEach
 	public void afterEach() {
 		accountTable.deleteRecord(user.getUsername());
-		accountTable.databaseConnection.closeConnection();
+		accountTable.getDatabaseConnection().closeConnection();
 	}
 
 	@Test

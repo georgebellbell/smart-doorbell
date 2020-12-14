@@ -73,4 +73,7 @@ public class AccountTable {
 		}
 		return true;
 	}
+	public DatabaseConnection getDatabaseConnection() {
+		return databaseConnection;
+	}
 }
