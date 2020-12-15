@@ -1,5 +1,6 @@
 package authentication;
 
+import database.TwoFactorTable;
 import database.User;
 import email.Email;
 
@@ -8,7 +9,6 @@ import java.security.SecureRandom;
 public class TwoFactorAuthentication {
 
 	private final User user;
-	private String generatedCode;
 
 	public TwoFactorAuthentication(User user) {
 		this.user = user;
@@ -19,7 +19,7 @@ public class TwoFactorAuthentication {
 	}
 
 	/**
-	 * Generates 6 digit code that is securely random
+	 * Generates 6 digit code that is securely random and saves it to database
 	 */
 	public void generateCode() {
 		SecureRandom secureRandom = new SecureRandom();
@@ -30,10 +30,25 @@ public class TwoFactorAuthentication {
 			generatedCode.append(secureRandom.nextInt(10));
 		}
 
-		this.generatedCode = generatedCode.toString();
+		// Save to database
+		TwoFactorTable twoFactorTable = new TwoFactorTable();
+		twoFactorTable.connectToDatabase();
+		twoFactorTable.deleteRecord(user); // Delete any previous code
+		twoFactorTable.addRecord(user, generatedCode.toString()); // Add code
+		twoFactorTable.closeConnection();
 	}
 
+	/**
+	 * Gets valid generated 2FA code from database
+	 * @return generated 2FA code
+	 */
 	public String getGeneratedCode() {
+		// Connect to database and get code
+		TwoFactorTable twoFactorTable = new TwoFactorTable();
+		twoFactorTable.connectToDatabase();
+		String generatedCode = twoFactorTable.getCode(user);
+		twoFactorTable.closeConnection();
+
 		return generatedCode;
 	}
 
@@ -42,6 +57,7 @@ public class TwoFactorAuthentication {
 	 * @return if email was sent successfully
 	 */
 	public boolean sendEmail() {
+		String generatedCode = getGeneratedCode();
 		if (generatedCode == null) {
 			// Code needs to be generated before email is sent
 			return false;

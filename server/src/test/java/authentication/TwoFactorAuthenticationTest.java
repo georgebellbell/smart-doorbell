@@ -1,6 +1,9 @@
 package authentication;
 
+import database.TwoFactorTable;
 import database.User;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,8 +24,17 @@ class TwoFactorAuthenticationTest {
 		twoFactor = new TwoFactorAuthentication(user);
 	}
 
+	@AfterEach
+	void cleanUp() {
+		// Remove stored record from database
+		TwoFactorTable twoFactorTable = new TwoFactorTable();
+		twoFactorTable.connectToDatabase();
+		twoFactorTable.deleteRecord(user);
+		twoFactorTable.closeConnection();
+	}
+
 	@Test
-	void testEmailSetOnInitialisation() {
+	void testUserSetOnInitialisation() {
 		assertEquals(user, twoFactor.getUser());
 	}
 
