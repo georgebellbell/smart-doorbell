@@ -1,24 +1,27 @@
 package authentication;
 
+import database.TwoFactorTable;
+import database.User;
 import email.Email;
 
 import java.security.SecureRandom;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TwoFactorAuthentication {
 
-	private final String email;
-	private String generatedCode;
+	private final User user;
 
-	public TwoFactorAuthentication(String email) {
-		this.email = email;
+	public TwoFactorAuthentication(User user) {
+		this.user = user;
 	}
 
-	public String getUserEmail() {
-		return email;
+	public User getUser() {
+		return user;
 	}
 
 	/**
-	 * Generates 6 digit code that is securely random
+	 * Generates 6 digit code that is securely random and saves it to database
 	 */
 	public void generateCode() {
 		SecureRandom secureRandom = new SecureRandom();
@@ -29,11 +32,54 @@ public class TwoFactorAuthentication {
 			generatedCode.append(secureRandom.nextInt(10));
 		}
 
-		this.generatedCode = generatedCode.toString();
+		// Save to database
+		TwoFactorTable twoFactorTable = new TwoFactorTable();
+		twoFactorTable.connectToDatabase();
+		twoFactorTable.deleteRecord(user); // Delete any previous code
+		twoFactorTable.addRecord(user, generatedCode.toString()); // Add code
+		twoFactorTable.closeConnection();
 	}
 
+	/**
+	 * Gets valid generated 2FA code from database
+	 * @return generated 2FA code
+	 */
 	public String getGeneratedCode() {
+		// Connect to database and get code
+		TwoFactorTable twoFactorTable = new TwoFactorTable();
+		twoFactorTable.connectToDatabase();
+		String generatedCode = twoFactorTable.getCode(user);
+		twoFactorTable.closeConnection();
+
 		return generatedCode;
+	}
+
+	/**
+	 * Compares code to generated code stored in database
+	 * @param code - Code to compare to database
+	 * @return if the code is the same to the database
+	 */
+	public boolean checkGeneratedCode(String code) {
+		// Check if code is 6 digits
+		Pattern pattern = Pattern.compile("^\\d{6}$");
+		Matcher matcher = pattern.matcher(code);
+		if (!matcher.find()) {
+			return false;
+		}
+
+		// Get code from database
+		TwoFactorTable twoFactorTable = new TwoFactorTable();
+		twoFactorTable.connectToDatabase();
+		String generatedCode = twoFactorTable.getCode(user);
+		twoFactorTable.closeConnection();
+
+		if (generatedCode == null) {
+			// Code not generated
+			return false;
+		}
+
+		// Compare codes
+		return (generatedCode.equals(code));
 	}
 
 	/**
@@ -41,6 +87,7 @@ public class TwoFactorAuthentication {
 	 * @return if email was sent successfully
 	 */
 	public boolean sendEmail() {
+		String generatedCode = getGeneratedCode();
 		if (generatedCode == null) {
 			// Code needs to be generated before email is sent
 			return false;
@@ -48,7 +95,7 @@ public class TwoFactorAuthentication {
 
 		// Create and send email
 		Email authCodeEmail = new Email();
-		authCodeEmail.addRecipient(email);
+		authCodeEmail.addRecipient(user.getEmail());
 		authCodeEmail.setSubject("2 Factor Verification Code");
 		authCodeEmail.setContents(String.format("Hello,<br>Your code is: <b>%s</b>", generatedCode));
 		return authCodeEmail.send();

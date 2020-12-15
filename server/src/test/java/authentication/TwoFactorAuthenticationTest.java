@@ -1,5 +1,9 @@
 package authentication;
 
+import database.TwoFactorTable;
+import database.User;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,17 +15,27 @@ import static org.junit.jupiter.api.Assertions.*;
 class TwoFactorAuthenticationTest {
 
 	private TwoFactorAuthentication twoFactor;
-	private String userEmail;
+	private User user;
 
 	@BeforeEach
 	void setup() {
-		userEmail = "quicksolutions.doorbell@gmail.com";
-		twoFactor = new TwoFactorAuthentication(userEmail);
+		user = new User("Test", "quicksolutions.doorbell@gmail.com",
+				"Password", "Salt", "User");
+		twoFactor = new TwoFactorAuthentication(user);
+	}
+
+	@AfterEach
+	void cleanUp() {
+		// Remove stored record from database
+		TwoFactorTable twoFactorTable = new TwoFactorTable();
+		twoFactorTable.connectToDatabase();
+		twoFactorTable.deleteRecord(user);
+		twoFactorTable.closeConnection();
 	}
 
 	@Test
-	void testEmailSetOnInitialisation() {
-		assertEquals(userEmail, twoFactor.getUserEmail());
+	void testUserSetOnInitialisation() {
+		assertEquals(user, twoFactor.getUser());
 	}
 
 	@Test
@@ -55,6 +69,38 @@ class TwoFactorAuthenticationTest {
 		twoFactor.generateCode();
 		boolean sent = twoFactor.sendEmail();
 		assertTrue(sent);
+	}
+
+	@Test
+	void testSendEmailWithoutGeneratingCode() {
+		boolean sent = twoFactor.sendEmail();
+		assertFalse(sent);
+	}
+
+	@Test
+	void testCheckSameCode() {
+		twoFactor.generateCode();
+		String code = twoFactor.getGeneratedCode();
+		assertTrue(twoFactor.checkGeneratedCode(code));
+	}
+
+	@Test
+	void testCheckIncorrectCode() {
+		twoFactor.generateCode();
+		String code = "000000";
+		assertFalse(twoFactor.checkGeneratedCode(code));
+	}
+
+	@Test
+	void testCheckCodeWithoutGeneratingCode() {
+		String code = "000000";
+		assertFalse(twoFactor.checkGeneratedCode(code));
+	}
+
+	@Test
+	void testCheckInvalidCode() {
+		String code = "AAAAA0";
+		assertFalse(twoFactor.checkGeneratedCode(code));
 	}
 
 }
