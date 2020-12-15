@@ -13,14 +13,14 @@ class AccountTableTest {
 	@BeforeEach
 	void setup() {
 		accountTable = new AccountTable();
-		accountTable.getDatabaseConnection().connectToDatabase();
+		accountTable.connect();
 		user = new User("John", "john@jeff.com", "password", "salt", "role");
 	}
 
 	@AfterEach
 	public void afterEach() {
 		accountTable.deleteRecord(user.getUsername());
-		accountTable.getDatabaseConnection().closeConnection();
+		accountTable.disconnect();
 	}
 
 	@Test
@@ -32,6 +32,11 @@ class AccountTableTest {
 	void testGetRecord() {
 		accountTable.addRecord(user);
 		assertEquals(accountTable.getRecord(user.getUsername()), user);
+	}
+
+	@Test
+	void testGetInvalidRecord() {
+		assertNull(accountTable.getRecord("Invalid_name"));
 	}
 
 	@Test

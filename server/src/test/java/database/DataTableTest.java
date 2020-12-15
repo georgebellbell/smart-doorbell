@@ -13,14 +13,14 @@ class DataTableTest {
 	@BeforeEach
 	void setUp() {
 		dataTable = new DataTable();
-		dataTable.getDatabaseConnection().connectToDatabase();
+		dataTable.connect();
 		data = new Data(99999, "Dom", "dom.jpg", "Dom's mum");
 	}
 
 	@AfterEach
 	public void afterEach() {
 		dataTable.deleteRecord(data.getId());
-		dataTable.getDatabaseConnection().closeConnection();
+		dataTable.disconnect();
 	}
 
 	@Test
