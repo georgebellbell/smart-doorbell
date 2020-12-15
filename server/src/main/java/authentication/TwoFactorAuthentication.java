@@ -1,20 +1,21 @@
 package authentication;
 
+import database.User;
 import email.Email;
 
 import java.security.SecureRandom;
 
 public class TwoFactorAuthentication {
 
-	private final String email;
+	private final User user;
 	private String generatedCode;
 
-	public TwoFactorAuthentication(String email) {
-		this.email = email;
+	public TwoFactorAuthentication(User user) {
+		this.user = user;
 	}
 
-	public String getUserEmail() {
-		return email;
+	public User getUser() {
+		return user;
 	}
 
 	/**
@@ -48,7 +49,7 @@ public class TwoFactorAuthentication {
 
 		// Create and send email
 		Email authCodeEmail = new Email();
-		authCodeEmail.addRecipient(email);
+		authCodeEmail.addRecipient(user.getEmail());
 		authCodeEmail.setSubject("2 Factor Verification Code");
 		authCodeEmail.setContents(String.format("Hello,<br>Your code is: <b>%s</b>", generatedCode));
 		return authCodeEmail.send();

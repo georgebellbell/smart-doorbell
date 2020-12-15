@@ -1,5 +1,6 @@
 package authentication;
 
+import database.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,17 +12,18 @@ import static org.junit.jupiter.api.Assertions.*;
 class TwoFactorAuthenticationTest {
 
 	private TwoFactorAuthentication twoFactor;
-	private String userEmail;
+	private User user;
 
 	@BeforeEach
 	void setup() {
-		userEmail = "quicksolutions.doorbell@gmail.com";
-		twoFactor = new TwoFactorAuthentication(userEmail);
+		user = new User("Test", "quicksolutions.doorbell@gmail.com",
+				"Password", "Salt", "User");
+		twoFactor = new TwoFactorAuthentication(user);
 	}
 
 	@Test
 	void testEmailSetOnInitialisation() {
-		assertEquals(userEmail, twoFactor.getUserEmail());
+		assertEquals(user, twoFactor.getUser());
 	}
 
 	@Test
