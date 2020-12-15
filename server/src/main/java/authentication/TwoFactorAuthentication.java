@@ -5,6 +5,8 @@ import database.User;
 import email.Email;
 
 import java.security.SecureRandom;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TwoFactorAuthentication {
 
@@ -52,8 +54,32 @@ public class TwoFactorAuthentication {
 		return generatedCode;
 	}
 
+	/**
+	 * Compares code to generated code stored in database
+	 * @param code - Code to compare to database
+	 * @return if the code is the same to the database
+	 */
 	public boolean checkGeneratedCode(String code) {
-		return false;
+		// Check if code is 6 digits
+		Pattern pattern = Pattern.compile("^\\d{6}$");
+		Matcher matcher = pattern.matcher(code);
+		if (!matcher.find()) {
+			return false;
+		}
+
+		// Get code from database
+		TwoFactorTable twoFactorTable = new TwoFactorTable();
+		twoFactorTable.connectToDatabase();
+		String generatedCode = twoFactorTable.getCode(user);
+		twoFactorTable.closeConnection();
+
+		if (generatedCode == null) {
+			// Code not generated
+			return false;
+		}
+
+		// Compare codes
+		return (generatedCode.equals(code));
 	}
 
 	/**
