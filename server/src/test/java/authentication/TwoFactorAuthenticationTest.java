@@ -28,9 +28,9 @@ class TwoFactorAuthenticationTest {
 	void cleanUp() {
 		// Remove stored record from database
 		TwoFactorTable twoFactorTable = new TwoFactorTable();
-		twoFactorTable.connectToDatabase();
+		twoFactorTable.connect();
 		twoFactorTable.deleteRecord(user);
-		twoFactorTable.closeConnection();
+		twoFactorTable.disconnect();
 	}
 
 	@Test

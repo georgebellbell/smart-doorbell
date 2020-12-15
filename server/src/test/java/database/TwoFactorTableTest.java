@@ -14,7 +14,7 @@ class TwoFactorTableTest {
 	@BeforeEach
 	void setUp() {
 		twoFactorTable = new TwoFactorTable();
-		twoFactorTable.connectToDatabase();
+		twoFactorTable.connect();
 		user = new User("JohnnyD54143", "johnnyD@dom.com", "password", "salt", "role");
 		code = "123456";
 	}
@@ -22,7 +22,7 @@ class TwoFactorTableTest {
 	@AfterEach
 	public void afterEach() {
 		twoFactorTable.deleteRecord(user);
-		twoFactorTable.closeConnection();
+		twoFactorTable.disconnect();
 	}
 
 	@Test
