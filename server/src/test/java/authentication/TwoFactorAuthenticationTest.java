@@ -97,4 +97,10 @@ class TwoFactorAuthenticationTest {
 		assertFalse(twoFactor.checkGeneratedCode(code));
 	}
 
+	@Test
+	void testCheckInvalidCode() {
+		String code = "AAAAA0";
+		assertFalse(twoFactor.checkGeneratedCode(code));
+	}
+
 }
