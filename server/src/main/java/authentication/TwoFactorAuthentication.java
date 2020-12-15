@@ -52,6 +52,10 @@ public class TwoFactorAuthentication {
 		return generatedCode;
 	}
 
+	public boolean checkGeneratedCode(String code) {
+		return false;
+	}
+
 	/**
 	 * Sends generated 2FA to email
 	 * @return if email was sent successfully

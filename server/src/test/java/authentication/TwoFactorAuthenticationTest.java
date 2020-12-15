@@ -77,4 +77,24 @@ class TwoFactorAuthenticationTest {
 		assertFalse(sent);
 	}
 
+	@Test
+	void testCheckSameCode() {
+		twoFactor.generateCode();
+		String code = twoFactor.getGeneratedCode();
+		assertTrue(twoFactor.checkGeneratedCode(code));
+	}
+
+	@Test
+	void testCheckIncorrectCode() {
+		twoFactor.generateCode();
+		String code = "000000";
+		assertFalse(twoFactor.checkGeneratedCode(code));
+	}
+
+	@Test
+	void testCheckCodeWithoutGeneratingCode() {
+		String code = "000000";
+		assertFalse(twoFactor.checkGeneratedCode(code));
+	}
+
 }
