@@ -71,4 +71,10 @@ class TwoFactorAuthenticationTest {
 		assertTrue(sent);
 	}
 
+	@Test
+	void testSendEmailWithoutGeneratingCode() {
+		boolean sent = twoFactor.sendEmail();
+		assertFalse(sent);
+	}
+
 }
