@@ -36,6 +36,8 @@ public class LoginActivity extends AppCompatActivity {
 
 				if(inputValidation(inputUsername,inputPassword)){
 					authenticate(inputUsername,inputPassword);
+
+					/*
 					if (isValid){
 						//if user inputs are valid and username and password match then give brief notification and send user to home page
 						Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
@@ -48,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
 						tvInformation.setText("No of attempts remaining: "+attempts);
 						//if number of attempts left is zero then log in button is disabled to prevent brute force attacks
 						btnLogin.setEnabled(checkAttempts(attempts));
-					}
+					}*/
 				}
 				else{
 					//if input isn't valid, tell user this
@@ -63,14 +65,19 @@ public class LoginActivity extends AppCompatActivity {
 	}
 	//check if user inputs match a user (need to add database connection)
 	void authenticate(String username, String password){
+		Client client = new Client();
+		client.execute(username, password);
+
+		/*
 		if (username.equals("user") && password.equals("password")){
 			isValid = true;
 		}
 		else{
 			isValid = false;
 			attempts = attempts-1;
-		}
+		}*/
 	}
+
 	//checks input to see if it is blank, will develop further
 	boolean inputValidation(String username, String password){
 		if(username.equals("")||password.equals("")){
@@ -78,6 +85,7 @@ public class LoginActivity extends AppCompatActivity {
 		}
 		return true;
 	}
+
 	//checks number of attempts left and returns boolean value to either enable or disable button
 	boolean checkAttempts(int attempts){
 		return attempts != 0;
