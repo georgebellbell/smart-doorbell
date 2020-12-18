@@ -1,0 +1,26 @@
+import os
+
+path = "/etc/rc.local"
+
+if os.path.exists(path):
+	file = open(path, "r+")
+	flag = False
+	output = []
+	for line in file:
+		if line == "exit 0\n":
+			 = True
+			list.append("sudo python /home/pi/PiCam/Camera/main.py")
+			list.append(line)
+		else:
+			list.append(line)
+
+	for line in list
+	file.close()
+
+	if flag == False:
+		print("Error 001")
+else:
+	print("File not found")
+
+
+print("end")
