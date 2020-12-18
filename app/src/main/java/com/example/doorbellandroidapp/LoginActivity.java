@@ -63,7 +63,12 @@ public class LoginActivity extends AppCompatActivity {
 
 
 	}
-	//check if user inputs match a user (need to add database connection)
+
+	/**
+	 * Takes users information and passes it to server to be checked
+	 * @param username - username inputted by user
+	 * @param password - password inputted by user
+	 */
 	void authenticate(String username, String password){
 		Client client = new Client();
 		client.execute(username, password);
@@ -78,7 +83,12 @@ public class LoginActivity extends AppCompatActivity {
 		}*/
 	}
 
-	//checks input to see if it is blank, will develop further
+	/**
+	 * checks input to see if it is valid before checking against database
+	 * @param username - username inputted by user
+	 * @param password - password inputted by user
+	 * @return true if there is an input, false if there is not
+	 */
 	boolean inputValidation(String username, String password){
 		if(username.equals("")||password.equals("")){
 			return false;
@@ -86,11 +96,19 @@ public class LoginActivity extends AppCompatActivity {
 		return true;
 	}
 
-	//checks number of attempts left and returns boolean value to either enable or disable button
-	boolean checkAttempts(int attempts){
-		return attempts != 0;
+	/**
+	 * Removes a login attempt and disables button if attempts is now zero
+	 */
+	void removeAttempt(){
+		attempts = attempts -1;
+		if(attempts == 0){
+			btnLogin.setEnabled(false);
+		}
 	}
 
+	/**
+	 * class variables are assigned components in the android app
+	 */
 	void assign(){
 		etUsername = findViewById(R.id.etUsername);
 		etPassword = findViewById(R.id.pwdPassword);
