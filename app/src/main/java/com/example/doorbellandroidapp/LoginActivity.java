@@ -11,13 +11,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
-	//variables are declared
 	EditText etUsername, etPassword;
 	TextView tvInformation, tvSignUp;
 	Button btnLogin;
 	Integer attempts = 5;
 	Boolean isValid;
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,34 +32,19 @@ public class LoginActivity extends AppCompatActivity {
 				String inputUsername = etUsername.getText().toString();
 				String inputPassword = etPassword.getText().toString();
 
-				if(inputValidation(inputUsername,inputPassword)){
-					authenticate(inputUsername,inputPassword);
-
-					/*
-					if (isValid){
-						//if user inputs are valid and username and password match then give brief notification and send user to home page
-						Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-						Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-						startActivity(intent);
-					}
-					else{
-						//otherwise if details don't match, notify user of this and update number of attempts remaining
-						Toast.makeText(LoginActivity.this, "Incorrect Username or Password", Toast.LENGTH_SHORT).show();
-						tvInformation.setText("No of attempts remaining: "+attempts);
-						//if number of attempts left is zero then log in button is disabled to prevent brute force attacks
-						btnLogin.setEnabled(checkAttempts(attempts));
-					}*/
+				if (authenticate(inputUsername, inputPassword)) {
+					//if user inputs are valid and username and password match then give brief notification and send user to home page
+					Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+					Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+					startActivity(intent);
 				}
 				else{
-					//if input isn't valid, tell user this
-					Toast.makeText(LoginActivity.this, "Please provide valid inputs", Toast.LENGTH_SHORT).show();
+					Toast.makeText(LoginActivity.this, "Incorrect Username or Password", Toast.LENGTH_SHORT).show();
+					removeAttempt();
+					tvInformation.setText("No of attempts remaining: " + attempts);
 				}
-
 			}
 		});
-
-
-
 	}
 
 	/**
@@ -69,30 +52,10 @@ public class LoginActivity extends AppCompatActivity {
 	 * @param username - username inputted by user
 	 * @param password - password inputted by user
 	 */
-	void authenticate(String username, String password){
+	boolean authenticate(String username, String password){
 		Client client = new Client();
 		client.execute(username, password);
 
-		/*
-		if (username.equals("user") && password.equals("password")){
-			isValid = true;
-		}
-		else{
-			isValid = false;
-			attempts = attempts-1;
-		}*/
-	}
-
-	/**
-	 * checks input to see if it is valid before checking against database
-	 * @param username - username inputted by user
-	 * @param password - password inputted by user
-	 * @return true if there is an input, false if there is not
-	 */
-	boolean inputValidation(String username, String password){
-		if(username.equals("")||password.equals("")){
-			return false;
-		}
 		return true;
 	}
 
@@ -101,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
 	 */
 	void removeAttempt(){
 		attempts = attempts -1;
-		if(attempts == 0){
+		if (attempts == 0) {
 			btnLogin.setEnabled(false);
 		}
 	}
@@ -116,6 +79,4 @@ public class LoginActivity extends AppCompatActivity {
 		tvSignUp = findViewById(R.id.tvSignUp);
 		btnLogin = findViewById(R.id.btnLogin);
 	}
-
-
 }
