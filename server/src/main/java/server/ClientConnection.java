@@ -30,6 +30,11 @@ public class ClientConnection extends Thread {
 			// Initiate protocol with client
 			Protocol protocol = new Protocol();
 
+			// Client is connected
+			JSONObject responseObj = new JSONObject();
+			responseObj.put("response", "connected");
+			out.println(responseObj.toString());
+
 			// Communicate with client
 			while ((request = in.readLine()) != null) {
 				System.out.println(request);
