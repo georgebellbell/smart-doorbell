@@ -7,6 +7,10 @@ cwd = os.getcwd()
 # Path to file theat needs to be edited
 path = "/etc/rc.local"
 
+if (os.geteuid() != 0):
+    print("Permission denied. Must be run with sudo")
+    exit()
+
 # Checks that the file exists
 if os.path.exists(path):
     # Opens file in read mode
@@ -42,9 +46,11 @@ if os.path.exists(path):
     # Close the file
     file.close()
 
-    # Print error if it failed
+    # Print error if it failed to find exit 0 in the file
     if flag == False:
 	print("ERROR: EOF not found")
+    else:
+        print("Success")
 else:
     # Output error if the file doesn't exist
     print("ERROR: File not found")
