@@ -23,7 +23,7 @@ public class LoginActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_login);
 		//method call to assign variables to components
 		assign();
-		tvInformation.setText("No of attempts remaining: "+attempts);
+		tvInformation.setText("No of attempts remaining: " + attempts);
 		//functionality added to log in button which wil check inputs
 		btnLogin.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
 					Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 					startActivity(intent);
 				}
-				else{
+				else {
 					Toast.makeText(LoginActivity.this, "Incorrect Username or Password", Toast.LENGTH_SHORT).show();
 					removeAttempt();
 					tvInformation.setText("No of attempts remaining: " + attempts);
@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
 		Client client = new Client();
 		client.execute(username, password);
 
-		return true;
+		return false;
 	}
 
 	/**
