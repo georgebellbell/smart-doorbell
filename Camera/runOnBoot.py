@@ -4,9 +4,10 @@ import re
 # Current working directory
 cwd = os.getcwd()
 
-# Path to file theat needs to be edited
+# Path to file that is to be edited
 path = "/etc/rc.local"
 
+# Check that the program is run with sudo
 if (os.geteuid() != 0):
     print("Permission denied. Must be run with sudo")
     exit()
