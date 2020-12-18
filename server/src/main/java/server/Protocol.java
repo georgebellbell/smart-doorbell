@@ -3,30 +3,34 @@ package server;
 import database.AccountTable;
 import database.DatabaseConnection;
 import database.User;
+import org.json.JSONObject;
 
 import java.net.*;
 import java.io.*;
 
 public class Protocol {
 
-	public String processInput(String theInput){
-		String theOutput = null;
-		if (theInput == null) {
-			theOutput = "Waiting for response";
-		} else if (theInput.equals("Hello")) {
-			theOutput = "Good Bye!";
-		} else {
-			theOutput = getDatabaseRecords().toString();
+	public String processInput(JSONObject request){
+		JSONObject response = new JSONObject();
+		if (request == null) {
+			System.out.println("null");
 		}
-		return theOutput;
+		if (request.getString("request").equals("login")) {
+			AccountTable accountTable = new AccountTable();
+			accountTable.connect();
+			boolean validLogin = accountTable.getLogin(request.getString("username"), request.getString("password"));
+			accountTable.disconnect();
+			if (validLogin) {
+				response.put("response", "success");
+				response.put("message", "Successfully logged in!");
+			}
+			else {
+				response.put("response", "fail");
+				response.put("message", "invalid login");
+			}
+		}
+		return response.toString();
 	}
 
-	public User getDatabaseRecords() {
-		User user = null;
-		AccountTable accountTable = new AccountTable();
-		accountTable.connect();
-		user = accountTable.getRecord("Dom");
-		accountTable.disconnect();
-		return user;
-	}
+
 }

@@ -1,5 +1,7 @@
 package server;
 
+import org.json.JSONObject;
+
 import java.net.*;
 import java.io.*;
 
@@ -14,18 +16,16 @@ public class Server {
 			 BufferedReader in = new BufferedReader(
 					 new InputStreamReader(clientSocket.getInputStream()))
 		) {
-			String inputLine, outputLine;
+			String request, response;
 
 			// Initiate conversation with client
 			Protocol protocol = new Protocol();
-			outputLine = protocol.processInput(null);
-			out.println(outputLine);
+			out.println("Server listening");
 
-			while ((inputLine = in.readLine()) != null) {
-				outputLine = protocol.processInput(inputLine);
-				out.println(outputLine);
-				if (outputLine.equals("Good Bye!"))
-					break;
+			while ((request = in.readLine()) != null) {
+				JSONObject requestObj = new JSONObject(request);
+				response = protocol.processInput(requestObj);
+				out.println(response);
 			}
 		} catch (IOException e) {
 			System.out.println("Exception caught when trying to listen on port "
