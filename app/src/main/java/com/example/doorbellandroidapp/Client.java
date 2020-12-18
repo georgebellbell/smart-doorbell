@@ -7,12 +7,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class Client extends AsyncTask<String, Void, Void> {
-    private final String HOST = "192.168.56.1";
+    private final String HOST = "172.17.214.209";
     private final int PORT = 4444;
 
     Socket socket;
     PrintWriter printWriter;
-
     @Override
     protected Void doInBackground(String... strings) {
         String username = strings[0];
