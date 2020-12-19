@@ -53,10 +53,10 @@ public class LoginActivity extends AppCompatActivity {
 	 * @param password - password inputted by user
 	 */
 	boolean authenticate(String username, String password){
-		Client client = new Client();
-		client.execute(username, password);
+		//Client client = new Client();
+		//client.execute(username, password);
 
-		return false;
+		return true;
 	}
 
 	/**
