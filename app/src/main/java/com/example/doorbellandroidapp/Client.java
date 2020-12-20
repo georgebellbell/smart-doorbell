@@ -12,7 +12,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class Client extends AsyncTask<String, Void, Void> {
-    private final String HOST = "172.17.153.177";
+    private final String HOST = "192.168.56.1";
     private final int PORT = 4444;
 
     Socket socket;
@@ -38,13 +38,12 @@ public class Client extends AsyncTask<String, Void, Void> {
             printWriter = new PrintWriter(socket.getOutputStream(), true);
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String fromServer;
-            //printWriter.write(object.toString());
             
             while ((fromServer = bufferedReader.readLine()) != null) {
                 JSONObject response = new JSONObject(fromServer);
                 System.out.println("Server: " + fromServer);
                 if (response.getString("response").equals("connected")) {
-                    printWriter.write(object.toString());
+                    printWriter.println(object.toString());
                     System.out.println("This ran like Usain Bolt");
                 }
                 else if (response.getString("response").equals("fail")) {
