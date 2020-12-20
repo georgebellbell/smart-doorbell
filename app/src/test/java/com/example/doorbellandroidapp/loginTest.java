@@ -29,9 +29,9 @@ public class loginTest {
 		assertEquals(4,(int)login.attempts);
 		//assertTrue(login.checkAttempts(login.attempts));
 	}
-	@Test
-	public void inputIsEmpty(){
-		assertFalse(login.inputValidation("",""));
-	}
+	//@Test
+	//public void inputIsEmpty(){
+	//	assertFalse(login.inputValidation("",""));
+	//}
 
 }

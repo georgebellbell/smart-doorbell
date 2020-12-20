@@ -55,8 +55,7 @@ public class LoginActivity extends AppCompatActivity {
 	boolean authenticate(String username, String password){
 		//Client client = new Client();
 		//client.execute(username, password);
-
-		return true;
+		return (username.equals("Dom") && password.equals("password"));
 	}
 
 	/**
