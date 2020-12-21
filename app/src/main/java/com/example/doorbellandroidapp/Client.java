@@ -34,26 +34,29 @@ public class Client extends AsyncTask<String, Void, Void> {
         }
 
         try {
+            // Create connection
             socket = new Socket(HOST, PORT);
             printWriter = new PrintWriter(socket.getOutputStream(), true);
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            // Write JSON object to server
+            printWriter.println(object.toString());
+
+            // Handle response
             String fromServer;
-            
-            while ((fromServer = bufferedReader.readLine()) != null) {
+            if ((fromServer = bufferedReader.readLine()) != null) {
                 JSONObject response = new JSONObject(fromServer);
                 System.out.println("Server: " + fromServer);
-                if (response.getString("response").equals("connected")) {
-                    printWriter.println(object.toString());
-                    System.out.println("This ran like Usain Bolt");
-                }
-                else if (response.getString("response").equals("fail")) {
-                    System.out.println("Password doesn't work");
-                    break;
-                } else if (response.getString("response").equals("success")){
-                    System.out.println("Works!!!!!!!!!!!!!!!!!!!1");
-                    break;
+                switch (response.getString("response")) {
+                    case "success":
+                        System.out.println("Login success");
+                        break;
+                    case "fail":
+                        System.out.println(response.getString("message"));
+                        break;
                 }
             }
+
             printWriter.flush();
             printWriter.close();
             socket.close();
