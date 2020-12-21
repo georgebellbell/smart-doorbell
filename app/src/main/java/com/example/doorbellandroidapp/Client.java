@@ -11,49 +11,46 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class Client extends AsyncTask<String, Void, Void> {
-    private final String HOST = "192.168.56.1";
-    private final int PORT = 4444;
+public abstract class Client extends Thread {
+    // Connection details
+    private static final String HOST = "192.168.56.1";
+    private static final int PORT = 4444;
 
-    Socket socket;
-    PrintWriter printWriter;
-    BufferedReader bufferedReader;
+    private JSONObject request;
 
-    @Override
-    protected Void doInBackground(String... strings) {
-        String username = strings[0];
-        String password = strings[1];
-        JSONObject object = new JSONObject();
+    public void setRequest(JSONObject request) {
+        this.request = request;
+    }
 
+    public String getStringRequest() {
+        return request.toString();
+    }
+
+    /**
+     * Handles the server's response to request sent
+     * @param response - Response received from server
+     * @throws JSONException - JSON Exception
+     */
+    public abstract void handleResponse(JSONObject response) throws JSONException;
+
+    public void run() {
         try {
-            object.put("request","login");
-            object.put("username", username);
-            object.put("password", password);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            // Create connection
+            Socket socket = new Socket(HOST, PORT);
+            PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-        try {
-            socket = new Socket(HOST, PORT);
-            printWriter = new PrintWriter(socket.getOutputStream(), true);
-            bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String fromServer;
-            
-            while ((fromServer = bufferedReader.readLine()) != null) {
-                JSONObject response = new JSONObject(fromServer);
-                System.out.println("Server: " + fromServer);
-                if (response.getString("response").equals("connected")) {
-                    printWriter.println(object.toString());
-                    System.out.println("This ran like Usain Bolt");
-                }
-                else if (response.getString("response").equals("fail")) {
-                    System.out.println("Password doesn't work");
-                    break;
-                } else if (response.getString("response").equals("success")){
-                    System.out.println("Works!!!!!!!!!!!!!!!!!!!1");
-                    break;
-                }
+            // Write request to server
+            printWriter.println(getStringRequest());
+
+            // Handle response
+            String serverResponse;
+            if ((serverResponse = bufferedReader.readLine()) != null) {
+                JSONObject response = new JSONObject(serverResponse);
+                handleResponse(response);
             }
+
+            // Close connection
             printWriter.flush();
             printWriter.close();
             socket.close();
@@ -62,7 +59,5 @@ public class Client extends AsyncTask<String, Void, Void> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        return null;
     }
 }
