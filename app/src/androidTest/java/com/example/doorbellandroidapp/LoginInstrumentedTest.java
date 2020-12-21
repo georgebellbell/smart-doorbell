@@ -1,0 +1,69 @@
+package com.example.doorbellandroidapp;
+
+import androidx.test.espresso.contrib.DrawerActions;
+import androidx.test.espresso.contrib.NavigationViewActions;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+
+import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.not;
+
+/**
+ * Instrumented test, which will execute on an Android device.
+ *
+ * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ */
+@RunWith(AndroidJUnit4.class)
+public class LoginInstrumentedTest {
+
+	@Rule
+	public ActivityScenarioRule<LoginActivity> loginActivityRule = new ActivityScenarioRule<>(LoginActivity.class);
+
+	@Test
+	public void loginSuccessful(){
+
+		onView(withId(R.id.etUsername)).perform(typeText("Dom"), closeSoftKeyboard());
+		onView(withId(R.id.pwdPassword)).perform(typeText("password"), closeSoftKeyboard());
+		onView(withId(R.id.btnLogin)).perform(click());
+		onView(withId(R.id.tvHome)).check(matches(isDisplayed()));
+	}
+
+	@Test
+	public void loginFailedWithAttemptsRemaining(){
+		onView(withId(R.id.etUsername)).perform(typeText("Quick"), closeSoftKeyboard());
+		onView(withId(R.id.pwdPassword)).perform(typeText("Doorbell"), closeSoftKeyboard());
+		onView(withId(R.id.btnLogin)).perform(click());
+		onView(withText("No of attempts remaining: 4")).check(matches(isDisplayed()));
+	}
+
+	@Test
+	public void loginFailedWithNoAttemptsRemaining(){
+		onView(withId(R.id.etUsername)).perform(typeText("Quick"), closeSoftKeyboard());
+		onView(withId(R.id.pwdPassword)).perform(typeText("Doorbell"), closeSoftKeyboard());
+		for (int i = 0; i < 5; i++) {
+			onView(withId(R.id.btnLogin)).perform(click());
+			onView(withText("No of attempts remaining: "+ (4-i))).check(matches(isDisplayed()));
+		}
+		onView(withId(R.id.btnLogin)).check(matches(not(isEnabled())));
+	}
+
+
+
+
+
+}
