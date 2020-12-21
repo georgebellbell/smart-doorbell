@@ -9,12 +9,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class AccountTableTest {
 	private AccountTable accountTable;
 	private User user;
+	private PasswordManager passwordManager;
 
 	@BeforeEach
 	void setup() {
 		accountTable = new AccountTable();
 		accountTable.connect();
-		user = new User("John", "john@jeff.com", "password", "salt", "role");
+		user = new User("John", "john@jeff.com", "password", "role");
 	}
 
 	@AfterEach
@@ -29,12 +30,6 @@ class AccountTableTest {
 	}
 
 	@Test
-	void testGetRecord() {
-		accountTable.addRecord(user);
-		assertEquals(accountTable.getRecord(user.getUsername()), user);
-	}
-
-	@Test
 	void testGetInvalidRecord() {
 		assertNull(accountTable.getRecord("Invalid_name"));
 	}
@@ -43,5 +38,11 @@ class AccountTableTest {
 	void testDeleteRecord() {
 		accountTable.addRecord(user);
 		assertTrue(accountTable.deleteRecord(user.getUsername()));
+	}
+
+	@Test
+	void testGetLogin() {
+		accountTable.addRecord(user);
+		assertTrue(accountTable.getLogin(user.getUsername(), user.getPassword()));
 	}
 }

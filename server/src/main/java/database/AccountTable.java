@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 
 public class AccountTable extends DatabaseConnection {
 	PreparedStatement statement;
+	PasswordManager passwordManager = new PasswordManager();
 
 	/**
 	 * @param user - to add to the database
@@ -13,13 +14,14 @@ public class AccountTable extends DatabaseConnection {
 	 */
 	public boolean addRecord(User user) {
 		try {
+			String salt = passwordManager.generateSalt();
 			String query = "INSERT INTO accounts (Username, Email, Password, Salt, Role, Created_at)"
 					+ " VALUES (?, ?, ?, ?, ?, ?)";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, user.getUsername());
 			statement.setString(2,user.getEmail());
-			statement.setString(3, user.getPassword());
-			statement.setString(4, user.getSalt());
+			statement.setString(3, passwordManager.hashPassword(user.getPassword(), salt));
+			statement.setString(4, salt);
 			statement.setString(5, user.getRole());
 			statement.setString(6, user.getCreated_at());
 			statement.execute();
@@ -38,7 +40,7 @@ public class AccountTable extends DatabaseConnection {
 	public User getRecord(String username){
 		User user = null;
 		try {
-			String query = "SELECT Username, Email, Password, Salt, Role, Created_at  FROM accounts WHERE Username=?";
+			String query = "SELECT Username, Email, Password, Role, Created_at  FROM accounts WHERE Username=?";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, username);
 			ResultSet resultSet = statement.executeQuery();
@@ -47,7 +49,6 @@ public class AccountTable extends DatabaseConnection {
 						resultSet.getString("Username"),
 						resultSet.getString("Email"),
 						resultSet.getString("Password"),
-						resultSet.getString("Salt"),
 						resultSet.getString("Role"),
 						resultSet.getString("Created_at")
 				);
@@ -80,6 +81,7 @@ public class AccountTable extends DatabaseConnection {
 
 	public boolean getLogin(String username, String password) {
 		boolean found = false;
+		password = passwordManager.checkPasswords(getPassword(username), password);
 		try {
 			String query = "SELECT Username, Password  FROM accounts WHERE Username=? AND Password=?";
 			statement = conn.prepareStatement(query);
@@ -88,6 +90,22 @@ public class AccountTable extends DatabaseConnection {
 			ResultSet resultSet = statement.executeQuery();
 			found = resultSet.next();
 			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return found;
+	}
+
+	public String getPassword(String username) {
+		String found = null;
+		try {
+			String query = "SELECT Password FROM accounts WHERE Username=?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, username);
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next()){
+				found = resultSet.getString("password");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
