@@ -10,6 +10,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class LoginActivity extends AppCompatActivity {
 	EditText etUsername, etPassword;
 	TextView tvInformation, tvSignUp;
@@ -39,31 +42,31 @@ public class LoginActivity extends AppCompatActivity {
 	}
 
 	/**
-	 * Takes users information and passes it to server to be checked
-	 * @param username - username inputted by user
-	 * @param password - password inputted by user
-	 */
-	void authenticate(String username, String password){
-		Client client = new Client();
-		client.execute(username, password);
-	}
-
-	/**
 	 * Notifies user of successful login attempt and starts main activity
 	 */
 	void loginSuccess() {
-		Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-		Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-		startActivity(intent);
+		runOnUiThread(new Runnable(){
+			public void run() {
+				Toast.makeText(getApplicationContext(), "Login Successful",
+						Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+				startActivity(intent);
+			}
+		});
 	}
 
 	/**
 	 * Notifies user of failed login attempt and removes an attempt
 	 */
 	void loginFail() {
-		Toast.makeText(LoginActivity.this, "Incorrect Username or Password", Toast.LENGTH_SHORT).show();
-		removeAttempt();
-		tvInformation.setText("No of attempts remaining: " + attempts);
+		runOnUiThread(new Runnable(){
+			public void run() {
+				Toast.makeText(getApplicationContext(), "Incorrect Username or Password",
+						Toast.LENGTH_SHORT).show();
+				removeAttempt();
+				tvInformation.setText("No of attempts remaining: " + attempts);
+			}
+		});
 	}
 
 	/**
@@ -74,6 +77,42 @@ public class LoginActivity extends AppCompatActivity {
 		if (attempts == 0) {
 			btnLogin.setEnabled(false);
 		}
+	}
+
+	/**
+	 * Takes users information and passes it to server to be checked
+	 * @param username - username inputted by user
+	 * @param password - password inputted by user
+	 */
+	void authenticate(String username, String password){
+		// Client to handle login response from server
+		Client client = new Client() {
+			@Override
+			public void handleResponse(JSONObject response) throws JSONException {
+				switch (response.getString("response")) {
+					case "success":
+						loginSuccess();
+						break;
+					case "fail":
+						loginFail();
+						break;
+				}
+			}
+		};
+
+		// JSON Request object
+		JSONObject request = new JSONObject();
+		try {
+			request.put("request","login");
+			request.put("username", username);
+			request.put("password", password);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		// Set request and start connection
+		client.setRequest(request);
+		client.start();
 	}
 
 	/**
