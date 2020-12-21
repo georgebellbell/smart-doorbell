@@ -28,21 +28,12 @@ public class LoginActivity extends AppCompatActivity {
 		btnLogin.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//converts user inputs into string variables
+				// Get user input
 				String inputUsername = etUsername.getText().toString();
 				String inputPassword = etPassword.getText().toString();
 
-				if (authenticate(inputUsername, inputPassword)) {
-					//if user inputs are valid and username and password match then give brief notification and send user to home page
-					Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-					Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-					startActivity(intent);
-				}
-				else {
-					Toast.makeText(LoginActivity.this, "Incorrect Username or Password", Toast.LENGTH_SHORT).show();
-					removeAttempt();
-					tvInformation.setText("No of attempts remaining: " + attempts);
-				}
+				// Send to server for checking
+				authenticate(inputUsername, inputPassword);
 			}
 		});
 	}
@@ -52,10 +43,27 @@ public class LoginActivity extends AppCompatActivity {
 	 * @param username - username inputted by user
 	 * @param password - password inputted by user
 	 */
-	boolean authenticate(String username, String password){
-		//Client client = new Client();
-		//client.execute(username, password);
-		return (username.equals("Dom") && password.equals("password"));
+	void authenticate(String username, String password){
+		Client client = new Client();
+		client.execute(username, password);
+	}
+
+	/**
+	 * Notifies user of successful login attempt and starts main activity
+	 */
+	void loginSuccess() {
+		Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+		Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+		startActivity(intent);
+	}
+
+	/**
+	 * Notifies user of failed login attempt and removes an attempt
+	 */
+	void loginFail() {
+		Toast.makeText(LoginActivity.this, "Incorrect Username or Password", Toast.LENGTH_SHORT).show();
+		removeAttempt();
+		tvInformation.setText("No of attempts remaining: " + attempts);
 	}
 
 	/**
