@@ -77,4 +77,20 @@ public class AccountTable extends DatabaseConnection {
 			return false;
 		}
 	}
+
+	public boolean getLogin(String username, String password) {
+		boolean found = false;
+		try {
+			String query = "SELECT Username, Password  FROM accounts WHERE Username=? AND Password=?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, username);
+			statement.setString(2, password);
+			ResultSet resultSet = statement.executeQuery();
+			found = resultSet.next();
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return found;
+	}
 }
