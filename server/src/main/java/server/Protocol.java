@@ -1,17 +1,15 @@
 package server;
 
 import database.AccountTable;
-import database.DatabaseConnection;
 import database.User;
 import org.json.JSONObject;
-
-import java.net.*;
-import java.io.*;
 
 public class Protocol {
 
 	public String processInput(JSONObject request){
 		JSONObject response = new JSONObject();
+		AccountTable accountTable = new AccountTable();
+
 		if (request != null) {
 			boolean illegalChars = checkIllegalChars(request.toString().toLowerCase());
 			if (illegalChars) {
@@ -21,7 +19,7 @@ public class Protocol {
 			}
 		}
 		if (request.getString("request").equals("login")) {
-			AccountTable accountTable = new AccountTable();
+
 			accountTable.connect();
 			boolean validLogin = accountTable.getLogin(request.getString("username"), request.getString("password"));
 			accountTable.disconnect();
@@ -33,6 +31,21 @@ public class Protocol {
 				response.put("response", "fail");
 				response.put("message", "invalid login");
 			}
+		} else if (request.getString("request").equals("signup")) {
+			String username = request.getString("username");
+			String email = request.getString("email");
+			String password = request.getString("password");
+			User user = new User(username, email, password, "User");
+			accountTable.connect();
+			if (accountTable.addRecord(user)) {
+				response.put("response", "success");
+				response.put("message", "Account created");
+			}
+			else {
+				response.put("response", "fail");
+				response.put("message", "Failed to create account");
+			}
+			accountTable.disconnect();
 		}
 		return response.toString();
 	}
