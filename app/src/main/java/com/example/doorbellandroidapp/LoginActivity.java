@@ -14,7 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
-	EditText etUsername, etPassword;
+	EditText etUsername, pwdPassword;
 	TextView tvInformation, tvSignUp;
 	Button btnLogin;
 	Integer attempts = 5;
@@ -33,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
 			public void onClick(View v) {
 				// Get user input
 				String inputUsername = etUsername.getText().toString();
-				String inputPassword = etPassword.getText().toString();
+				String inputPassword = pwdPassword.getText().toString();
 
 				// Send to server for checking
 				authenticate(inputUsername, inputPassword);
@@ -120,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
 	 */
 	void assign(){
 		etUsername = findViewById(R.id.etUsername);
-		etPassword = findViewById(R.id.pwdPassword);
+		pwdPassword = findViewById(R.id.pwdPassword);
 		tvInformation = findViewById(R.id.tvInformation);
 		tvSignUp = findViewById(R.id.tvSignUp);
 		btnLogin = findViewById(R.id.btnLogin);
