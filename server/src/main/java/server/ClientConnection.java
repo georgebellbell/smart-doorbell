@@ -33,8 +33,8 @@ public class ClientConnection extends Thread {
 			// Communicate with client
 			while ((request = in.readLine()) != null) {
 				System.out.println(request);
-				JSONObject requestObj = new JSONObject(request);
-				response = protocol.processInput(requestObj);
+				protocol.setRequest(request);
+				response = protocol.processInput();
 				out.println(response);
 			}
 
