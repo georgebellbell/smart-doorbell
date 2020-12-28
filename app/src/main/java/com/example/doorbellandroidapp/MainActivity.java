@@ -12,7 +12,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.MenuItem;
 
@@ -28,8 +30,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	private Fragment fragment;
 	private FragmentManager fm;
 
+	private SharedPreferences preferences;
+	private String currentUser;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		preferences= PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+		currentUser= preferences.getString("currentUser",null);
+		if (currentUser==null){
+			Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+			startActivity(intent);
+		}
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
@@ -116,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				break;
 
 			case R.id.nav_logout:
-
+				preferences.edit().clear().apply();
 				Intent intent = new Intent(MainActivity.this, LoginActivity.class);
 				startActivity(intent);
 

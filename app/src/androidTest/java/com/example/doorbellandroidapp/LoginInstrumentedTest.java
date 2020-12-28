@@ -1,7 +1,5 @@
 package com.example.doorbellandroidapp;
 
-import androidx.test.espresso.contrib.DrawerActions;
-import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -35,28 +33,30 @@ public class LoginInstrumentedTest {
 	public ActivityScenarioRule<LoginActivity> loginActivityRule = new ActivityScenarioRule<>(LoginActivity.class);
 
 	@Test
-	public void loginSuccessful(){
-
+	public void loginSuccessful() throws InterruptedException {
 		onView(withId(R.id.etUsername)).perform(typeText("Dom"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("password"), closeSoftKeyboard());
 		onView(withId(R.id.btnLogin)).perform(click());
+		Thread.sleep(2000);
 		onView(withId(R.id.tvHome)).check(matches(isDisplayed()));
 	}
 
 	@Test
-	public void loginFailedWithAttemptsRemaining(){
+	public void loginFailedWithAttemptsRemaining() throws InterruptedException {
 		onView(withId(R.id.etUsername)).perform(typeText("Quick"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("Doorbell"), closeSoftKeyboard());
 		onView(withId(R.id.btnLogin)).perform(click());
+		Thread.sleep(2000);
 		onView(withText("No of attempts remaining: 4")).check(matches(isDisplayed()));
 	}
 
 	@Test
-	public void loginFailedWithNoAttemptsRemaining(){
+	public void loginFailedWithNoAttemptsRemaining() throws InterruptedException {
 		onView(withId(R.id.etUsername)).perform(typeText("Quick"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("Doorbell"), closeSoftKeyboard());
 		for (int i = 0; i < 5; i++) {
 			onView(withId(R.id.btnLogin)).perform(click());
+			Thread.sleep(2000);
 			onView(withText("No of attempts remaining: "+ (4-i))).check(matches(isDisplayed()));
 		}
 		onView(withId(R.id.btnLogin)).check(matches(not(isEnabled())));

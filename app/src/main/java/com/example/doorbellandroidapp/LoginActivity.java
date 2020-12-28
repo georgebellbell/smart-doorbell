@@ -3,7 +3,9 @@ package com.example.doorbellandroidapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,9 +21,12 @@ public class LoginActivity extends AppCompatActivity {
 	Button btnLogin;
 	Integer attempts = 5;
 	Boolean isValid;
+	SharedPreferences preferences;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		preferences = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		//method call to assign variables to components
@@ -47,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
 	void loginSuccess() {
 		runOnUiThread(new Runnable(){
 			public void run() {
+				preferences.edit().putString("currentUser",etUsername.getText().toString()).apply();
 				Toast.makeText(getApplicationContext(), "Login Successful",
 						Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent(LoginActivity.this, MainActivity.class);
