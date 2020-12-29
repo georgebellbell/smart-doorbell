@@ -3,7 +3,6 @@ from time import sleep
 from picamera import PiCamera  # This library installed on the raspberry pi by default
 import os
 
-
 # Setup file path for image location
 cwd = os.getcwd()
 imagePath = cwd + "/photo.jpg"
@@ -23,13 +22,16 @@ def capture():
 	camera.capture(imagePath)
 	camera.close()
 
-def sendImage(h):
+
+def sendImage():
 	image = imageToBytes(imagePath)
+
 
 def imageToBytes(location):
 	with open("img.png", "r") as image:
 		b = image.read()
 		print(b)
+
 
 # Main loop
 while True:
