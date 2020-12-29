@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class User {
+	PasswordManager passwordManager = new PasswordManager();
 	// Object properties
 	private String username;
 	private String email;
@@ -14,16 +15,15 @@ public class User {
 	private String created_at;
 
 	// Double constructor, when retrieving user from database and when adding user to database.
-	public User(String username, String email, String password, String salt, String role, String created_at) {
+	public User(String username, String email, String password, String role, String created_at) {
 		this.username = username;
 		this.email = email;
 		this.password = password;
-		this.salt = salt;
 		this.role = role;
 		this.created_at = created_at;
 	}
-	public User(String username, String email, String password, String salt, String role) {
-		this(username, email, password, salt, role, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+	public User(String username, String email, String password, String role) {
+		this(username, email, password, role, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 	}
 
 	@Override
@@ -70,12 +70,14 @@ public class User {
 	public String getCreated_at() { return created_at; }
 	public void setCreated_at(String created_at) { this.created_at = created_at; }
 
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		User user = (User) o;
-		return Objects.equals(username, user.username) &&
+		return Objects.equals(passwordManager, user.passwordManager) &&
+				Objects.equals(username, user.username) &&
 				Objects.equals(email, user.email) &&
 				Objects.equals(password, user.password) &&
 				Objects.equals(salt, user.salt) &&
@@ -85,6 +87,6 @@ public class User {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(username, email, password, salt, role, created_at);
+		return Objects.hash(passwordManager, username, email, password, salt, role, created_at);
 	}
 }
