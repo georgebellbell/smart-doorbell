@@ -1,20 +1,16 @@
-import jpysocket
+import socket
+#192.168.1.106
+host = "localhost"
+port = 4444
 
-host='192.168.1.106'
-port="4444"
-socket = jpysocket.jpysocket()  # Create Socket
-socket.bind((host, port))
-socket.listen(5)
-print("Socket is listening")
+imageData = "hello"  # placeholder
+imageSize = str(234234)  # placeholder
+PiId = "unique ID"  # placeholder
 
-connection, address = socket.accept()
+output = '{"request":"image","id":"' + PiId + '","size":"' + imageSize + '","data":"' + imageData + '"}\r\n'
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.connect((host, port))
+    s.sendall(bytes(output, 'utf-8'))
+    data = s.recv(1024)
 
-print("Connected To ", address)
-msgsend = jpysocket.jpysocket("Raspberry Pi Says Hi")
-connection.send(msgsend)
-
-msgrecv = connection.recv(1024)
-msgrecv = jpysocket.jpydecode(msgrecv)
-print(msgrecv)
-socket.close()
-print("end")
+print("Recived", repr(data))
