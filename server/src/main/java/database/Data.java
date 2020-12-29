@@ -6,18 +6,16 @@ import java.util.Objects;
 
 public class Data {
 	// Object properties
-	private int id;
 	private String image;
 	private String username;
 	private String person_name;
 	private String created_at;
 
 	// Double constructor for when retrieving data from database and when adding to the database
-	public Data(int id, String username, String image, String person_name) {
-		this(id, username, image, person_name, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+	public Data(String username, String image, String person_name) {
+		this(username, image, person_name, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 	}
-	public Data(int id, String username, String image, String person_name, String created_at) {
-		this.id = id;
+	public Data( String username, String image, String person_name, String created_at) {
 		this.username = username;
 		this.image = image;
 		this.person_name = person_name;
@@ -26,15 +24,12 @@ public class Data {
 	@Override
 	public String toString() {
 		return "Data{" +
-				"id=" + id +
-				", image='" + image + '\'' +
+				"image='" + image + '\'' +
 				", username='" + username + '\'' +
 				", person_name='" + person_name + '\'' +
 				", created_at=" + created_at +
 				'}';
 	}
-	public int getId() { return id; }
-	public void setId(int id) { this.id = id; }
 	public String getImage() {
 		return image;
 	}
@@ -65,8 +60,7 @@ public class Data {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Data data = (Data) o;
-		return id == data.id &&
-				Objects.equals(image, data.image) &&
+		return Objects.equals(image, data.image) &&
 				Objects.equals(username, data.username) &&
 				Objects.equals(person_name, data.person_name) &&
 				Objects.equals(created_at, data.created_at);
@@ -74,6 +68,6 @@ public class Data {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, image, username, person_name, created_at);
+		return Objects.hash(image, username, person_name, created_at);
 	}
 }

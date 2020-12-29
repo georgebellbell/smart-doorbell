@@ -1,7 +1,9 @@
 package server;
 
 import database.AccountTable;
+import database.DataTable;
 import database.User;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -10,11 +12,26 @@ public class Protocol {
 	JSONObject request;
 	JSONObject response = new JSONObject();
 	AccountTable accountTable = new AccountTable();
+	DataTable dataTable = new DataTable();
 	HashMap<String, Runnable> requestResponse = new HashMap<>();
 
 	public Protocol() {
 		requestResponse.put("login", this::login);
 		requestResponse.put("signup", this::signUp);
+		requestResponse.put("faces", this::faces);
+	}
+
+	public void faces() {
+		dataTable.connect();
+		JSONArray allImages = dataTable.getAllImages(request.getString("username"));
+		if (allImages != null) {
+			response.put("response", "success");
+			response.put("images", allImages);
+		}
+		else {
+			response.put("response", "fail");
+			response.put("message", "failure to retrieve all images");
+		}
 	}
 
 	public void login() {

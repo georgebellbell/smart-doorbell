@@ -14,12 +14,12 @@ class DataTableTest {
 	void setUp() {
 		dataTable = new DataTable();
 		dataTable.connect();
-		data = new Data(99999, "Dom", "dom.jpg", "Dom's mum");
+		data = new Data("Dom", "dom.jpg", "Dom's mum");
 	}
 
 	@AfterEach
 	public void afterEach() {
-		dataTable.deleteRecord(data.getId());
+		dataTable.deleteRecord(data.getUsername(), data.getPerson_name());
 		dataTable.disconnect();
 	}
 
@@ -31,12 +31,12 @@ class DataTableTest {
 	@Test
 	void testGetRecord() {
 		dataTable.addRecord(data);
-		assertEquals(dataTable.getRecord(data.getId()), data);
+		assertEquals(dataTable.getRecord(data.getUsername()), data);
 	}
 
 	@Test
 	void testDeleteRecord() {
 		dataTable.addRecord(data);
-		assertTrue(dataTable.deleteRecord(data.getId()));
+		assertTrue(dataTable.deleteRecord(data.getUsername(), data.getPerson_name()));
 	}
 }
