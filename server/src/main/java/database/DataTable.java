@@ -1,13 +1,11 @@
 package database;
 
-import com.mysql.cj.jdbc.Blob;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class DataTable extends DatabaseConnection {
 	PreparedStatement statement;
@@ -21,10 +19,10 @@ public class DataTable extends DatabaseConnection {
 			String query = "INSERT INTO data (Username, Image, Person, Created_at)"
 					+ " VALUES (?, ?, ?, ?)";
 			statement = conn.prepareStatement(query);
-			statement.setString(1, data.getUsername());
-			statement.setString(2, data.getImage());
-			statement.setString(3, data.getPerson_name());
-			statement.setString(4, data.getCreated_at());
+			statement.setString(1, data.getDeviceID());
+			statement.setBlob(2, data.getImage());
+			statement.setString(3, data.getPersonName());
+			statement.setString(4, data.getCreatedAt());
 			statement.execute();
 			statement.close();
 		} catch (Exception e) {
@@ -38,17 +36,17 @@ public class DataTable extends DatabaseConnection {
 	 * @param username - username of data to retrieve
 	 * @return data object if exists in the database
 	 */
-	public Data getRecord(String username) {
+	public Data getRecord(int id) {
 		Data data = null;
 		try {
-			String query = "SELECT Username, Image, Person, Created_at FROM data WHERE Username=?";
+			String query = "SELECT Username, Image, Person, Created_at FROM data WHERE Id=?";
 			statement = conn.prepareStatement(query);
-			statement.setString(1, username);
+			statement.setInt(1, id);
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				data = new Data(
 						resultSet.getString("Username"),
-						resultSet.getString("Image"),
+						resultSet.getBlob("Image"),
 						resultSet.getString("Person"),
 						resultSet.getString("Created_at")
 				);
@@ -60,18 +58,15 @@ public class DataTable extends DatabaseConnection {
 		return data;
 	}
 
-
 	/**
-	 * @param username - username of the user
-	 * @param person   - person to delete the image of from the database
+	 * @param id - id of the data to delete
 	 * @return if record deleted
 	 */
-	public boolean deleteRecord(String username, String person) {
+	public boolean deleteRecordById(int id) {
 		try {
-			String query = "DELETE FROM data WHERE Username=? AND Person=?";
+			String query = "DELETE FROM data WHERE Id=?";
 			statement = conn.prepareStatement(query);
-			statement.setString(1, username);
-			statement.setString(2, person);
+			statement.setInt(1, id);
 			statement.execute();
 			statement.close();
 			return true;
@@ -82,23 +77,24 @@ public class DataTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param username - what will
+	 * @param deviceId - what will
 	 * @return
 	 */
-	public JSONArray getAllImages(String username) {
-		JSONArray allImages = new JSONArray();
+	public ArrayList<Data> getAllImages(String deviceId) {
+		ArrayList<Data> allImages = new ArrayList<>();
 		try {
-			String query = "SELECT ID, Image, Person, Created_at FROM data WHERE Username=?";
+			String query = "SELECT ID, Image, Person, Created_at FROM data WHERE Device_id=?";
 			statement = conn.prepareStatement(query);
-			statement.setString(1, username);
+			statement.setString(1, deviceId);
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
-				JSONObject jsonObject = new JSONObject();
-				jsonObject.put("id", resultSet.getString("Id"));
-				jsonObject.put("image", resultSet.getBlob("Image"));
-				jsonObject.put("person", resultSet.getString("Person"));
-				jsonObject.put("created_at", resultSet.getString("Created_at"));
-				allImages.put(jsonObject);
+				Data data = new Data(
+						resultSet.getString("Device_id"),
+						resultSet.getBlob("Image"),
+						resultSet.getString("Person"),
+						resultSet.getString("Created_at")
+				);
+				allImages.add(data);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -1,73 +1,70 @@
 package database;
 
+import java.sql.Blob;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Data {
 	// Object properties
-	private String image;
-	private String username;
-	private String person_name;
-	private String created_at;
+	private Blob image;
+	private String deviceID;
+	private String personName;
+	private String createdAt;
 
 	// Double constructor for when retrieving data from database and when adding to the database
-	public Data(String username, String image, String person_name) {
-		this(username, image, person_name, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+	public Data(String deviceID, Blob image, String personName) {
+		this(deviceID, image, personName, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 	}
-	public Data( String username, String image, String person_name, String created_at) {
-		this.username = username;
+	public Data(String deviceID, Blob image, String personName, String created_at) {
+		this.deviceID = deviceID;
 		this.image = image;
-		this.person_name = person_name;
-		this.created_at = created_at;
+		this.personName = personName;
+		this.createdAt = created_at;
 	}
 	@Override
 	public String toString() {
 		return "Data{" +
 				"image='" + image + '\'' +
-				", username='" + username + '\'' +
-				", person_name='" + person_name + '\'' +
-				", created_at=" + created_at +
+				", username='" + deviceID + '\'' +
+				", person_name='" + personName + '\'' +
+				", created_at=" + createdAt +
 				'}';
 	}
-	public String getImage() {
-		return image;
-	}
-	public void setImage(String image) {
-		this.image = image;
-	}
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public String getPerson_name() {
-		return person_name;
-	}
-	public void setPerson_name(String person_name) {
-		this.person_name = person_name;
-	}
-	public String getCreated_at() {
-		return created_at;
-	}
-	public void setCreated_at(String created_at) {
-		this.created_at = created_at;
-	}
 
+	public Blob getImage() { return image; }
+	public void setImage(Blob image) { this.image = image; }
+	public String getDeviceID() {
+		return deviceID;
+	}
+	public void setDeviceID(String deviceID) {
+		this.deviceID = deviceID;
+	}
+	public String getPersonName() {
+		return personName;
+	}
+	public void setPersonName(String personName) {
+		this.personName = personName;
+	}
+	public String getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
+	}
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Data data = (Data) o;
 		return Objects.equals(image, data.image) &&
-				Objects.equals(username, data.username) &&
-				Objects.equals(person_name, data.person_name) &&
-				Objects.equals(created_at, data.created_at);
+				Objects.equals(deviceID, data.deviceID) &&
+				Objects.equals(personName, data.personName) &&
+				Objects.equals(createdAt, data.createdAt);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(image, username, person_name, created_at);
+		return Objects.hash(image, deviceID, personName, createdAt);
 	}
 }

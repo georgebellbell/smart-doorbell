@@ -1,11 +1,13 @@
 package server;
 
 import database.AccountTable;
+import database.Data;
 import database.DataTable;
 import database.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Protocol {
@@ -19,11 +21,19 @@ public class Protocol {
 		requestResponse.put("login", this::login);
 		requestResponse.put("signup", this::signUp);
 		requestResponse.put("faces", this::faces);
+		requestResponse.put("image", this::image);
+	}
+
+	public void image() {
+		dataTable.connect();
+		Data data = new Data(request.getString("Device_id"), request.get);
+		dataTable.addRecord(data);
+		dataTable.disconnect();
 	}
 
 	public void faces() {
 		dataTable.connect();
-		JSONArray allImages = dataTable.getAllImages(request.getString("username"));
+		ArrayList<Data> allImages = dataTable.getAllImages(request.getString("username"));
 		if (allImages != null) {
 			response.put("response", "success");
 			response.put("images", allImages);
