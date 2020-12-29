@@ -18,11 +18,18 @@ button2 = Button(3)
 
 
 # Take picture
-def capture(location=imagePath):
+def capture():
 	camera = PiCamera()
-	camera.capture(location)
+	camera.capture(imagePath)
 	camera.close()
 
+def sendImage(h):
+	image = imageToBytes(imagePath)
+
+def imageToBytes(location):
+	with open("img.png", "r") as image:
+		b = image.read()
+		print(b)
 
 # Main loop
 while True:
@@ -31,6 +38,8 @@ while True:
 		sleep(0.5)
 		capture()
 		sleep(0.5)
+		sendImage()
+
 	else:
 		led1.off()
 
