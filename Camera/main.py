@@ -28,9 +28,10 @@ def sendImage():
 
 
 def imageToBytes(location):
-	with open("photo.jpg", "r") as image:
+	with open("photo.jpg", "rb") as image:
 		b = image.read()
 		print(b)
+    
 
 
 # Main loop
