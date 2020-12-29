@@ -47,10 +47,10 @@ if os.path.exists(path):
 	file.close()
 
 	# Print error if it failed to find exit 0 in the file
-	if flag == False:
-		print("ERROR: EOF not found")
-	else:
+	if flag:
 		print("Success")
+	else:
+		print("ERROR: EOF not found")
 else:
 	# Output error if the file doesn't exist
 	print("ERROR: File not found")
