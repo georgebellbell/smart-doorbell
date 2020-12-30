@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		if (currentUser==null){
 			Intent intent = new Intent(MainActivity.this, LoginActivity.class);
 			startActivity(intent);
+			finish();
 		}
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);

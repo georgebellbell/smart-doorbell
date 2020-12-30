@@ -1,6 +1,9 @@
 package com.example.doorbellandroidapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,11 +25,14 @@ public class LoginActivity extends AppCompatActivity {
 	Integer attempts = 5;
 	Boolean isValid;
 	SharedPreferences preferences;
+	private Fragment fragment;
+	private FragmentManager fm;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		preferences = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
-
+		preferences.edit().clear().apply();
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		//method call to assign variables to components
@@ -55,7 +61,8 @@ public class LoginActivity extends AppCompatActivity {
 				preferences.edit().putString("currentUser",etUsername.getText().toString()).apply();
 				Toast.makeText(getApplicationContext(), "Login Successful",
 						Toast.LENGTH_SHORT).show();
-				Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+
+				Intent intent = new Intent(LoginActivity.this, TwoFactorAuthActivity.class);
 				startActivity(intent);
 			}
 		});
