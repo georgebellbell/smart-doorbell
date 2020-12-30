@@ -1,9 +1,9 @@
 package server;
 
+import authentication.TwoFactorAuthentication;
 import database.AccountTable;
 import database.User;
 import org.json.JSONObject;
-
 import java.util.HashMap;
 
 public class Protocol {
@@ -18,17 +18,32 @@ public class Protocol {
 	}
 
 	public void login() {
+		// Request details
+		String username = request.getString("username");
+		String password = request.getString("password");
+
+		// Connect to database
 		accountTable.connect();
-		boolean validLogin = accountTable.getLogin(request.getString("username"), request.getString("password"));
+		boolean validLogin = accountTable.getLogin(username, password);
+		User currentUser = accountTable.getRecord(username);
 		accountTable.disconnect();
+
 		if (validLogin) {
+			// Successful login response
 			response.put("response", "success");
 			response.put("message", "Successfully logged in!");
+
+			// Create and send 2FA code
+			TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(currentUser);
+			twoFactorAuthentication.generateCode();
+			twoFactorAuthentication.sendEmail();
 		}
 		else {
+			// Failed login response
 			response.put("response", "fail");
 			response.put("message", "invalid login");
 		}
+
 	}
 
 	public void signUp() {
