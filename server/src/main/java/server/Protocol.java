@@ -15,10 +15,10 @@ public class Protocol {
 	public Protocol() {
 		requestResponse.put("login", this::login);
 		requestResponse.put("signup", this::signUp);
+		requestResponse.put("twofactor", this::twoFactor);
 	}
 
 	public void login() {
-		// Request details
 		String username = request.getString("username");
 		String password = request.getString("password");
 
@@ -61,6 +61,31 @@ public class Protocol {
 			response.put("message", "Failed to create account");
 		}
 		accountTable.disconnect();
+	}
+
+	public void twoFactor() {
+		String username = request.getString("username");
+		String code = request.getString("code");
+
+		// Get user trying to enter 2FA code
+		accountTable.connect();
+		User user = accountTable.getRecord(username);
+		accountTable.disconnect();
+
+		if (user != null) {
+			// Check if code entered matches 2FA code in database
+			TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(user);
+			boolean codeMatched = twoFactorAuthentication.checkGeneratedCode(code);
+			if (codeMatched) {
+				// Correct 2FA code entered
+				response.put("response", "success");
+				response.put("message", "2FA code is correct");
+			} else {
+				// Incorrect 2FA code entered
+				response.put("response", "fail");
+				response.put("message", "2FA code is incorrect");
+			}
+		}
 	}
 
 	public void setRequest(String request) {
