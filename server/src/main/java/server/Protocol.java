@@ -74,8 +74,17 @@ public class Protocol {
 		accountTable.disconnect();
 
 		if (user != null) {
-			// Check if code entered matches 2FA code in database
 			TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(user);
+
+			// Check code has not expired
+			boolean validCode = twoFactorAuthentication.hasValidCode();
+			if (!validCode) {
+				response.put("response", "fail");
+				response.put("message", "2FA code has expired, request a new one");
+				return;
+			}
+
+			// Check code matches
 			boolean codeMatched = twoFactorAuthentication.checkGeneratedCode(code);
 			if (codeMatched) {
 				// Correct 2FA code entered
