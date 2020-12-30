@@ -55,6 +55,14 @@ public class TwoFactorAuthentication {
 	}
 
 	/**
+	 * Checks if a code exists for user that has not expired
+	 * @return whether code exists that has not expired
+	 */
+	public boolean hasValidCode() {
+		return (getGeneratedCode() != null);
+	}
+
+	/**
 	 * Compares code to generated code stored in database
 	 * @param code - Code to compare to database
 	 * @return if the code is the same to the database
