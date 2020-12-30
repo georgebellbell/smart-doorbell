@@ -63,8 +63,8 @@ public class TwoFactorAuthActivity extends AppCompatActivity {
 		tv2FAAgain.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//resend 2FA email
-				tv2FAResponse.setText("New email sent!");
+				// Resend 2FA email
+				resendEmail();
 			}
 		});
 
@@ -120,6 +120,42 @@ public class TwoFactorAuthActivity extends AppCompatActivity {
 			request.put("request","twofactor");
 			request.put("username", currentUser);
 			request.put("code", code);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		// Set request and start connection
+		client.setRequest(request);
+		client.start();
+	}
+
+	/**
+	 * Displays text that confirms email was resent
+	 */
+	void displayEmailResent() {
+		runOnUiThread(new Runnable(){
+			public void run() {
+				tv2FAResponse.setText("New email sent!");
+			}
+		});
+	}
+
+	/**
+	 * Sends request to server to resend email
+	 */
+	void resendEmail() {
+		Client client = new Client() {
+			@Override
+			public void handleResponse(JSONObject response) throws JSONException {
+				displayEmailResent();
+			}
+		};
+
+		// JSON Request object
+		JSONObject request = new JSONObject();
+		try {
+			request.put("request","resendtwofactor");
+			request.put("username", currentUser);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
