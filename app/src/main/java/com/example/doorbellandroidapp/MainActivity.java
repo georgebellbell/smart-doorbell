@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		// Handle navigation view item clicks here.
 		int id = menuItem.getItemId();
 		FragmentTransaction t = fm.beginTransaction();
+		Intent intent;
 
 		switch (id){
 			case R.id.nav_home:
@@ -110,11 +111,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 			case R.id.nav_faces:
 
-				fragment = new FacesFragment();
-				t.replace(R.id.content_frame, fragment);
-				t.commit();
-
-				navigationView.setCheckedItem(id);
+				intent = new Intent(MainActivity.this, FacesActivity.class);
+				startActivity(intent);
 				break;
 
 			case R.id.nav_settings:
@@ -128,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 			case R.id.nav_logout:
 				preferences.edit().clear().apply();
-				Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+				intent = new Intent(MainActivity.this, LoginActivity.class);
 				startActivity(intent);
 
 		}
