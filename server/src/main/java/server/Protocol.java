@@ -16,6 +16,7 @@ public class Protocol {
 		requestResponse.put("login", this::login);
 		requestResponse.put("signup", this::signUp);
 		requestResponse.put("twofactor", this::twoFactor);
+		requestResponse.put("resendtwofactor", this::resendTwoFactor);
 	}
 
 	public void login() {
@@ -86,6 +87,24 @@ public class Protocol {
 				response.put("message", "2FA code is incorrect");
 			}
 		}
+	}
+
+	public void resendTwoFactor() {
+		String username = request.getString("username");
+
+		// Get user requesting 2FA email
+		accountTable.connect();
+		User user = accountTable.getRecord(username);
+		accountTable.disconnect();
+
+		if (user != null) {
+			// Generate code and send email
+			TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(user);
+			twoFactorAuthentication.generateCode();
+			twoFactorAuthentication.sendEmail();
+			response.put("response", "success");
+		}
+
 	}
 
 	public void setRequest(String request) {
