@@ -139,13 +139,8 @@ public class Protocol {
 			JSONObject requestObject = new JSONObject(request);
 			// Check if request type exists
 			String requestType = requestObject.getString("request");
-			if (requestResponse.containsKey(requestType)) {
-				// Request is valid
-				return true;
-			} else {
-				// Request is invalid
-				return false;
-			}
+			// Return if request has valid request type
+			return requestResponse.containsKey(requestType);
 		} catch (JSONException e) {
 			// Request is not a valid JSON object
 			return false;
