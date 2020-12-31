@@ -26,7 +26,7 @@ class ProtocolTest {
 	}
 
 	@Test
-	void testInvalidRequest() {
+	void testInvalidJSONRequest() {
 		JSONObject request = new JSONObject();
 		request.put("request","invalidrequest");
 		assertFalse(protocol.isRequestValid(request.toString()));
@@ -48,5 +48,20 @@ class ProtocolTest {
 	void testInvalidStringRequest() {
 		String request = "login,Dom,Password";
 		assertFalse(protocol.isRequestValid(request));
+	}
+
+	@Test
+	void testMissingAllRequiredJSONKeysRequest() {
+		JSONObject request = new JSONObject();
+		request.put("request","login");
+		assertFalse(protocol.isRequestValid(request.toString()));
+	}
+
+	@Test
+	void testMissingPartialRequiredJSONKeysRequest() {
+		JSONObject request = new JSONObject();
+		request.put("request","login");
+		request.put("username", "Dom");
+		assertFalse(protocol.isRequestValid(request.toString()));
 	}
 }
