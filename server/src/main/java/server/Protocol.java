@@ -11,13 +11,13 @@ public class Protocol {
 	JSONObject request;
 	JSONObject response = new JSONObject();
 	AccountTable accountTable = new AccountTable();
-	HashMap<String, Runnable> requestResponse = new HashMap<>();
+	HashMap<String, ResponseHandler> requestResponse = new HashMap<>();
 
 	public Protocol() {
-		requestResponse.put("login", this::login);
-		requestResponse.put("signup", this::signUp);
-		requestResponse.put("twofactor", this::twoFactor);
-		requestResponse.put("resendtwofactor", this::resendTwoFactor);
+		requestResponse.put("login", new ResponseHandler(this::login, "username", "password"));
+		requestResponse.put("signup", new ResponseHandler(this::signUp, "username", "email", "password"));
+		requestResponse.put("twofactor", new ResponseHandler(this::twoFactor, "username", "code"));
+		requestResponse.put("resendtwofactor", new ResponseHandler(this::resendTwoFactor, "username"));
 	}
 
 	public void login() {
@@ -137,10 +137,17 @@ public class Protocol {
 		try {
 			// Create JSON object
 			JSONObject requestObject = new JSONObject(request);
+
 			// Check if request type exists
 			String requestType = requestObject.getString("request");
-			// Return if request has valid request type
-			return requestResponse.containsKey(requestType);
+			if (!requestResponse.containsKey(requestType)) {
+				return false;
+			}
+
+			// Check if required keys for request are present
+			ResponseHandler responseHandler = requestResponse.get(requestType);
+			return responseHandler.requestHasRequiredKeys(requestObject);
+
 		} catch (JSONException e) {
 			// Request is not a valid JSON object
 			return false;
@@ -166,9 +173,11 @@ public class Protocol {
 
 		// Handle response to request
 		String requestType = request.getString("request");
-		Runnable responseMethod = requestResponse.get(requestType);
-		if (responseMethod != null)
+		ResponseHandler responseHandler = requestResponse.get(requestType);
+		if (responseHandler != null) {
+			Runnable responseMethod = responseHandler.getMethod();
 			responseMethod.run();
+		}
 		return response.toString();
 	}
 
