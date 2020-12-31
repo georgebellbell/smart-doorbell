@@ -3,6 +3,7 @@ package server;
 import authentication.TwoFactorAuthentication;
 import database.AccountTable;
 import database.User;
+import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.HashMap;
 
@@ -116,29 +117,65 @@ public class Protocol {
 
 	}
 
+	/**
+	 * Sets request to be handles
+	 * @param request - Request received by server
+	 */
 	public void setRequest(String request) {
+		if (!isRequestValid(request)) {
+			throw new IllegalArgumentException("Request is not valid");
+		}
 		this.request = new JSONObject(request);
 	}
 
-	public String processInput(){
-		if (request != null) {
-			boolean illegalChars = checkIllegalChars(request.toString().toLowerCase());
-			if (illegalChars) {
-				response.put("response", "fail");
-				response.put("message", "illegal expression");
-				return response.toString();
-			}
+	/**
+	 * Checks if the request is valid
+	 * @param request - Request to be checked
+	 * @return if request is valid
+	 */
+	public boolean isRequestValid(String request) {
+		try {
+			// Create JSON object
+			JSONObject requestObject = new JSONObject(request);
+			// Check if request type exists
+			String requestType = requestObject.getString("request");
+			// Return if request has valid request type
+			return requestResponse.containsKey(requestType);
+		} catch (JSONException e) {
+			// Request is not a valid JSON object
+			return false;
 		}
-		Runnable responseMethod = requestResponse.get(request.getString("request"));
+	}
+
+	/**
+	 * Processes the input request
+	 * @return response
+	 */
+	public String processInput(){
+		if (request == null) {
+			throw new IllegalStateException("Request must be set before processing");
+		}
+
+		// Check for illegal characters
+		boolean illegalChars = checkIllegalChars(request.toString().toLowerCase());
+		if (illegalChars) {
+			response.put("response", "fail");
+			response.put("message", "illegal expression");
+			return response.toString();
+		}
+
+		// Handle response to request
+		String requestType = request.getString("request");
+		Runnable responseMethod = requestResponse.get(requestType);
 		if (responseMethod != null)
 			responseMethod.run();
-
 		return response.toString();
 	}
 
 	/**
+	 * Checks if request contains illegal characters
 	 * @param request - Request received from the client
-	 * @return true if illegal char found
+	 * @return if illegal character(s) are found
 	 */
 	public boolean checkIllegalChars(String request) {
 		boolean illegalCharFound = false;
@@ -149,8 +186,10 @@ public class Protocol {
 		};
 
 		for (String badChar : badChars) {
-			if (request.contains(badChar))
+			if (request.contains(badChar)) {
 				illegalCharFound = true;
+				break;
+			}
 		}
 
 		return illegalCharFound;
