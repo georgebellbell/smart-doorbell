@@ -24,4 +24,29 @@ class ProtocolTest {
 
 		assertTrue(protocol.isRequestValid(request.toString()));
 	}
+
+	@Test
+	void testInvalidRequest() {
+		JSONObject request = new JSONObject();
+		request.put("request","invalidrequest");
+		assertFalse(protocol.isRequestValid(request.toString()));
+	}
+
+	@Test
+	void testEmptyJSONRequest() {
+		JSONObject request = new JSONObject();
+		assertFalse(protocol.isRequestValid(request.toString()));
+	}
+
+	@Test
+	void testEmptyStringRequest() {
+		String request = "";
+		assertFalse(protocol.isRequestValid(request));
+	}
+
+	@Test
+	void testInvalidStringRequest() {
+		String request = "login,Dom,Password";
+		assertFalse(protocol.isRequestValid(request));
+	}
 }
