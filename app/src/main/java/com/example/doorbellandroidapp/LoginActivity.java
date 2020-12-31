@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
 	void loginSuccess() {
 		runOnUiThread(new Runnable(){
 			public void run() {
-				preferences.edit().putString("currentUser",etUsername.getText().toString()).apply();
+				preferences.edit().putString("TwoFactorUser",etUsername.getText().toString()).apply();
 				Toast.makeText(getApplicationContext(), "Login Successful",
 						Toast.LENGTH_SHORT).show();
 
