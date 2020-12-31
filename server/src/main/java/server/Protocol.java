@@ -3,6 +3,7 @@ package server;
 import authentication.TwoFactorAuthentication;
 import database.AccountTable;
 import database.User;
+import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.HashMap;
 
@@ -120,8 +121,28 @@ public class Protocol {
 		this.request = new JSONObject(request);
 	}
 
+	/**
+	 * Checks if the request is valid
+	 * @param request - Request to be checked
+	 * @return if request is valid
+	 */
 	public boolean isRequestValid(String request) {
-		return false;
+		try {
+			// Create JSON object
+			JSONObject requestObject = new JSONObject(request);
+			// Check if request type exists
+			String requestType = requestObject.getString("request");
+			if (requestResponse.containsKey(requestType)) {
+				// Request is valid
+				return true;
+			} else {
+				// Request is invalid
+				return false;
+			}
+		} catch (JSONException e) {
+			// Request is not a valid JSON object
+			return false;
+		}
 	}
 
 	public String processInput(){
