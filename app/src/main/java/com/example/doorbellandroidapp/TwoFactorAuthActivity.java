@@ -24,7 +24,7 @@ public class TwoFactorAuthActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		preferences = PreferenceManager.getDefaultSharedPreferences(TwoFactorAuthActivity.this);
-		currentUser = preferences.getString("TwoFactorUser","");
+		currentUser = preferences.getString("twoFactorUser","");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_two_factor_auth);
 
