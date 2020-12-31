@@ -120,6 +120,10 @@ public class Protocol {
 		this.request = new JSONObject(request);
 	}
 
+	public boolean isRequestValid(String request) {
+		return false;
+	}
+
 	public String processInput(){
 		if (request != null) {
 			boolean illegalChars = checkIllegalChars(request.toString().toLowerCase());
