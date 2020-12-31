@@ -173,8 +173,9 @@ public class Protocol {
 	}
 
 	/**
+	 * Checks if request contains illegal characters
 	 * @param request - Request received from the client
-	 * @return true if illegal char found
+	 * @return if illegal character(s) are found
 	 */
 	public boolean checkIllegalChars(String request) {
 		boolean illegalCharFound = false;
@@ -185,8 +186,10 @@ public class Protocol {
 		};
 
 		for (String badChar : badChars) {
-			if (request.contains(badChar))
+			if (request.contains(badChar)) {
 				illegalCharFound = true;
+				break;
+			}
 		}
 
 		return illegalCharFound;
