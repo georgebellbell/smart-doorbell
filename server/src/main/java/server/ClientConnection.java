@@ -27,7 +27,7 @@ public class ClientConnection extends Thread {
 
 			String request, response;
 
-			// Initiate protocol with client
+			// Initiate protocol
 			Protocol protocol = new Protocol();
 
 			// Communicate with client
