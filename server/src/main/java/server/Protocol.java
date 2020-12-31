@@ -147,19 +147,28 @@ public class Protocol {
 		}
 	}
 
+	/**
+	 * Processes the input request
+	 * @return response
+	 */
 	public String processInput(){
-		if (request != null) {
-			boolean illegalChars = checkIllegalChars(request.toString().toLowerCase());
-			if (illegalChars) {
-				response.put("response", "fail");
-				response.put("message", "illegal expression");
-				return response.toString();
-			}
+		if (request == null) {
+			throw new IllegalStateException("Request must be set before processing");
 		}
-		Runnable responseMethod = requestResponse.get(request.getString("request"));
+
+		// Check for illegal characters
+		boolean illegalChars = checkIllegalChars(request.toString().toLowerCase());
+		if (illegalChars) {
+			response.put("response", "fail");
+			response.put("message", "illegal expression");
+			return response.toString();
+		}
+
+		// Handle response to request
+		String requestType = request.getString("request");
+		Runnable responseMethod = requestResponse.get(requestType);
 		if (responseMethod != null)
 			responseMethod.run();
-
 		return response.toString();
 	}
 
