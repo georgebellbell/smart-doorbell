@@ -103,4 +103,10 @@ class TwoFactorAuthenticationTest {
 		assertFalse(twoFactor.checkGeneratedCode(code));
 	}
 
+	@Test
+	void testValidCodeExists() {
+		twoFactor.generateCode();
+		assertTrue(twoFactor.hasValidCode());
+	}
+
 }
