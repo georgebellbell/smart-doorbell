@@ -37,23 +37,16 @@ public class TwoFactorAuthActivity extends AppCompatActivity {
 		btnSubmitDigits.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//check if digits are correct
+				// Check if code is correct
 				String digits = etInputDigits.getText().toString();
-				/*if (digits.equals("111111")){
-					Intent intent = new Intent(TwoFactorAuthActivity.this, MainActivity.class);
-					startActivity(intent);
-				}
-				else{
-					tv2FAResponse.setText("Incorrect");
-				}*/
-				factorCode(digits);
+				checkCode(digits);
 			}
 		});
 
 		btnReturn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//back to login
+				// Back to login
 				preferences.edit().clear().apply();
 				Intent intent = new Intent(TwoFactorAuthActivity.this, LoginActivity.class);
 				startActivity(intent);
@@ -98,7 +91,11 @@ public class TwoFactorAuthActivity extends AppCompatActivity {
 	}
 
 
-	void factorCode(String code){
+	/**
+	 * Sends user's inputted code to be checked on server
+	 * @param code - Inputted code by user
+	 */
+	void checkCode(String code){
 		// Client to handle response from server
 		Client client = new Client() {
 			@Override
