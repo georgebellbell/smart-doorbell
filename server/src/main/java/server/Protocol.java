@@ -117,7 +117,14 @@ public class Protocol {
 
 	}
 
+	/**
+	 * Sets request to be handles
+	 * @param request - Request received by server
+	 */
 	public void setRequest(String request) {
+		if (!isRequestValid(request)) {
+			throw new IllegalArgumentException("Request is not valid");
+		}
 		this.request = new JSONObject(request);
 	}
 
