@@ -32,15 +32,21 @@ public class LoginInstrumentedTest {
 	@Rule
 	public ActivityScenarioRule<LoginActivity> loginActivityRule = new ActivityScenarioRule<>(LoginActivity.class);
 
+	/**
+	 * Checks to see if user is able to log in correctly and be sent to Two Factor Authentication Activity
+	 */
 	@Test
 	public void loginSuccessful() throws InterruptedException {
-		onView(withId(R.id.etUsername)).perform(typeText("Dom"), closeSoftKeyboard());
+		onView(withId(R.id.etUsername)).perform(typeText("george"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("password"), closeSoftKeyboard());
 		onView(withId(R.id.btnLogin)).perform(click());
 		Thread.sleep(2000);
-		onView(withId(R.id.tvHome)).check(matches(isDisplayed()));
+		onView(withId(R.id.tv2FA)).check(matches(isDisplayed()));
 	}
 
+	/**
+	 * Checks to see if user loses an attempt if login details are incorrect
+	 */
 	@Test
 	public void loginFailedWithAttemptsRemaining() throws InterruptedException {
 		onView(withId(R.id.etUsername)).perform(typeText("Quick"), closeSoftKeyboard());
@@ -50,6 +56,9 @@ public class LoginInstrumentedTest {
 		onView(withText("No of attempts remaining: 4")).check(matches(isDisplayed()));
 	}
 
+	/**
+	 * Checks to see if login attempts are prevented after 5 wrong attempts
+	 */
 	@Test
 	public void loginFailedWithNoAttemptsRemaining() throws InterruptedException {
 		onView(withId(R.id.etUsername)).perform(typeText("Quick"), closeSoftKeyboard());
@@ -61,9 +70,4 @@ public class LoginInstrumentedTest {
 		}
 		onView(withId(R.id.btnLogin)).check(matches(not(isEnabled())));
 	}
-
-
-
-
-
 }
