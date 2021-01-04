@@ -91,6 +91,7 @@ public class TwoFactorAuthActivity extends AppCompatActivity {
 	 * Notifies user of unsuccessful 2FA code entered
 	 */
 	void twoFactorFail(final String errorMsg) {
+		tv2FAResponse.setText(errorMsg);
 		runOnUiThread(new Runnable(){
 			public void run() {
 				Toast.makeText(getApplicationContext(), errorMsg,

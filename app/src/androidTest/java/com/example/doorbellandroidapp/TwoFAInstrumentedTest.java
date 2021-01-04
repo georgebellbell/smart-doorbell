@@ -15,14 +15,10 @@ import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 
-import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
+
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -35,24 +31,34 @@ public class TwoFAInstrumentedTest {
 	@Rule
 	public ActivityScenarioRule<TwoFactorAuthActivity> twoFactorAuthActivity = new ActivityScenarioRule<>(TwoFactorAuthActivity.class);
 
+	/**
+	 * Test to for an invalid code input with characters that aren't integers
+	 */
 	@Test
-	public void codeContainsNonIntegerValue() throws InterruptedException {
-
+	public void codeContainsNonIntegerValue() {
 		onView(withId(R.id.etInputDigits)).perform(typeText("george"), closeSoftKeyboard());
 		onView(withId(R.id.btnSubmitDigits)).perform(click());
-		//Thread.sleep(2000);
-		//onView(withText("Make sure your code only uses numbers")).inRoot(new ToastMatcher()).check(matches(isDisplayed()));
-		onView(withText("Make sure your code only uses numbers")).inRoot(new ToastMatcher())
-				.check(matches(isDisplayed()));
+		onView(withText("Make sure your code only uses numbers")).check(matches(isDisplayed()));
 	}
 
+	/**
+	 * Test to for an invalid code input with a length less than 6
+	 */
 	@Test
-	public void codeIsNotSixDigits() throws InterruptedException {
-
+	public void codeIsLessThanSixDigits() {
 		onView(withId(R.id.etInputDigits)).perform(typeText("1234"), closeSoftKeyboard());
 		onView(withId(R.id.btnSubmitDigits)).perform(click());
-		//Thread.sleep(2000);
-		onView(withText("Your code needs to be six digits long")).inRoot(new ToastMatcher()).check(matches(isDisplayed()));
+		onView(withText("Your code needs to be six digits long")).check(matches(isDisplayed()));
+	}
+
+	/**
+	 * Test to for an invalid code input with a length greater than 6
+	 */
+	@Test
+	public void codeIsMoreThanSixDigits() {
+		onView(withId(R.id.etInputDigits)).perform(typeText("1234567"), closeSoftKeyboard());
+		onView(withId(R.id.btnSubmitDigits)).perform(click());
+		onView(withText("Your code needs to be six digits long")).check(matches(isDisplayed()));
 	}
 
 	/**
@@ -63,6 +69,5 @@ public class TwoFAInstrumentedTest {
 		onView(withId(R.id.btnReturn)).perform((click()));
 		onView(withId(R.id.tvSignIn)).check(matches(isDisplayed()));
 	}
-
 
 }
