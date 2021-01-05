@@ -2,6 +2,7 @@ from gpiozero import *
 from time import sleep
 from picamera import PiCamera  # This library installed on the raspberry pi by default
 import os
+import socket
 
 # Setup file path for image location
 cwd = os.getcwd()
@@ -15,6 +16,13 @@ led2.on()
 
 button2 = Button(3)
 
+# Socket
+host = "192.168.1.123"
+port = 4444
+
+imageSize = str(123456789)  # placeholder
+PiId = "unique ID"  # placeholder
+
 
 # Take picture
 def capture():
@@ -24,14 +32,22 @@ def capture():
 
 
 def sendImage():
-	image = imageToBytes(imagePath)
+	imageData = imageToBytes()
+	output = '{"request":"image","id":"' + PiId + '","size":"' + imageSize + '","data":"' + imageData + '"}\r\n'
+	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+		s.connect((host, port))
+		s.sendall(bytes(output, 'utf-8'))
+		data = s.recv(1024)
+
+	print("Recived", repr(data))
+	return
 
 
-def imageToBytes(location):
+def imageToBytes():
 	with open("photo.jpg", "rb") as image:
 		b = image.read()
-		print(b)
-    
+
+	return b
 
 
 # Main loop
