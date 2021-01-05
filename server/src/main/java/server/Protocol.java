@@ -1,34 +1,53 @@
 package server;
 
+import authentication.TwoFactorAuthentication;
 import database.AccountTable;
+import database.Data;
+import database.DataTable;
 import database.User;
+import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.HashMap;
 
 public class Protocol {
 	JSONObject request;
 	JSONObject response = new JSONObject();
 	AccountTable accountTable = new AccountTable();
-	HashMap<String, Runnable> requestResponse = new HashMap<>();
+	HashMap<String, ResponseHandler> requestResponse = new HashMap<>();
 
 	public Protocol() {
-		requestResponse.put("login", this::login);
-		requestResponse.put("signup", this::signUp);
+		requestResponse.put("login", new ResponseHandler(this::login, "username", "password"));
+		requestResponse.put("signup", new ResponseHandler(this::signUp, "username", "email", "password"));
+		requestResponse.put("twofactor", new ResponseHandler(this::twoFactor, "username", "code"));
+		requestResponse.put("resendtwofactor", new ResponseHandler(this::resendTwoFactor, "username"));
 	}
 
 	public void login() {
+		String username = request.getString("username");
+		String password = request.getString("password");
+
+		// Connect to database
 		accountTable.connect();
-		boolean validLogin = accountTable.getLogin(request.getString("username"), request.getString("password"));
+		boolean validLogin = accountTable.getLogin(username, password);
+		User currentUser = accountTable.getRecord(username);
 		accountTable.disconnect();
+
 		if (validLogin) {
+			// Successful login response
 			response.put("response", "success");
 			response.put("message", "Successfully logged in!");
+
+			// Create and send 2FA code
+			TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(currentUser);
+			twoFactorAuthentication.generateCode();
+			twoFactorAuthentication.sendEmail();
 		}
 		else {
+			// Failed login response
 			response.put("response", "fail");
 			response.put("message", "invalid login");
 		}
+
 	}
 
 	public void signUp() {
@@ -48,29 +67,126 @@ public class Protocol {
 		accountTable.disconnect();
 	}
 
+	public void twoFactor() {
+		String username = request.getString("username");
+		String code = request.getString("code");
+
+		// Get user trying to enter 2FA code
+		accountTable.connect();
+		User user = accountTable.getRecord(username);
+		accountTable.disconnect();
+
+		if (user != null) {
+			TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(user);
+
+			// Check code has not expired
+			boolean validCode = twoFactorAuthentication.hasValidCode();
+			if (!validCode) {
+				response.put("response", "fail");
+				response.put("message", "2FA code has expired, request a new one");
+				return;
+			}
+
+			// Check code matches
+			boolean codeMatched = twoFactorAuthentication.checkGeneratedCode(code);
+			if (codeMatched) {
+				// Correct 2FA code entered
+				response.put("response", "success");
+				response.put("message", "2FA code is correct");
+			} else {
+				// Incorrect 2FA code entered
+				response.put("response", "fail");
+				response.put("message", "2FA code is incorrect");
+			}
+		}
+	}
+
+	public void resendTwoFactor() {
+		String username = request.getString("username");
+
+		// Get user requesting 2FA email
+		accountTable.connect();
+		User user = accountTable.getRecord(username);
+		accountTable.disconnect();
+
+		if (user != null) {
+			// Generate code and send email
+			TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(user);
+			twoFactorAuthentication.generateCode();
+			twoFactorAuthentication.sendEmail();
+			response.put("response", "success");
+		}
+
+	}
+
+	/**
+	 * Sets request to be handles
+	 * @param request - Request received by server
+	 */
 	public void setRequest(String request) {
+		if (!isRequestValid(request)) {
+			throw new IllegalArgumentException("Request is not valid");
+		}
 		this.request = new JSONObject(request);
 	}
 
-	public String processInput(){
-		if (request != null) {
-			boolean illegalChars = checkIllegalChars(request.toString().toLowerCase());
-			if (illegalChars) {
-				response.put("response", "fail");
-				response.put("message", "illegal expression");
-				return response.toString();
-			}
-		}
-		Runnable responseMethod = requestResponse.get(request.getString("request"));
-		if (responseMethod != null)
-			responseMethod.run();
+	/**
+	 * Checks if the request is valid
+	 * @param request - Request to be checked
+	 * @return if request is valid
+	 */
+	public boolean isRequestValid(String request) {
+		try {
+			// Create JSON object
+			JSONObject requestObject = new JSONObject(request);
 
+			// Check if request type exists
+			String requestType = requestObject.getString("request");
+			if (!requestResponse.containsKey(requestType)) {
+				return false;
+			}
+
+			// Check if required keys for request are present
+			ResponseHandler responseHandler = requestResponse.get(requestType);
+			return responseHandler.requestHasRequiredKeys(requestObject);
+
+		} catch (JSONException e) {
+			// Request is not a valid JSON object
+			return false;
+		}
+	}
+
+	/**
+	 * Processes the input request
+	 * @return response
+	 */
+	public String processInput(){
+		if (request == null) {
+			throw new IllegalStateException("Request must be set before processing");
+		}
+
+		// Check for illegal characters
+		boolean illegalChars = checkIllegalChars(request.toString().toLowerCase());
+		if (illegalChars) {
+			response.put("response", "fail");
+			response.put("message", "illegal expression");
+			return response.toString();
+		}
+
+		// Handle response to request
+		String requestType = request.getString("request");
+		ResponseHandler responseHandler = requestResponse.get(requestType);
+		if (responseHandler != null) {
+			Runnable responseMethod = responseHandler.getMethod();
+			responseMethod.run();
+		}
 		return response.toString();
 	}
 
 	/**
+	 * Checks if request contains illegal characters
 	 * @param request - Request received from the client
-	 * @return true if illegal char found
+	 * @return if illegal character(s) are found
 	 */
 	public boolean checkIllegalChars(String request) {
 		boolean illegalCharFound = false;
@@ -81,8 +197,10 @@ public class Protocol {
 		};
 
 		for (String badChar : badChars) {
-			if (request.contains(badChar))
+			if (request.contains(badChar)) {
 				illegalCharFound = true;
+				break;
+			}
 		}
 
 		return illegalCharFound;
