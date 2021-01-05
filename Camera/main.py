@@ -3,6 +3,7 @@ from time import sleep
 from picamera import PiCamera  # This library installed on the raspberry pi by default
 import os
 import socket
+import base64
 
 # Setup file path for image location
 cwd = os.getcwd()
@@ -45,7 +46,7 @@ def sendImage():
 
 def getImage():
 	with open("photo.jpg", "rb") as image:
-		imageData = image.read().decode("utf-8")
+		imageData = base64.b64encode(image.read())
 
 	return imageData
 
