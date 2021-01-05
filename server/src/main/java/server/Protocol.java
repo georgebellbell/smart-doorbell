@@ -7,12 +7,16 @@ import database.DataTable;
 import database.User;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.sql.Blob;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Protocol {
 	JSONObject request;
 	JSONObject response = new JSONObject();
 	AccountTable accountTable = new AccountTable();
+	DataTable dataTable = new DataTable();
 	HashMap<String, ResponseHandler> requestResponse = new HashMap<>();
 
 	public Protocol() {
@@ -20,6 +24,26 @@ public class Protocol {
 		requestResponse.put("signup", new ResponseHandler(this::signUp, "username", "email", "password"));
 		requestResponse.put("twofactor", new ResponseHandler(this::twoFactor, "username", "code"));
 		requestResponse.put("resendtwofactor", new ResponseHandler(this::resendTwoFactor, "username"));
+		requestResponse.put("image", new ResponseHandler(this::image, "id", "size", "data"));
+	}
+
+	public void image() {
+		dataTable.connect();
+		dataTable.addRecord(new Data(request.getString("id"), (Blob) request.get("data"), "Jeff"));
+		dataTable.disconnect();
+	}
+
+	public void faces() {
+		dataTable.connect();
+		ArrayList<Data> allImages = dataTable.getAllImages(request.getString("username"));
+		if (allImages != null) {
+			response.put("response", "success");
+			response.put("images", allImages);
+		}
+		else {
+			response.put("response", "fail");
+			response.put("message", "failure to retrieve all images");
+		}
 	}
 
 	public void login() {
