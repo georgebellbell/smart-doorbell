@@ -32,7 +32,7 @@ def capture():
 
 
 def sendImage():
-	imageData = imageToBytes()
+	imageData = getImage()
 	output = '{"request":"image","id":"' + PiId + '","size":"' + imageSize + '","data":"' + imageData + '"}\r\n'
 	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 		s.connect((host, port))
@@ -43,11 +43,11 @@ def sendImage():
 	return
 
 
-def imageToBytes():
+def getImage():
 	with open("photo.jpg", "rb") as image:
-		b = image.read()
+		imageData = image.read().decode("utf-8")
 
-	return b
+	return imageData
 
 
 # Main loop
