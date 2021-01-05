@@ -27,15 +27,24 @@ public class ClientConnection extends Thread {
 
 			String request, response;
 
-			// Initiate protocol with client
+			// Initiate protocol
 			Protocol protocol = new Protocol();
 
 			// Communicate with client
 			while ((request = in.readLine()) != null) {
-				System.out.println(request);
-				protocol.setRequest(request);
-				response = protocol.processInput();
-				out.println(response);
+				System.out.println("Request: " + request);
+				try {
+					// Handle request
+					protocol.setRequest(request);
+					response = protocol.processInput();
+					out.println(response);
+				} catch (IllegalArgumentException e) {
+					// Invalid request
+					System.out.println("Connection closed: " + e.getMessage());
+					clientSocket.close();
+					break;
+				}
+
 			}
 
 		} catch (IOException e) {
