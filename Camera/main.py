@@ -46,7 +46,7 @@ def sendImage():
 
 def getImage():
 	with open("photo.jpg", "rb") as image:
-		imageData = str(base64.encodebytes(image.read()))
+		imageData = str(base64.encodebytes(image.read()))[2:-3]
 
 	return imageData
 
