@@ -77,8 +77,8 @@ public class DataTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param deviceId - what will
-	 * @return
+	 * @param deviceId - the id of the device which contains all saved images
+	 * @return list of all images with as data objects
 	 */
 	public ArrayList<Data> getAllImages(String deviceId) {
 		ArrayList<Data> allImages = new ArrayList<>();
