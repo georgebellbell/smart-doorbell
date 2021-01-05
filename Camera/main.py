@@ -58,10 +58,7 @@ while True:
 		sleep(0.5)
 		capture()
 		sleep(0.5)
-		try:
-			sendImage()
-		except Exception as e:
-			print(e)
+		sendImage()
 
 	else:
 		led1.off()
