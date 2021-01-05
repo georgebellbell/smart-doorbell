@@ -18,7 +18,7 @@ led2.on()
 button2 = Button(3)
 
 # Socket
-host = "192.168.1.123"
+host = "192.168.1.122"
 port = 4444
 
 imageSize = str(123456789)  # placeholder
