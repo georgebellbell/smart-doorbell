@@ -16,7 +16,7 @@ public class DataTable extends DatabaseConnection {
 	 */
 	public boolean addRecord(Data data) {
 		try {
-			String query = "INSERT INTO data (Username, Image, Person, Created_at)"
+			String query = "INSERT INTO data (Device_id, Image, Person, Created_at)"
 					+ " VALUES (?, ?, ?, ?)";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, data.getDeviceID());
@@ -39,13 +39,13 @@ public class DataTable extends DatabaseConnection {
 	public Data getRecord(int id) {
 		Data data = null;
 		try {
-			String query = "SELECT Username, Image, Person, Created_at FROM data WHERE Id=?";
+			String query = "SELECT Device_id, Image, Person, Created_at FROM data WHERE Id=?";
 			statement = conn.prepareStatement(query);
 			statement.setInt(1, id);
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				data = new Data(
-						resultSet.getString("Username"),
+						resultSet.getString("Device_id"),
 						resultSet.getBlob("Image"),
 						resultSet.getString("Person"),
 						resultSet.getString("Created_at")
@@ -83,7 +83,7 @@ public class DataTable extends DatabaseConnection {
 	public ArrayList<Data> getAllImages(String deviceId) {
 		ArrayList<Data> allImages = new ArrayList<>();
 		try {
-			String query = "SELECT ID, Image, Person, Created_at FROM data WHERE Device_id=?";
+			String query = "SELECT Device_id, Image, Person, Created_at FROM data WHERE Device_id=?";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, deviceId);
 			ResultSet resultSet = statement.executeQuery();

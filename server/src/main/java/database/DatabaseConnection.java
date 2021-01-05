@@ -12,7 +12,7 @@ public class DatabaseConnection {
 	private final String HOST = "linux.cs.ncl.ac.uk";
 	private final String RHOST = "cs-db.ncl.ac.uk";
 	private final int PORT = 3306;
-	private final String USER = "b9021925";
+	private final String USER = "b9015109";
 	private final String PASSWORD = "lol";
 	int assigned_port = -1;
 
@@ -71,5 +71,9 @@ public class DatabaseConnection {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	public Connection getConn() {
+		return conn;
 	}
 }
