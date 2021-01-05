@@ -1,6 +1,7 @@
 package server;
 
 import authentication.TwoFactorAuthentication;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import database.AccountTable;
 import database.Data;
 import database.DataTable;
@@ -8,7 +9,11 @@ import database.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialClob;
 import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -28,9 +33,17 @@ public class Protocol {
 	}
 
 	public void image() {
-		dataTable.connect();
-		dataTable.addRecord(new Data(request.getString("id"), (Blob) request.get("data"), "Jeff"));
-		dataTable.disconnect();
+		try {
+			dataTable.connect();
+			Connection conn = dataTable.getConn();
+			byte[] Image = Base64.decode(request.getString("data"));
+			Blob blobImage = conn.createBlob();
+			blobImage.setBytes(1, Image);
+			dataTable.addRecord(new Data(request.getString("id"), blobImage, "Jeff"));
+			dataTable.disconnect();
+		} catch (Exception e){
+			System.out.println(e);
+		}
 	}
 
 	public void faces() {
@@ -190,12 +203,15 @@ public class Protocol {
 		}
 
 		// Check for illegal characters
-		boolean illegalChars = checkIllegalChars(request.toString().toLowerCase());
-		if (illegalChars) {
-			response.put("response", "fail");
-			response.put("message", "illegal expression");
-			return response.toString();
+		if (!request.getString("request").equals("image")) {
+			if (checkIllegalChars(request.toString().toLowerCase())) {
+				response.put("response", "fail");
+				response.put("message", "illegal expression");
+				return response.toString();
+			}
 		}
+
+
 
 		// Handle response to request
 		String requestType = request.getString("request");
