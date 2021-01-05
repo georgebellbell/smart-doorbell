@@ -35,4 +35,15 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.3.0'
 
+    //recyclerview
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
+
+    //glide
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+    //circle imageview
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+
 }
