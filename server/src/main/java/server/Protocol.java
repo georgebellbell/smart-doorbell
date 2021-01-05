@@ -2,6 +2,8 @@ package server;
 
 import authentication.TwoFactorAuthentication;
 import database.AccountTable;
+import database.Data;
+import database.DataTable;
 import database.User;
 import org.json.JSONException;
 import org.json.JSONObject;
