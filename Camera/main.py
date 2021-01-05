@@ -45,7 +45,7 @@ def sendImage():
 
 def getImage():
 	with open("photo.jpg", "rb") as image:
-		imageData = image.read().encode("utf-8")
+		imageData = str(image.read(), "utf-8")
 
 	return imageData
 
