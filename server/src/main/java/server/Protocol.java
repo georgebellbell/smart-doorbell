@@ -50,6 +50,7 @@ public class Protocol {
 	public void faces() {
 		dataTable.connect();
 		ArrayList<Data> allImages = dataTable.getAllImages(request.getString("username"));
+		dataTable.disconnect();
 		ArrayList<JSONObject> jsonImages = new ArrayList<>();
 		if (allImages != null) {
 			for (Data data: allImages) {
