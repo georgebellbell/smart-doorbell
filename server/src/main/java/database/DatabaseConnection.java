@@ -13,7 +13,7 @@ public class DatabaseConnection {
 	private final String RHOST = "cs-db.ncl.ac.uk";
 	private final int PORT = 3306;
 	private final String USER = "b9015109";
-	private final String PASSWORD = "Fgdcxaz9015109";
+	private final String PASSWORD = "lol";
 	int assigned_port = -1;
 
 	// Database connection info
