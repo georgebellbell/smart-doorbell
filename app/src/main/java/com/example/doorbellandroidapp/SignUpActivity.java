@@ -13,6 +13,9 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class SignUpActivity extends AppCompatActivity {
 	EditText etUsername, pwdPassword, etEmailAddress;
 	TextView tvInformation, tvSignUp;
@@ -30,7 +33,35 @@ public class SignUpActivity extends AppCompatActivity {
 				String inputEmail = etEmailAddress.getText().toString();
 				String inputPassword = pwdPassword.getText().toString();
 
-				signUp(inputUsername, inputEmail, inputPassword);
+				//Variables for input validation
+				boolean emailCheck = inputEmail.contains("@");
+				int passLength = inputPassword.length();
+				Pattern lowerCaseLetters = Pattern.compile("[^a-z]");
+				Pattern upperCaseLetters = Pattern.compile("[^A-Z]");
+				Pattern numbers = Pattern.compile("[^0-9]");
+				Matcher lowerCasePasswordMatcher = lowerCaseLetters.matcher(inputPassword);
+				Matcher upperCasePasswordMatcher = upperCaseLetters.matcher(inputPassword);
+				Matcher numbersPasswordMatcher = numbers.matcher(inputPassword);
+				boolean lowerCheck = lowerCasePasswordMatcher.find();
+				boolean upperCheck = upperCasePasswordMatcher.find();
+				boolean numberCheck = numbersPasswordMatcher.find();
+
+				/*Checking to see that the email contains at least an @ sign & that the password
+				 is at least 9 characters long and contains a number, a lower case letter and
+				 a upper case letter */
+				if(emailCheck || passLength > 8 || numberCheck || upperCheck || lowerCheck){
+					signUp(inputUsername, inputEmail, inputPassword);
+				}
+				else{
+					runOnUiThread(new Runnable(){
+						public void run() {
+							Toast.makeText(getApplicationContext(), "Invalid Email or Password, please try again",
+									Toast.LENGTH_SHORT).show();
+							tvInformation.setText("Registration Unsuccessful");
+						}
+					});
+				}
+
 			}
 		});
 	}
