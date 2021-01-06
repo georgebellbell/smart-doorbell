@@ -30,13 +30,14 @@ public class Protocol {
 		requestResponse.put("twofactor", new ResponseHandler(this::twoFactor, "username", "code"));
 		requestResponse.put("resendtwofactor", new ResponseHandler(this::resendTwoFactor, "username"));
 		requestResponse.put("image", new ResponseHandler(this::image, "id", "size", "data"));
+		requestResponse.put("faces", new ResponseHandler(this::faces, "username"));
 	}
 
 	public void image() {
 		try {
 			dataTable.connect();
 			Connection conn = dataTable.getConn();
-			byte[] Image = Base64.decode(request.getString("data").getBytes());
+			byte[] Image = java.util.Base64.getDecoder().decode(request.getString("data").getBytes());
 			Blob blobImage = conn.createBlob();
 			blobImage.setBytes(1, Image);
 			dataTable.addRecord(new Data(request.getString("id"), blobImage, "Jeff"));
@@ -49,9 +50,26 @@ public class Protocol {
 	public void faces() {
 		dataTable.connect();
 		ArrayList<Data> allImages = dataTable.getAllImages(request.getString("username"));
+		ArrayList<JSONObject> jsonImages = new ArrayList<>();
 		if (allImages != null) {
+			for (Data data: allImages) {
+				JSONObject jsonData = new JSONObject();
+				Blob blob = data.getImage();
+				byte[] image = null;
+				String encodedImage = null;
+				try {
+					image = blob.getBytes(1, (int) blob.length());
+					encodedImage = java.util.Base64.getEncoder().encodeToString(image);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				jsonData.put("image", encodedImage);
+				jsonData.put("person", data.getPersonName());
+				jsonData.put("created", data.getCreatedAt());
+				jsonImages.add(jsonData);
+			}
 			response.put("response", "success");
-			response.put("images", allImages);
+			response.put("images", jsonImages);
 		}
 		else {
 			response.put("response", "fail");
