@@ -12,7 +12,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.MenuItem;
 
@@ -28,8 +30,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	private Fragment fragment;
 	private FragmentManager fm;
 
+	private SharedPreferences preferences;
+	private String currentUser;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		preferences= PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+		currentUser= preferences.getString("currentUser",null);
+		if (currentUser==null){
+			Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+			startActivity(intent);
+			finish();
+		}
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
@@ -86,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		// Handle navigation view item clicks here.
 		int id = menuItem.getItemId();
 		FragmentTransaction t = fm.beginTransaction();
+		Intent intent;
 
 		switch (id){
 			case R.id.nav_home:
@@ -99,11 +112,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 			case R.id.nav_faces:
 
-				fragment = new FacesFragment();
-				t.replace(R.id.content_frame, fragment);
-				t.commit();
-
-				navigationView.setCheckedItem(id);
+				intent = new Intent(MainActivity.this, FacesActivity.class);
+				startActivity(intent);
 				break;
 
 			case R.id.nav_settings:
@@ -116,8 +126,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				break;
 
 			case R.id.nav_logout:
-
-				Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+				preferences.edit().clear().apply();
+				intent = new Intent(MainActivity.this, LoginActivity.class);
 				startActivity(intent);
 
 		}

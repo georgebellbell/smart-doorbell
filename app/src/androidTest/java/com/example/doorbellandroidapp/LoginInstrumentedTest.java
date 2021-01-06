@@ -1,7 +1,5 @@
 package com.example.doorbellandroidapp;
 
-import androidx.test.espresso.contrib.DrawerActions;
-import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -34,36 +32,42 @@ public class LoginInstrumentedTest {
 	@Rule
 	public ActivityScenarioRule<LoginActivity> loginActivityRule = new ActivityScenarioRule<>(LoginActivity.class);
 
+	/**
+	 * Checks to see if user is able to log in correctly and be sent to Two Factor Authentication Activity
+	 */
 	@Test
-	public void loginSuccessful(){
-
-		onView(withId(R.id.etUsername)).perform(typeText("Dom"), closeSoftKeyboard());
+	public void loginSuccessful() throws InterruptedException {
+		onView(withId(R.id.etUsername)).perform(typeText("george"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("password"), closeSoftKeyboard());
 		onView(withId(R.id.btnLogin)).perform(click());
-		onView(withId(R.id.tvHome)).check(matches(isDisplayed()));
+		Thread.sleep(2000);
+		onView(withId(R.id.tv2FA)).check(matches(isDisplayed()));
 	}
 
+	/**
+	 * Checks to see if user loses an attempt if login details are incorrect
+	 */
 	@Test
-	public void loginFailedWithAttemptsRemaining(){
+	public void loginFailedWithAttemptsRemaining() throws InterruptedException {
 		onView(withId(R.id.etUsername)).perform(typeText("Quick"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("Doorbell"), closeSoftKeyboard());
 		onView(withId(R.id.btnLogin)).perform(click());
+		Thread.sleep(2000);
 		onView(withText("No of attempts remaining: 4")).check(matches(isDisplayed()));
 	}
 
+	/**
+	 * Checks to see if login attempts are prevented after 5 wrong attempts
+	 */
 	@Test
-	public void loginFailedWithNoAttemptsRemaining(){
+	public void loginFailedWithNoAttemptsRemaining() throws InterruptedException {
 		onView(withId(R.id.etUsername)).perform(typeText("Quick"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("Doorbell"), closeSoftKeyboard());
 		for (int i = 0; i < 5; i++) {
 			onView(withId(R.id.btnLogin)).perform(click());
+			Thread.sleep(2000);
 			onView(withText("No of attempts remaining: "+ (4-i))).check(matches(isDisplayed()));
 		}
 		onView(withId(R.id.btnLogin)).check(matches(not(isEnabled())));
 	}
-
-
-
-
-
 }
