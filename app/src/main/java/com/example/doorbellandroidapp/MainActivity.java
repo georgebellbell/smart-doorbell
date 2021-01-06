@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	protected void onCreate(Bundle savedInstanceState) {
 		preferences= PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 		currentUser= preferences.getString("currentUser",null);
-		if (currentUser==null){
+		if (currentUser!=null){
 			Intent intent = new Intent(MainActivity.this, LoginActivity.class);
 			startActivity(intent);
 			finish();
@@ -80,14 +80,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-		switch (item.getItemId()){
-			case android.R.id.home:
-				if(drawer.isOpen()){
-					drawer.closeDrawers();
-				} else {
-					drawer.openDrawer(Gravity.LEFT);
-				}
-				break;
+		if (item.getItemId() == android.R.id.home) {
+			if (drawer.isOpen()) {
+				drawer.closeDrawers();
+			} else {
+				drawer.openDrawer(Gravity.LEFT);
+			}
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -112,8 +110,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 			case R.id.nav_faces:
 
-				intent = new Intent(MainActivity.this, FacesActivity.class);
-				startActivity(intent);
+				fragment = new FacesFragment();
+				t.replace(R.id.content_frame, fragment);
+				t.commit();
+
+				navigationView.setCheckedItem(id);
 				break;
 
 			case R.id.nav_settings:

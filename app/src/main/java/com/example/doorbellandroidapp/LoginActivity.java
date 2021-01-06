@@ -25,9 +25,6 @@ public class LoginActivity extends AppCompatActivity {
 	Integer attempts = 5;
 	Boolean isValid;
 	SharedPreferences preferences;
-	private Fragment fragment;
-	private FragmentManager fm;
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
