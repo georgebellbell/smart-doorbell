@@ -30,6 +30,7 @@ public class Protocol {
 		requestResponse.put("twofactor", new ResponseHandler(this::twoFactor, "username", "code"));
 		requestResponse.put("resendtwofactor", new ResponseHandler(this::resendTwoFactor, "username"));
 		requestResponse.put("image", new ResponseHandler(this::image, "id", "size", "data"));
+		requestResponse.put("faces", new ResponseHandler(this::faces, "username"));
 	}
 
 	public void image() {
@@ -49,9 +50,17 @@ public class Protocol {
 	public void faces() {
 		dataTable.connect();
 		ArrayList<Data> allImages = dataTable.getAllImages(request.getString("username"));
+		ArrayList<JSONObject> jsonImages = new ArrayList<>();
 		if (allImages != null) {
+			for (Data data: allImages) {
+				JSONObject jsonData = new JSONObject();
+				jsonData.put("image", data.getImage());
+				jsonData.put("person", data.getPersonName());
+				jsonData.put("created", data.getCreatedAt());
+				jsonImages.add(jsonData);
+			}
 			response.put("response", "success");
-			response.put("images", allImages);
+			response.put("images", jsonImages);
 		}
 		else {
 			response.put("response", "fail");
