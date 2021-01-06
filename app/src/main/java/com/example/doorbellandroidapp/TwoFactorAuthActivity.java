@@ -14,6 +14,8 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.regex.Pattern;
+
 public class TwoFactorAuthActivity extends AppCompatActivity {
 	TextView etInputDigits, tv2FAResponse, tv2FAAgain;
 	Button btnSubmitDigits, btnReturn;
@@ -39,7 +41,9 @@ public class TwoFactorAuthActivity extends AppCompatActivity {
 			public void onClick(View v) {
 				// Check if code is correct
 				String digits = etInputDigits.getText().toString();
-				checkCode(digits);
+				if (isValidCode(digits)){
+					checkCode(digits);
+				}
 			}
 		});
 
@@ -87,6 +91,7 @@ public class TwoFactorAuthActivity extends AppCompatActivity {
 	 * Notifies user of unsuccessful 2FA code entered
 	 */
 	void twoFactorFail(final String errorMsg) {
+		tv2FAResponse.setText(errorMsg);
 		runOnUiThread(new Runnable(){
 			public void run() {
 				Toast.makeText(getApplicationContext(), errorMsg,
@@ -165,5 +170,23 @@ public class TwoFactorAuthActivity extends AppCompatActivity {
 		// Set request and start connection
 		client.setRequest(request);
 		client.start();
+	}
+	/**
+	 * Checks if user input is valid
+	 * @param code - inputted Two Factor Authentication Code
+	 * @return true or false depending if code is in correct format
+	 */
+	boolean isValidCode(String code){
+		if (!Pattern.matches("[1-9]+",code)){
+			twoFactorFail("Make sure your code only uses numbers");
+			return false;
+		}
+		else if (code.length() != 6){
+			twoFactorFail("Your code needs to be six digits long");
+			return false;
+		}
+		else{
+			return true;
+		}
 	}
 }
