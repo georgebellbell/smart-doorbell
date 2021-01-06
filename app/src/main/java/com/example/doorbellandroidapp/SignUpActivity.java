@@ -32,38 +32,52 @@ public class SignUpActivity extends AppCompatActivity {
 				String inputUsername = etUsername.getText().toString();
 				String inputEmail = etEmailAddress.getText().toString();
 				String inputPassword = pwdPassword.getText().toString();
-
-				//Variables for input validation
-				boolean emailCheck = inputEmail.contains("@");
-				int passLength = inputPassword.length();
-				Pattern lowerCaseLetters = Pattern.compile("[^a-z]");
-				Pattern upperCaseLetters = Pattern.compile("[^A-Z]");
-				Pattern numbers = Pattern.compile("[^0-9]");
-				Matcher lowerCasePasswordMatcher = lowerCaseLetters.matcher(inputPassword);
-				Matcher upperCasePasswordMatcher = upperCaseLetters.matcher(inputPassword);
-				Matcher numbersPasswordMatcher = numbers.matcher(inputPassword);
-				boolean lowerCheck = lowerCasePasswordMatcher.find();
-				boolean upperCheck = upperCasePasswordMatcher.find();
-				boolean numberCheck = numbersPasswordMatcher.find();
-
 				/*Checking to see that the email contains at least an @ sign & that the password
 				 is at least 9 characters long and contains a number, a lower case letter and
 				 a upper case letter */
-				if(emailCheck || passLength > 8 || numberCheck || upperCheck || lowerCheck){
+				if (validate(inputUsername, inputEmail, inputPassword)){
 					signUp(inputUsername, inputEmail, inputPassword);
 				}
-				else{
-					runOnUiThread(new Runnable(){
-						public void run() {
-							Toast.makeText(getApplicationContext(), "Invalid Email or Password, please try again",
-									Toast.LENGTH_SHORT).show();
-							tvInformation.setText("Registration Unsuccessful");
-						}
-					});
-				}
+				else {
+					Toast.makeText(getApplicationContext(), "Invalid Email or Password, please try again",
+							Toast.LENGTH_SHORT).show();
+					tvInformation.setText("Registration Unsuccessful");
 
+				}
 			}
 		});
+	}
+
+	/**
+	 * Validates all of the users inputs
+	 * @param inputUsername - username inputted by the user
+	 * @param inputEmail - email inputted by the user
+	 * @param inputPassword - password inputted by the user
+	 * @return - returns true if all validation checks have succeeded otherwise, returns false
+	 */
+	boolean validate(String inputUsername, String inputEmail, String inputPassword) {
+		int passLength = inputPassword.length();
+		int userLength = inputUsername.length();
+
+		Pattern lowerCaseLetters = Pattern.compile("[a-z]");
+		Pattern upperCaseLetters = Pattern.compile("[A-Z]");
+		Pattern numbers = Pattern.compile("[^0-9]");
+
+		Matcher lowerCasePasswordMatcher = lowerCaseLetters.matcher(inputPassword);
+		Matcher upperCasePasswordMatcher = upperCaseLetters.matcher(inputPassword);
+		Matcher numbersPasswordMatcher = numbers.matcher(inputPassword);
+
+		boolean emailCheck = inputEmail.contains("@");
+		boolean lowerCheck = lowerCasePasswordMatcher.find();
+		boolean upperCheck = upperCasePasswordMatcher.find();
+		boolean numberCheck = numbersPasswordMatcher.find();
+		boolean usernameCheck = inputUsername.contains(" ");
+
+		if (emailCheck && passLength > 8 && numberCheck && upperCheck && lowerCheck && !usernameCheck && userLength > 1){
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
