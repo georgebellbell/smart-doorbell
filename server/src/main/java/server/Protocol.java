@@ -1,7 +1,7 @@
 package server;
 
 import authentication.TwoFactorAuthentication;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import java.util.Base64;
 import database.AccountTable;
 import database.Data;
 import database.DataTable;
@@ -36,7 +36,7 @@ public class Protocol {
 		try {
 			dataTable.connect();
 			Connection conn = dataTable.getConn();
-			byte[] Image = Base64.decode(request.getString("data"));
+			byte[] Image = Base64.getDecoder().decode(request.getString("data"));
 			Blob blobImage = conn.createBlob();
 			blobImage.setBytes(1, Image);
 			dataTable.addRecord(new Data(request.getString("id"), blobImage, "Jeff"));
