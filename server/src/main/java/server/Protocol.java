@@ -37,7 +37,7 @@ public class Protocol {
 		try {
 			dataTable.connect();
 			Connection conn = dataTable.getConn();
-			byte[] Image = Base64.decode(request.getString("data").getBytes());
+			byte[] Image = java.util.Base64.getDecoder().decode(request.getString("data").getBytes());
 			Blob blobImage = conn.createBlob();
 			blobImage.setBytes(1, Image);
 			dataTable.addRecord(new Data(request.getString("id"), blobImage, "Jeff"));
@@ -54,7 +54,16 @@ public class Protocol {
 		if (allImages != null) {
 			for (Data data: allImages) {
 				JSONObject jsonData = new JSONObject();
-				jsonData.put("image", data.getImage());
+				Blob blob = data.getImage();
+				byte[] image = null;
+				String encodedImage = null;
+				try {
+					image = blob.getBytes(1, (int) blob.length());
+					encodedImage = java.util.Base64.getEncoder().encodeToString(image);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				jsonData.put("image", encodedImage);
 				jsonData.put("person", data.getPersonName());
 				jsonData.put("created", data.getCreatedAt());
 				jsonImages.add(jsonData);
@@ -66,6 +75,15 @@ public class Protocol {
 			response.put("response", "fail");
 			response.put("message", "failure to retrieve all images");
 		}
+	}
+
+	public static void main(String[] args) {
+		Protocol protocol = new Protocol();
+		JSONObject request = new JSONObject();
+		request.put("request", "faces");
+		request.put("username", "unique ID");
+		protocol.setRequest(request.toString());
+		System.out.println(protocol.processInput());
 	}
 
 	public void login() {
