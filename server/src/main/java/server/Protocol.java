@@ -77,15 +77,6 @@ public class Protocol {
 		}
 	}
 
-	public static void main(String[] args) {
-		Protocol protocol = new Protocol();
-		JSONObject request = new JSONObject();
-		request.put("request", "faces");
-		request.put("username", "unique ID");
-		protocol.setRequest(request.toString());
-		System.out.println(protocol.processInput());
-	}
-
 	public void login() {
 		String username = request.getString("username");
 		String password = request.getString("password");
