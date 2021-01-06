@@ -1,13 +1,13 @@
 package server;
 
 import authentication.TwoFactorAuthentication;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import database.AccountTable;
 import database.Data;
 import database.DataTable;
 import database.User;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.security.crypto.codec.Base64;
 
 import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialClob;
@@ -36,7 +36,7 @@ public class Protocol {
 		try {
 			dataTable.connect();
 			Connection conn = dataTable.getConn();
-			byte[] Image = Base64.decode(request.getString("data"));
+			byte[] Image = Base64.decode(request.getString("data").getBytes());
 			Blob blobImage = conn.createBlob();
 			blobImage.setBytes(1, Image);
 			dataTable.addRecord(new Data(request.getString("id"), blobImage, "Jeff"));
