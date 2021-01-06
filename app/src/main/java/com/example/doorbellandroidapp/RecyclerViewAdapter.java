@@ -1,6 +1,9 @@
 package com.example.doorbellandroidapp;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,10 +61,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 	@Override
 	public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 		Log.d(TAG, "onBindViewHolder: called.");
+		byte[] decodedString = Base64.decode(mImages.get(position), Base64.DEFAULT );
+		Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString,0, decodedString.length);
 
 		Glide.with(mContext)
 				.asBitmap()
-				.load(mImages.get(position))
+				.load(decodedByte)
 				.into(holder.image);
 		holder.imageName.setText(mImageNames.get(position));
 
@@ -71,11 +76,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 				Log.d(TAG, "onClick: clicked on: " + mImageNames.get(position));
 
 				Toast.makeText(mContext, mImageNames.get(position), Toast.LENGTH_SHORT).show();
-
-				
 			}
 		});
-
 	}
 
 	@Override

@@ -1,15 +1,22 @@
 package com.example.doorbellandroidapp;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -19,50 +26,91 @@ public class FacesFragment extends Fragment {
 
 	//vars
 	private ArrayList<String> mNames = new ArrayList<>();
-	private ArrayList<String> mImageUrls = new ArrayList<>();
+	private ArrayList<String> mImages = new ArrayList<>();
+
+	private SharedPreferences preferences;
+	private String currentUser;
+
+	private View view;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view =  inflater.inflate(R.layout.fragment_faces, container, false);
+		view =  inflater.inflate(R.layout.fragment_faces, container, false);
 		Log.d(TAG, "onCreate: started");
 
-		initImageBitmaps();
-		initRecyclerView(view);
+		preferences= PreferenceManager.getDefaultSharedPreferences(getContext());
+		currentUser= preferences.getString("currentUser",null);
+
+		loadImages();
+		Log.d(TAG, "onCreateView: loop exited");
 		return view;
+	}
+
+	/**
+	 * populates the mNames and mImages with names of pictures and  pictures
+	 * @param jsonArray jsonArray of faces
+	 */
+	void populateImages(final JSONArray jsonArray) {
+		getActivity().runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					initImageBitmaps(jsonArray);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				Log.d(TAG, "handleResponse: images got");
+				initRecyclerView(view);
+			}
+		});
+	}
+
+	/**
+	 * calls server requesting images from database
+	 */
+	void loadImages(){
+		// Client to handle login response from server
+		Client client = new Client() {
+			@Override
+			public void handleResponse(JSONObject response) throws JSONException {
+				switch (response.getString("response")) {
+					case "success":
+						populateImages(response.getJSONArray("images"));
+						break;
+					case "fail":
+						Toast.makeText(getContext(), "FAILURE TO GET IMAGES", Toast.LENGTH_SHORT).show();
+						break;
+				}
+			}
+		};
+
+		// JSON Request object
+		JSONObject request = new JSONObject();
+		try {
+			request.put("request","faces");
+			//request.put("username", username);
+			request.put("username", "unique ID");
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		// Set request and start connection
+		client.setRequest(request);
+		client.start();
 	}
 
 	/**
 	 * Adds image URLS and image names to ArrayLists to be added to view holders
 	 */
-	private void initImageBitmaps(){
+	private void initImageBitmaps(JSONArray images) throws JSONException {
 		Log.d(TAG, "initImageBitmaps: preparing bitmaps");
-
-		mImageUrls.add("https://i.redd.it/tpsnoz5bzo501.jpg");
-		mNames.add("Trondheim");
-
-		mImageUrls.add("https://i.redd.it/qn7f9oqu7o501.jpg");
-		mNames.add("Portugal");
-
-		mImageUrls.add("https://i.redd.it/j6myfqglup501.jpg");
-		mNames.add("Rocky Mountain National Park");
-
-
-		mImageUrls.add("https://i.redd.it/0h2gm1ix6p501.jpg");
-		mNames.add("Mahahual");
-
-		mImageUrls.add("https://i.redd.it/k98uzl68eh501.jpg");
-		mNames.add("Frozen Lake");
-
-
-		mImageUrls.add("https://i.redd.it/glin0nwndo501.jpg");
-		mNames.add("White Sands Desert");
-
-		mImageUrls.add("https://i.redd.it/obx4zydshg601.jpg");
-		mNames.add("Austrailia");
-
-		mImageUrls.add("https://i.imgur.com/ZcLLrkY.jpg");
-		mNames.add("Washington");
-
+		JSONObject currentImage;
+		for (int i = 0; i < images.length() ; i++) {
+			currentImage = images.getJSONObject(i);
+			Log.d(TAG, "initImageBitmaps: "+currentImage.getString("image"));
+			mImages.add(currentImage.getString("image"));
+			mNames.add(currentImage.getString("person"));
+		}
 
 	}
 
@@ -73,7 +121,7 @@ public class FacesFragment extends Fragment {
 	private void initRecyclerView(View view){
 		Log.d(TAG, "initRecyclerView: init recyclerview.");
 		RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
-		RecyclerViewAdapter adapter = new RecyclerViewAdapter(getActivity(), mNames, mImageUrls);
+		RecyclerViewAdapter adapter = new RecyclerViewAdapter(getActivity(), mNames, mImages);
 		recyclerView.setAdapter(adapter);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
