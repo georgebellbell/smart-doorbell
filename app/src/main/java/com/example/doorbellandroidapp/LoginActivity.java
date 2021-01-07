@@ -64,30 +64,22 @@ public class LoginActivity extends AppCompatActivity {
 	 * Notifies user of successful login attempt and starts main activity
 	 */
 	void loginSuccess() {
-		runOnUiThread(new Runnable(){
-			public void run() {
-				preferences.edit().putString("twoFactorUser",etUsername.getText().toString()).apply();
-				Toast.makeText(getApplicationContext(), "Login Successful",
-						Toast.LENGTH_SHORT).show();
+		preferences.edit().putString("twoFactorUser",etUsername.getText().toString()).apply();
+		Toast.makeText(getApplicationContext(), "Login Successful",
+				Toast.LENGTH_SHORT).show();
 
-				Intent intent = new Intent(LoginActivity.this, TwoFactorAuthActivity.class);
-				startActivity(intent);
-			}
-		});
+		Intent intent = new Intent(LoginActivity.this, TwoFactorAuthActivity.class);
+		startActivity(intent);
 	}
 
 	/**
 	 * Notifies user of failed login attempt and removes an attempt
 	 */
 	void loginFail() {
-		runOnUiThread(new Runnable(){
-			public void run() {
-				Toast.makeText(getApplicationContext(), "Incorrect Username or Password",
-						Toast.LENGTH_SHORT).show();
-				removeAttempt();
-				tvInformation.setText("No of attempts remaining: " + attempts);
-			}
-		});
+		Toast.makeText(getApplicationContext(), "Incorrect Username or Password",
+				Toast.LENGTH_SHORT).show();
+		removeAttempt();
+		tvInformation.setText("No of attempts remaining: " + attempts);
 	}
 
 	/**
@@ -107,7 +99,7 @@ public class LoginActivity extends AppCompatActivity {
 	 */
 	void authenticate(String username, String password){
 		// Client to handle login response from server
-		Client client = new Client() {
+		Client client = new Client(this) {
 			@Override
 			public void handleResponse(JSONObject response) throws JSONException {
 				switch (response.getString("response")) {
