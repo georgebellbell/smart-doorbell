@@ -43,6 +43,6 @@ class AccountTableTest {
 	@Test
 	void testGetLogin() {
 		accountTable.addRecord(user);
-		assertTrue(accountTable.getLogin(user.getUsername(), user.getPassword()));
+		assertTrue(accountTable.getLogin(user.getUsername(), user.getPassword(), user.getRole()));
 	}
 }

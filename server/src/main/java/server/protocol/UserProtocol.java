@@ -73,7 +73,7 @@ public class UserProtocol extends Protocol {
 
 		// Connect to database
 		accountTable.connect();
-		boolean validLogin = accountTable.getLogin(username, password);
+		boolean validLogin = accountTable.getLogin(username, password, "user");
 		User currentUser = accountTable.getRecord(username);
 		accountTable.disconnect();
 

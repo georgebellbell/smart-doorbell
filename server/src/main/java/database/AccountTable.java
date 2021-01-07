@@ -79,14 +79,16 @@ public class AccountTable extends DatabaseConnection {
 		}
 	}
 
-	public boolean getLogin(String username, String password) {
+	public boolean getLogin(String username, String password, String role) {
 		boolean found = false;
 		password = passwordManager.checkPasswords(getPassword(username), password);
 		try {
-			String query = "SELECT Username, Password  FROM accounts WHERE Username=? AND Password=?";
+			String query = "SELECT Username, Password, Role  FROM accounts " +
+					"WHERE Username=? AND Password=? AND Role = ?";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, username);
 			statement.setString(2, password);
+			statement.setString(3, role);
 			ResultSet resultSet = statement.executeQuery();
 			found = resultSet.next();
 			statement.close();
