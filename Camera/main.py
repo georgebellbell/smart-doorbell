@@ -31,6 +31,7 @@ def capture():
 	camera.close()
 
 
+# Send the photo to the socket server
 def sendImage():
 	imageData = getImage()
 	output = '{"request":"image","id":"' + PiId + '","data":"' + imageData + '"}\r\n'
@@ -43,6 +44,7 @@ def sendImage():
 	return
 
 
+# Get the photo from the filesystem and return it in the correct format
 def getImage():
 	with open("photo.jpg", "rb") as image:
 		imageData = str(base64.encodebytes(image.read()))[2:-3]
@@ -55,12 +57,24 @@ while True:
 	if button1.is_pressed:
 		led1.on()
 		sleep(0.5)
-		capture()
-		sleep(0.5)
-		sendImage()
 
-	else:
+		# Take a photo
+		try:
+			capture()
+			print("Captured photo")
+		except Exception as e:
+			print("Failed to capture photo")
+
+		# Send photo to the server
+		try:
+			sendImage()
+			print("Image sent to server")
+			sleep(20)
+		except Exception as e:
+			print("Failed to send image to server")
 		led1.off()
 
+	# Close the program if button 2 is pressed
 	if button2.is_pressed:
+		print("Exit")
 		exit()
