@@ -35,7 +35,8 @@ public class Login extends JFrame {
 			}
 
 			// Attempt to login to the server
-			loginToServer(username, password);
+			Thread thread = new Thread(() -> loginToServer(username, password));
+			thread.start();
 
 		});
 	}
@@ -73,7 +74,7 @@ public class Login extends JFrame {
 		if (response.getString("response").equals("success")) {
 			dispose();
 		} else {
-			setErrorMessage("Incorrect username/password");
+			setErrorMessage(response.getString("message"));
 			connection.close();
 		}
 

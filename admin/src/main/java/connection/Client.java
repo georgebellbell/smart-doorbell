@@ -39,6 +39,9 @@ public class Client {
 	 * @return response from server
 	 */
 	public JSONObject run(JSONObject request) {
+		// Send connection type
+		out.println("admin");
+
 		// Send request
 		out.println(request.toString());
 
@@ -46,7 +49,9 @@ public class Client {
 		JSONObject response = new JSONObject();
 		try {
 			String responseString = in.readLine();
-			response = new JSONObject(responseString);
+			if (responseString != null) {
+				response = new JSONObject(responseString);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
