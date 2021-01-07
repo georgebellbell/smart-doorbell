@@ -46,6 +46,9 @@ public abstract class Client extends Thread {
             PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
+            // Write connection type to server
+            printWriter.println("user");
+
             // Write request to server
             printWriter.println(getStringRequest());
 
