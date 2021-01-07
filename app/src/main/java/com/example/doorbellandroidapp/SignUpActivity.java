@@ -3,7 +3,9 @@ package com.example.doorbellandroidapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,11 +20,15 @@ import java.util.regex.Pattern;
 
 public class SignUpActivity extends AppCompatActivity {
 	EditText etUsername, pwdPassword, etEmailAddress;
-	TextView tvInformation, tvSignUp;
+	TextView tvInformation, tvSignUp, tvGoToLogin;
 	Button btnSignUp;
+
+	private SharedPreferences preferences;
+	private String currentUser;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		preferences= PreferenceManager.getDefaultSharedPreferences(SignUpActivity.this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sign_up);
 		assign();
@@ -44,6 +50,17 @@ public class SignUpActivity extends AppCompatActivity {
 					tvInformation.setText("Registration Unsuccessful");
 
 				}
+			}
+		});
+
+		tvGoToLogin.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(getApplicationContext(), "Log into existing account",
+						Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+				startActivity(intent);
+
 			}
 		});
 	}
@@ -86,6 +103,7 @@ public class SignUpActivity extends AppCompatActivity {
 	void signUpSuccess() {
 		runOnUiThread(new Runnable(){
 			public void run() {
+				preferences.edit().putString("currentUser",currentUser).apply();
 				Toast.makeText(getApplicationContext(), "Registration Successful",
 						Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
@@ -114,6 +132,7 @@ public class SignUpActivity extends AppCompatActivity {
 	 * @param inputPassword - password inputted by the user
 	 */
 	void signUp(String inputUsername, String inputEmail, String inputPassword){
+		currentUser = inputUsername;
 		// Client to handle sign up response from server
 		Client client = new Client() {
 			@Override
@@ -151,6 +170,7 @@ public class SignUpActivity extends AppCompatActivity {
 		pwdPassword = findViewById(R.id.pwdPassword);
 		tvInformation = findViewById(R.id.tvInformation);
 		tvSignUp = findViewById(R.id.tvSignUp);
+		tvGoToLogin = findViewById(R.id.tvGoToLogin);
 		btnSignUp = findViewById(R.id.btnSignUp);
 	}
 }

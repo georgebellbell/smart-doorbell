@@ -20,7 +20,7 @@ import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
 	EditText etUsername, pwdPassword;
-	TextView tvInformation, tvSignUp;
+	TextView tvInformation, tvGoToSignUp;
 	Button btnLogin;
 	Integer attempts = 5;
 	Boolean isValid;
@@ -45,6 +45,17 @@ public class LoginActivity extends AppCompatActivity {
 
 				// Send to server for checking
 				authenticate(inputUsername, inputPassword);
+			}
+		});
+
+		tvGoToSignUp.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(getApplicationContext(), "Create a new account",
+						Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+				startActivity(intent);
+
 			}
 		});
 	}
@@ -132,7 +143,7 @@ public class LoginActivity extends AppCompatActivity {
 		etUsername = findViewById(R.id.etUsername);
 		pwdPassword = findViewById(R.id.pwdPassword);
 		tvInformation = findViewById(R.id.tvInformation);
-		tvSignUp = findViewById(R.id.tvSignUp);
+		tvGoToSignUp = findViewById(R.id.tvGoToSignUp);
 		btnLogin = findViewById(R.id.btnLogin);
 	}
 }

@@ -67,7 +67,7 @@ public class TwoFAInstrumentedTest {
 	@Test
 	public void returnToLogin(){
 		onView(withId(R.id.btnReturn)).perform((click()));
-		onView(withId(R.id.tvSignIn)).check(matches(isDisplayed()));
+		onView(withId(R.id.tvGoToLogin)).check(matches(isDisplayed()));
 	}
 
 }

@@ -21,7 +21,7 @@
         app:layout_constraintVertical_bias="0.093" />
 
     <TextView
-        android:id="@+id/tvSignIn"
+        android:id="@+id/tvLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Sign In"
@@ -74,7 +74,7 @@
         app:layout_constraintVertical_bias="0.877" />
 
     <TextView
-        android:id="@+id/tvSignUp"
+        android:id="@+id/tvGoToSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Sign Up"
