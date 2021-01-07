@@ -21,7 +21,10 @@ button2 = Button(3)
 host = "192.168.1.122"
 port = 4444
 
-PiId = "unique ID"  # placeholder
+# Read the Raspberry Pi's unique ID from a file (ID assigned at factory)
+with open("PiID.txt", "r") as file:
+	PiId = file.readline()
+	print(PiId)
 
 
 # Take picture
