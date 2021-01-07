@@ -21,8 +21,10 @@ button2 = Button(3)
 host = "192.168.1.122"
 port = 4444
 
-imageSize = str(123456789)  # placeholder
-PiId = "unique ID"  # placeholder
+# Read the Raspberry Pi's unique ID from a file (ID assigned at factory)
+with open("PiID.txt", "r") as file:
+	PiId = file.readline()
+	print(PiId)
 
 
 # Take picture
@@ -32,9 +34,10 @@ def capture():
 	camera.close()
 
 
+# Send the photo to the socket server
 def sendImage():
 	imageData = getImage()
-	output = '{"request":"image","id":"' + PiId + '","size":"' + imageSize + '","data":"' + imageData + '"}\r\n'
+	output = '{"request":"image","id":"' + PiId + '","data":"' + imageData + '"}\r\n'
 	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 		s.connect((host, port))
 		s.sendall(bytes(output, 'utf-8'))
@@ -44,6 +47,7 @@ def sendImage():
 	return
 
 
+# Get the photo from the filesystem and return it in the correct format
 def getImage():
 	with open("photo.jpg", "rb") as image:
 		imageData = str(base64.encodebytes(image.read()))[2:-3]
@@ -56,12 +60,24 @@ while True:
 	if button1.is_pressed:
 		led1.on()
 		sleep(0.5)
-		capture()
-		sleep(0.5)
-		sendImage()
 
-	else:
+		# Take a photo
+		try:
+			capture()
+			print("Captured photo")
+		except Exception as e:
+			print("Failed to capture photo")
+
+		# Send photo to the server
+		try:
+			sendImage()
+			print("Image sent to server")
+			sleep(20)
+		except Exception as e:
+			print("Failed to send image to server")
 		led1.off()
 
+	# Close the program if button 2 is pressed
 	if button2.is_pressed:
+		print("Exit")
 		exit()
