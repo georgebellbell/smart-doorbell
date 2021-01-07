@@ -37,13 +37,13 @@ public class Protocol {
 		try {
 			dataTable.connect();
 			Connection conn = dataTable.getConn();
-			byte[] Image = java.util.Base64.getDecoder().decode(request.getString("data").getBytes());
+			byte[] Image = Base64.decode(request.getString("data").getBytes());
 			Blob blobImage = conn.createBlob();
 			blobImage.setBytes(1, Image);
 			dataTable.addRecord(new Data(request.getString("id"), blobImage, "Jeff"));
 			dataTable.disconnect();
 		} catch (Exception e){
-			System.out.println(e);
+			System.out.println("image " + e);
 		}
 	}
 
