@@ -40,7 +40,7 @@
         android:text="Sign Up"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.81"
+        app:layout_constraintHorizontal_bias="0.835"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pwdPassword"
         app:layout_constraintVertical_bias="0.504" />
@@ -88,16 +88,16 @@
         app:layout_constraintVertical_bias="0.304" />
 
     <TextView
-        android:id="@+id/tvSignIn"
-        android:layout_width="53dp"
-        android:layout_height="21dp"
-        android:text="Sign In"
+        android:id="@+id/tvGoToLogin"
+        android:layout_width="170dp"
+        android:layout_height="34dp"
+        android:text="Log into existing account"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnSignUp"
-        app:layout_constraintHorizontal_bias="0.134"
+        app:layout_constraintHorizontal_bias="0.293"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.806" />
+        app:layout_constraintVertical_bias="0.837" />
 
     <TextView
         android:id="@+id/tvInformation"

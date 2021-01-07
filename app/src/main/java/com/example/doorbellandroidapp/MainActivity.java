@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	protected void onCreate(Bundle savedInstanceState) {
 		preferences= PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 		currentUser= preferences.getString("currentUser",null);
-		if (currentUser!=null){
+		if (currentUser==null){
 			Intent intent = new Intent(MainActivity.this, LoginActivity.class);
 			startActivity(intent);
 			finish();
