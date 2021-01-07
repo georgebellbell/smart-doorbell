@@ -29,12 +29,8 @@ public class Protocol {
 		requestResponse.put("signup", new ResponseHandler(this::signUp, "username", "email", "password"));
 		requestResponse.put("twofactor", new ResponseHandler(this::twoFactor, "username", "code"));
 		requestResponse.put("resendtwofactor", new ResponseHandler(this::resendTwoFactor, "username"));
-<<<<<<< server/src/main/java/server/Protocol.java
-		requestResponse.put("image", new ResponseHandler(this::image, "id", "data"));
-=======
 		requestResponse.put("image", new ResponseHandler(this::image, "id", "data"));
 		requestResponse.put("faces", new ResponseHandler(this::faces, "username"));
->>>>>>> server/src/main/java/server/Protocol.java
 	}
 
 	public void image() {
