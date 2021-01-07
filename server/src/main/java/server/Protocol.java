@@ -5,12 +5,11 @@ import database.AccountTable;
 import database.Data;
 import database.DataTable;
 import database.User;
+import facialrecognition.FaceSimilarity;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.security.crypto.codec.Base64;
 
-import javax.sql.rowset.serial.SerialBlob;
-import javax.sql.rowset.serial.SerialClob;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -23,6 +22,7 @@ public class Protocol {
 	AccountTable accountTable = new AccountTable();
 	DataTable dataTable = new DataTable();
 	HashMap<String, ResponseHandler> requestResponse = new HashMap<>();
+	FaceSimilarity faceSimilarity = new FaceSimilarity();
 
 	public Protocol() {
 		requestResponse.put("login", new ResponseHandler(this::login, "username", "password"));
@@ -35,14 +35,25 @@ public class Protocol {
 
 	public void image() {
 		try {
-			dataTable.connect();
-			Connection conn = dataTable.getConn();
-			byte[] Image = java.util.Base64.getDecoder().decode(request.getString("data").getBytes());
-			Blob blobImage = conn.createBlob();
-			blobImage.setBytes(1, Image);
-			dataTable.addRecord(new Data(request.getString("id"), blobImage, "Jeff"));
-			dataTable.disconnect();
-		} catch (Exception e){
+			byte[] image = Base64.decode(request.getString("data").getBytes());
+			if (!faceSimilarity.compareFaces(image, request.getString("id"))) {
+				dataTable.connect();
+				Connection conn = dataTable.getConn();
+				byte[] Image = Base64.decode(request.getString("data").getBytes());
+				Blob blobImage = conn.createBlob();
+				blobImage.setBytes(1, Image);
+				dataTable.addRecord(new Data(request.getString("id"), blobImage, "Unknown"));
+				dataTable.disconnect();
+				System.out.println("Unrecognised face");
+				response.put("response", "success");
+				response.put("message", "Unknown user at the door");
+			}
+			else {
+				System.out.println("Recognised face");
+				response.put("response", "success");
+				response.put("message", "Jeff is at the door");
+			}
+		} catch (Exception e) {
 			System.out.println(e);
 		}
 	}
