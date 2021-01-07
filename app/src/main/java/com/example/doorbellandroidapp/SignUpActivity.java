@@ -84,27 +84,19 @@ public class SignUpActivity extends AppCompatActivity {
 	 * Notifies user of successful signup attempt and starts main activity
 	 */
 	void signUpSuccess() {
-		runOnUiThread(new Runnable(){
-			public void run() {
-				Toast.makeText(getApplicationContext(), "Registration Successful",
-						Toast.LENGTH_SHORT).show();
-				Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-				startActivity(intent);
-			}
-		});
+		Toast.makeText(getApplicationContext(), "Registration Successful",
+				Toast.LENGTH_SHORT).show();
+		Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+		startActivity(intent);
 	}
 
 	/**
 	 * Notifies user of failed signup attempt
 	 */
 	void signUpFail() {
-		runOnUiThread(new Runnable(){
-			public void run() {
-				Toast.makeText(getApplicationContext(), "Username already exists, please try again",
-						Toast.LENGTH_SHORT).show();
-				tvInformation.setText("Registration Unsuccessful");
-			}
-		});
+		Toast.makeText(getApplicationContext(), "Username already exists, please try again",
+				Toast.LENGTH_SHORT).show();
+		tvInformation.setText("Registration Unsuccessful");
 	}
 
 	/**
@@ -115,7 +107,7 @@ public class SignUpActivity extends AppCompatActivity {
 	 */
 	void signUp(String inputUsername, String inputEmail, String inputPassword){
 		// Client to handle sign up response from server
-		Client client = new Client() {
+		Client client = new Client(this) {
 			@Override
 			public void handleResponse(JSONObject response) throws JSONException {
 				switch (response.getString("response")) {
