@@ -21,7 +21,6 @@ button2 = Button(3)
 host = "192.168.1.122"
 port = 4444
 
-imageSize = str(123456789)  # placeholder
 PiId = "unique ID"  # placeholder
 
 
@@ -34,7 +33,7 @@ def capture():
 
 def sendImage():
 	imageData = getImage()
-	output = '{"request":"image","id":"' + PiId + '","size":"' + imageSize + '","data":"' + imageData + '"}\r\n'
+	output = '{"request":"image","id":"' + PiId + '","data":"' + imageData + '"}\r\n'
 	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 		s.connect((host, port))
 		s.sendall(bytes(output, 'utf-8'))

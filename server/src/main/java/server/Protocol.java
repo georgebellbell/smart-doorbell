@@ -29,7 +29,7 @@ public class Protocol {
 		requestResponse.put("signup", new ResponseHandler(this::signUp, "username", "email", "password"));
 		requestResponse.put("twofactor", new ResponseHandler(this::twoFactor, "username", "code"));
 		requestResponse.put("resendtwofactor", new ResponseHandler(this::resendTwoFactor, "username"));
-		requestResponse.put("image", new ResponseHandler(this::image, "id", "size", "data"));
+		requestResponse.put("image", new ResponseHandler(this::image, "id", "data"));
 	}
 
 	public void image() {
