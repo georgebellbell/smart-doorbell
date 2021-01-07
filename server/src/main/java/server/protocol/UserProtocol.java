@@ -1,10 +1,11 @@
-package server;
+package server.protocol;
 
 import authentication.TwoFactorAuthentication;
 import database.Data;
 import database.User;
 import org.json.JSONObject;
 import org.springframework.security.crypto.codec.Base64;
+import server.ResponseHandler;
 
 import java.sql.Blob;
 import java.sql.Connection;

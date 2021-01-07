@@ -3,6 +3,7 @@ package server;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import server.protocol.Protocol;
 
 import static org.junit.jupiter.api.Assertions.*;
 

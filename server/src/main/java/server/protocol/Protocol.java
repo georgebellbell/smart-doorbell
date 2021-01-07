@@ -1,4 +1,4 @@
-package server;
+package server.protocol;
 
 import authentication.TwoFactorAuthentication;
 import database.AccountTable;
@@ -8,6 +8,7 @@ import database.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.security.crypto.codec.Base64;
+import server.ResponseHandler;
 
 import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialClob;
