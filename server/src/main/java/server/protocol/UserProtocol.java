@@ -26,8 +26,8 @@ public class UserProtocol extends Protocol {
 	public void renameFace() {
 		dataTable.connect();
 		int id = request.getInt("id");
-		String newName = request.getString("name");
-		if (dataTable.changeName(id, newName))
+		String name = request.getString("name");
+		if (dataTable.changeName(id, name))
 			response.put("response", "sucess");
 		dataTable.disconnect();
 	}

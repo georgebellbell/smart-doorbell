@@ -17,7 +17,7 @@ public class DataTable extends DatabaseConnection {
 	 */
 	public boolean addRecord(Data data) {
 		try {
-			String query = "INSERT INTO data (Device_id, Image, Person, Created_at)"
+			String query = "INSERT INTO data (id, Device_id, Image, Person, Created_at)"
 					+ " VALUES (?, ?, ?, ?)";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, data.getDeviceID());
@@ -104,5 +104,20 @@ public class DataTable extends DatabaseConnection {
 			return null;
 		}
 		return allImages;
+	}
+
+	public boolean changeName(int id, String name) {
+		try {
+			String query = "UPDATE data Set Person=? WHERE Id=?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, name);
+			statement.setInt(2, id);
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }
