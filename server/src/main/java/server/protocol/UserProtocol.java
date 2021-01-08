@@ -19,6 +19,24 @@ public class UserProtocol extends Protocol {
 		requestResponse.put("twofactor", new ResponseHandler(this::twoFactor, "username", "code"));
 		requestResponse.put("resendtwofactor", new ResponseHandler(this::resendTwoFactor, "username"));
 		requestResponse.put("faces", new ResponseHandler(this::faces, "username"));
+		requestResponse.put("deleteface", new ResponseHandler(this::deleteFace, "id"));
+		requestResponse.put("renameface", new ResponseHandler(this::renameFace, "id", "name"));
+	}
+
+	public void renameFace() {
+		dataTable.connect();
+		int id = request.getInt("id");
+		String newName = request.getString("name");
+		if (dataTable.changeName(id, newName))
+			response.put("response", "sucess");
+		dataTable.disconnect();
+	}
+	public void deleteFace() {
+		dataTable.connect();
+		int id = request.getInt("id");
+		if (dataTable.deleteRecordById(id))
+			response.put("response", "success");
+		dataTable.disconnect();
 	}
 
 	public void faces() {

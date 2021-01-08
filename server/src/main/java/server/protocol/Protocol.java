@@ -71,17 +71,6 @@ public class Protocol {
 			throw new IllegalStateException("Request must be set before processing");
 		}
 
-		// Check for illegal characters
-		if (!request.getString("request").equals("image")) {
-			if (checkIllegalChars(request.toString().toLowerCase())) {
-				response.put("response", "fail");
-				response.put("message", "illegal expression");
-				return response.toString();
-			}
-		}
-
-
-
 		// Handle response to request
 		String requestType = request.getString("request");
 		ResponseHandler responseHandler = requestResponse.get(requestType);
@@ -90,28 +79,5 @@ public class Protocol {
 			responseMethod.run();
 		}
 		return response.toString();
-	}
-
-	/**
-	 * Checks if request contains illegal characters
-	 * @param request - Request received from the client
-	 * @return if illegal character(s) are found
-	 */
-	public boolean checkIllegalChars(String request) {
-		boolean illegalCharFound = false;
-
-		String[] badChars = {
-				"<", ">", "script", "alert", "truncate", "delete", "insert", "drop", "into", "where", "null", "xp_",
-				"<>", "!", "`", "input"
-		};
-
-		for (String badChar : badChars) {
-			if (request.contains(badChar)) {
-				illegalCharFound = true;
-				break;
-			}
-		}
-
-		return illegalCharFound;
 	}
 }
