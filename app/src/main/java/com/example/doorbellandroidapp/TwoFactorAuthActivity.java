@@ -177,7 +177,7 @@ public class TwoFactorAuthActivity extends AppCompatActivity {
 	 * @return true or false depending if code is in correct format
 	 */
 	boolean isValidCode(String code){
-		if (!Pattern.matches("[1-9]+",code)){
+		if (!Pattern.matches("^[0-9]+$",code)){
 			twoFactorFail("Make sure your code only uses numbers");
 			return false;
 		}
