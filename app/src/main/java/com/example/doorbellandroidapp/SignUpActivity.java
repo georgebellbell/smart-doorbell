@@ -47,7 +47,7 @@ public class SignUpActivity extends AppCompatActivity {
 				else {
 					Toast.makeText(getApplicationContext(), "Invalid Email or Password, please try again",
 							Toast.LENGTH_SHORT).show();
-					tvInformation.setText("Registration Unsuccessful");
+					//tvInformation.setText("Registration Unsuccessful");
 
 				}
 			}
@@ -88,13 +88,45 @@ public class SignUpActivity extends AppCompatActivity {
 		boolean lowerCheck = lowerCasePasswordMatcher.find();
 		boolean upperCheck = upperCasePasswordMatcher.find();
 		boolean numberCheck = numbersPasswordMatcher.find();
-		boolean usernameCheck = inputUsername.contains(" ");
+		boolean spacesCheck = inputUsername.contains(" ") || inputEmail.contains(" ") || inputPassword.contains(" ");
 
-		if (emailCheck && passLength > 8 && numberCheck && upperCheck && lowerCheck && !usernameCheck && userLength > 1){
+		if (!emailCheck){
+			tvInformation.setText(R.string.validEmailError);
+			return false;
+		}
+		if (passLength <9){
+			tvInformation.setText(R.string.shortPasswordError);
+			return false;
+		}
+		if (!numberCheck){
+			tvInformation.setText(R.string.noNumberInPasswordError);
+			return false;
+		}
+		if (!upperCheck){
+			tvInformation.setText(R.string.noUppercaseError);
+			return false;
+		}
+		if (!lowerCheck){
+			tvInformation.setText(R.string.noLowercaseError);
+			return false;
+		}
+		if (spacesCheck){
+			tvInformation.setText(R.string.spacesError);
+			return false;
+		}
+		if (userLength <2){
+			tvInformation.setText(R.string.shortUsernameError);
+			return false;
+		}
+		return true;
+
+		/*
+		if (emailCheck && passLength > 8 && numberCheck && upperCheck && lowerCheck && !spacesCheck && userLength > 1){
 			return true;
 		} else {
 			return false;
 		}
+		*/
 	}
 
 	/**
