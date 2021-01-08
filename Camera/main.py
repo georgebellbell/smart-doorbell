@@ -30,6 +30,7 @@ with open("PiID.txt", "r") as file:
 # Take picture
 def capture():
 	camera = PiCamera()
+	camera.resolution = (512, 384)
 	camera.capture(imagePath)
 	camera.close()
 
