@@ -5,11 +5,8 @@ import database.DataTable;
 import org.openimaj.image.processing.face.detection.HaarCascadeDetector;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
-import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -35,6 +32,7 @@ public class FaceSimilarity {
 	public boolean compareFaces(byte[] doorbellImage, String deviceID) throws IOException {
 		//haar cascade detector used to find faces
 		final HaarCascadeDetector detector = HaarCascadeDetector.BuiltInCascade.frontalface_alt2.load();
+
 		//keypoint-enhanced detector to find facial keypoints for the face
 		final FKEFaceDetector kedetector = new FKEFaceDetector(detector);
 
@@ -50,6 +48,7 @@ public class FaceSimilarity {
 				new FaceSimilarityEngine<KEDetectedFace, FacePatchFeature, FImage>(kedetector, extractor, comparator);
 
 		//load the two images, a face from database and face from doorbell
+		long startTime = System.currentTimeMillis();
 		ByteArrayInputStream bais = new ByteArrayInputStream(doorbellImage);
 		final FImage image1 = ImageUtilities.createFImage(ImageIO.read(bais));
 
@@ -57,22 +56,22 @@ public class FaceSimilarity {
 		ArrayList<Data> allImages = dataTable.getAllImages(deviceID);
 		dataTable.disconnect();
 		try {
-			for (int i = 0; i < allImages.size(); i++) {
-				byte[] imageFromDB = allImages.get(i).getImage().getBytes(1, (int) allImages.get(i).getImage().length());
+			for (Data allImage : allImages) {
+				byte[] imageFromDB = allImage.getImage().getBytes(1, (int) allImage.getImage().length());
 				ByteArrayInputStream bais2 = new ByteArrayInputStream(imageFromDB);
 				final FImage imageToCompare = ImageUtilities.createFImage(ImageIO.read(bais2));
+
 				engine.setQuery(image1, "doorbell");
 				engine.setTest(imageToCompare, "database");
 				engine.performTest();
-
-				//checks through faces in both images for best matching pair
-				for (final Entry<String, Map<String, Double>> e : engine.getSimilarityDictionary().entrySet()) {
-					// this computes if the images are similar enough to be deemed the same person
-					double bestScore = 40;
-					for (final Entry<String, Double> matches : e.getValue().entrySet()) {
-						if (matches.getValue() < bestScore) {
-							return true;
-						}
+			}
+			//checks through faces in both images for best matching pair
+			for (final Entry<String, Map<String, Double>> e : engine.getSimilarityDictionary().entrySet()) {
+				// this computes if the images are similar enough to be deemed the same person
+				double bestScore = 40;
+				for (final Entry<String, Double> matches : e.getValue().entrySet()) {
+					if (matches.getValue() < bestScore) {
+						return true;
 					}
 				}
 			}

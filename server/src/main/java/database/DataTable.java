@@ -34,7 +34,7 @@ public class DataTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param username - username of data to retrieve
+	 * @param id - id of data to retrieve
 	 * @return data object if exists in the database
 	 */
 	public Data getRecord(int id) {
