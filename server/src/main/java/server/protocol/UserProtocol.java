@@ -38,6 +38,7 @@ public class UserProtocol extends Protocol {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				jsonData.put("id", data.getImageID());
 				jsonData.put("image", encodedImage);
 				jsonData.put("person", data.getPersonName());
 				jsonData.put("created", data.getCreatedAt());
