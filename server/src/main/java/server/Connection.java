@@ -1,6 +1,7 @@
 package server;
 
 import server.protocol.AdminProtocol;
+import server.protocol.DoorbellProtocol;
 import server.protocol.Protocol;
 import server.protocol.UserProtocol;
 
@@ -38,6 +39,10 @@ public class Connection extends Thread {
 				case "admin":
 					// Create protocol for admin connection type
 					protocol = new AdminProtocol();
+					break;
+				case "doorbell":
+					// Create protocol for doorbell connection type
+					protocol = new DoorbellProtocol();
 					break;
 				default:
 					// No protocol for connection type

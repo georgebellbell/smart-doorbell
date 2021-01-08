@@ -18,22 +18,7 @@ public class UserProtocol extends Protocol {
 		requestResponse.put("signup", new ResponseHandler(this::signUp, "username", "email", "password"));
 		requestResponse.put("twofactor", new ResponseHandler(this::twoFactor, "username", "code"));
 		requestResponse.put("resendtwofactor", new ResponseHandler(this::resendTwoFactor, "username"));
-		requestResponse.put("image", new ResponseHandler(this::image, "id", "data"));
 		requestResponse.put("faces", new ResponseHandler(this::faces, "username"));
-	}
-
-	public void image() {
-		try {
-			dataTable.connect();
-			Connection conn = dataTable.getConn();
-			byte[] Image = Base64.decode(request.getString("data").getBytes());
-			Blob blobImage = conn.createBlob();
-			blobImage.setBytes(1, Image);
-			dataTable.addRecord(new Data(request.getString("id"), blobImage, "Jeff"));
-			dataTable.disconnect();
-		} catch (Exception e){
-			System.out.println("image " + e);
-		}
 	}
 
 	public void faces() {
