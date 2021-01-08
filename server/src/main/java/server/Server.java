@@ -19,7 +19,7 @@ public class Server {
 				System.out.println("New connection accepted...");
 
 				// Create client connection and start thread
-				ClientConnection client = new ClientConnection(incomingClientSocket);
+				Connection client = new Connection(incomingClientSocket);
 				client.start();
 			}
 

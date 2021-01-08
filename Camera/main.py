@@ -24,7 +24,7 @@ port = 4444
 # Read the Raspberry Pi's unique ID from a file (ID assigned at factory)
 with open("PiID.txt", "r") as file:
 	PiId = file.readline()
-	print(PiId)
+	print("Unique Device ID: " + PiId)
 
 
 # Take picture
