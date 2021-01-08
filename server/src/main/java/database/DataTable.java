@@ -3,6 +3,7 @@ package database;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;

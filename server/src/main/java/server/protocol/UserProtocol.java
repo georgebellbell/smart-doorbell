@@ -68,9 +68,13 @@ public class UserProtocol extends Protocol {
 			response.put("message", "Successfully logged in!");
 
 			// Create and send 2FA code
-			TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(currentUser);
-			twoFactorAuthentication.generateCode();
-			twoFactorAuthentication.sendEmail();
+			Thread emailThread = new Thread(() -> {
+				TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(currentUser);
+				twoFactorAuthentication.generateCode();
+				twoFactorAuthentication.sendEmail();
+			});
+			emailThread.start();
+
 		}
 		else {
 			// Failed login response
