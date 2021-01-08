@@ -1,5 +1,6 @@
 package com.example.doorbellandroidapp;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +32,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 	private ArrayList<String> mImageNames = new ArrayList<>();
 	private ArrayList<String> mImages = new ArrayList<>();
 	private Context mContext;
+	Dialog dialog;
 
 	/**
 	 * initialises variables for view holder
@@ -50,6 +55,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_listitem,parent, false);
 		ViewHolder holder = new ViewHolder(view);
+		dialog = new Dialog(mContext);
 		return holder;
 	}
 
@@ -59,10 +65,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 	 * @param position current image to be displayed
 	 */
 	@Override
-	public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+	public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
 		Log.d(TAG, "onBindViewHolder: called.");
 		byte[] decodedString = Base64.decode(mImages.get(position), Base64.DEFAULT );
-		Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString,0, decodedString.length);
+		final Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString,0, decodedString.length);
 
 		Glide.with(mContext)
 				.asBitmap()
@@ -70,10 +76,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 				.into(holder.image);
 		holder.imageName.setText(mImageNames.get(position));
 
-		holder.parentLayout.setOnClickListener(new View.OnClickListener() {
+
+		holder.ivEdit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "onClick: clicked on: " + mImageNames.get(position));
+
+				showPopup(holder, decodedByte);
 
 				Toast.makeText(mContext, mImageNames.get(position), Toast.LENGTH_SHORT).show();
 			}
@@ -90,12 +99,54 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 		CircleImageView image;
 		TextView imageName;
 		RelativeLayout parentLayout;
+		ImageView ivEdit;
 
 		public ViewHolder(@NonNull View itemView) {
 			super(itemView);
-			image = itemView.findViewById(R.id.image);
+			image = itemView.findViewById(R.id.ivPopupImage);
 			imageName = itemView.findViewById(R.id.image_name);
 			parentLayout = itemView.findViewById(R.id.parent_layout);
+			ivEdit = itemView.findViewById(R.id.ivEdit);
 		}
+	}
+	public void showPopup(final ViewHolder holder, Bitmap img) {
+		TextView txtClose;
+		final EditText etEditImageName;
+		ImageView ivPopupImage, ivDeleteImage;
+		Button btnSaveAndClose;
+		dialog.setContentView(R.layout.facepopup);
+
+		btnSaveAndClose = (Button) dialog.findViewById(R.id.btnSaveAndClose);
+		txtClose = (TextView) dialog.findViewById(R.id.txtClose);
+		ivPopupImage = (ImageView) dialog.findViewById(R.id.ivPopupImage);
+		ivDeleteImage = (ImageView) dialog.findViewById(R.id.ivPopUpDelete);
+		etEditImageName = (EditText) dialog.findViewById(R.id.etEditImageName);
+
+		etEditImageName.setHint(holder.imageName.getText().toString());
+		ivPopupImage.setImageBitmap(img);
+
+		txtClose.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+		});
+		btnSaveAndClose.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				holder.imageName.setText(etEditImageName.getText().toString());
+				// TODO save change to database, add some validation
+				dialog.dismiss();
+			}
+		});
+		ivDeleteImage.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(mContext, "face deleted", Toast.LENGTH_SHORT).show();
+				dialog.dismiss();
+				// TODO Successfully remove face on server and in app (refresh page?)
+			}
+		});
+		dialog.show();
 	}
 }
