@@ -71,20 +71,16 @@ public class TwoFactorAuthActivity extends AppCompatActivity {
 	 * Notifies user of successful login entered and starts main activity
 	 */
 	void twoFactorSuccess() {
-		runOnUiThread(new Runnable(){
-			public void run() {
-				// Set current user
-				preferences.edit().putString("currentUser",currentUser).apply();
+		// Set current user
+		preferences.edit().putString("currentUser",currentUser).apply();
 
-				// Success notification
-				Toast.makeText(getApplicationContext(), "Login Successful",
-						Toast.LENGTH_SHORT).show();
+		// Success notification
+		Toast.makeText(getApplicationContext(), "Login Successful",
+				Toast.LENGTH_SHORT).show();
 
-				// Start main activity
-				Intent intent = new Intent(TwoFactorAuthActivity.this, MainActivity.class);
-				startActivity(intent);
-			}
-		});
+		// Start main activity
+		Intent intent = new Intent(TwoFactorAuthActivity.this, MainActivity.class);
+		startActivity(intent);
 	}
 
 	/**
@@ -92,12 +88,7 @@ public class TwoFactorAuthActivity extends AppCompatActivity {
 	 */
 	void twoFactorFail(final String errorMsg) {
 		tv2FAResponse.setText(errorMsg);
-		runOnUiThread(new Runnable(){
-			public void run() {
-				Toast.makeText(getApplicationContext(), errorMsg,
-						Toast.LENGTH_SHORT).show();
-			}
-		});
+		Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
 	}
 
 
@@ -107,7 +98,7 @@ public class TwoFactorAuthActivity extends AppCompatActivity {
 	 */
 	void checkCode(String code){
 		// Client to handle response from server
-		Client client = new Client() {
+		Client client = new Client(this) {
 			@Override
 			public void handleResponse(JSONObject response) throws JSONException {
 				switch (response.getString("response")) {
@@ -151,9 +142,9 @@ public class TwoFactorAuthActivity extends AppCompatActivity {
 	 * Sends request to server to resend email
 	 */
 	void resendEmail() {
-		Client client = new Client() {
+		Client client = new Client(this) {
 			@Override
-			public void handleResponse(JSONObject response) throws JSONException {
+			public void handleResponse(JSONObject response) {
 				displayEmailResent();
 			}
 		};

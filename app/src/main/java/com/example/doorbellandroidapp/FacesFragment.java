@@ -51,18 +51,13 @@ public class FacesFragment extends Fragment {
 	 * @param jsonArray jsonArray of faces
 	 */
 	void populateImages(final JSONArray jsonArray) {
-		getActivity().runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					initImageBitmaps(jsonArray);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-				Log.d(TAG, "handleResponse: images got");
-				initRecyclerView(view);
-			}
-		});
+		try {
+			initImageBitmaps(jsonArray);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		Log.d(TAG, "handleResponse: images got");
+		initRecyclerView(view);
 	}
 
 	/**
@@ -70,7 +65,7 @@ public class FacesFragment extends Fragment {
 	 */
 	void loadImages(){
 		// Client to handle login response from server
-		Client client = new Client() {
+		Client client = new Client(getActivity()) {
 			@Override
 			public void handleResponse(JSONObject response) throws JSONException {
 				switch (response.getString("response")) {

@@ -1,5 +1,6 @@
 package com.example.doorbellandroidapp;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 
 import org.json.JSONException;
@@ -16,7 +17,12 @@ public abstract class Client extends Thread {
     private static final String HOST = "172.18.43.33";
     private static final int PORT = 4444;
 
+    private Activity activity;
     private JSONObject request;
+
+    public Client(Activity activity) {
+        this.activity = activity;
+    }
 
     public void setRequest(JSONObject request) {
         this.request = request;
@@ -40,14 +46,26 @@ public abstract class Client extends Thread {
             PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
+            // Write connection type to server
+            printWriter.println("user");
+
             // Write request to server
             printWriter.println(getStringRequest());
 
             // Handle response
             String serverResponse;
             if ((serverResponse = bufferedReader.readLine()) != null) {
-                JSONObject response = new JSONObject(serverResponse);
-                handleResponse(response);
+                final JSONObject response = new JSONObject(serverResponse);
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            handleResponse(response);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
 
             // Close connection
