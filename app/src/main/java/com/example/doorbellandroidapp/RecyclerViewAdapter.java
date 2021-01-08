@@ -1,5 +1,6 @@
 package com.example.doorbellandroidapp;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -21,6 +22,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -31,7 +35,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 	private ArrayList<String> mImageNames = new ArrayList<>();
 	private ArrayList<String> mImages = new ArrayList<>();
+	private ArrayList<Integer> mImageIDs = new ArrayList<>();
 	private Context mContext;
+	private Activity mActivity;
 	Dialog dialog;
 
 	/**
@@ -40,10 +46,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 	 * @param mImageNames name of each image being displayed
 	 * @param mImages each image being displayed
 	 */
-	public RecyclerViewAdapter( Context mContext, ArrayList<String> mImageNames, ArrayList<String> mImages) {
+	public RecyclerViewAdapter( Context mContext, Activity mActivity, ArrayList<String> mImageNames, ArrayList<String> mImages, ArrayList<Integer> mImageIDs) {
 		this.mImageNames = mImageNames;
 		this.mImages = mImages;
+		this.mImageIDs = mImageIDs;
 		this.mContext = mContext;
+		this.mActivity = mActivity;
+
 	}
 
 	/**
@@ -76,6 +85,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 				.into(holder.image);
 		holder.imageName.setText(mImageNames.get(position));
 
+		holder.imageID = mImageIDs.get(position);
 
 		holder.ivEdit.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -100,6 +110,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 		TextView imageName;
 		RelativeLayout parentLayout;
 		ImageView ivEdit;
+		Integer imageID;
 
 		public ViewHolder(@NonNull View itemView) {
 			super(itemView);
@@ -143,10 +154,41 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 			@Override
 			public void onClick(View v) {
 				Toast.makeText(mContext, "face deleted", Toast.LENGTH_SHORT).show();
+				deleteFace(holder.imageID);
 				dialog.dismiss();
+
 				// TODO Successfully remove face on server and in app (refresh page?)
 			}
 		});
 		dialog.show();
+	}
+
+	void deleteFace(Integer ID){
+		// Client to handle response from server
+		Client client = new Client(mActivity) {
+			@Override
+			public void handleResponse(JSONObject response) throws JSONException {
+				switch (response.getString("response")) {
+					case "success":
+
+						break;
+					case "fail":
+						break;
+				}
+			}
+		};
+
+		// JSON Request object
+		JSONObject request = new JSONObject();
+		try {
+			request.put("request","deleteface");
+			request.put("id", ID);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		// Set request and start connection
+		client.setRequest(request);
+		client.start();
 	}
 }

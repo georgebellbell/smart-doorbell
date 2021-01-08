@@ -30,6 +30,7 @@ public class FacesFragment extends Fragment {
 	//vars
 	private ArrayList<String> mNames = new ArrayList<>();
 	private ArrayList<String> mImages = new ArrayList<>();
+	private ArrayList<Integer> mImageIDs = new ArrayList<>();
 
 	private SharedPreferences preferences;
 	private String currentUser;
@@ -108,6 +109,7 @@ public class FacesFragment extends Fragment {
 			Log.d(TAG, "initImageBitmaps: "+currentImage.getString("image"));
 			mImages.add(currentImage.getString("image"));
 			mNames.add(currentImage.getString("person"));
+			mImageIDs.add(currentImage.getInt("id"));
 		}
 
 	}
@@ -119,7 +121,7 @@ public class FacesFragment extends Fragment {
 	private void initRecyclerView(View view){
 		Log.d(TAG, "initRecyclerView: init recyclerview.");
 		RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
-		RecyclerViewAdapter adapter = new RecyclerViewAdapter(getActivity(), mNames, mImages);
+		RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), getActivity(), mNames, mImages, mImageIDs);
 		recyclerView.setAdapter(adapter);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 	}
