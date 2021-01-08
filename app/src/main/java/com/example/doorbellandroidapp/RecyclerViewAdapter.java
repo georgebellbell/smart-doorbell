@@ -146,7 +146,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 			@Override
 			public void onClick(View v) {
 				holder.imageName.setText(etEditImageName.getText().toString());
-				// TODO save change to database, add some validation
+				changeName(holder.imageID, etEditImageName.getText().toString());
 				dialog.dismiss();
 			}
 		});
@@ -156,8 +156,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 				Toast.makeText(mContext, "face deleted", Toast.LENGTH_SHORT).show();
 				deleteFace(holder.imageID);
 				dialog.dismiss();
-
-				// TODO Successfully remove face on server and in app (refresh page?)
 			}
 		});
 		dialog.show();
@@ -170,9 +168,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 			public void handleResponse(JSONObject response) throws JSONException {
 				switch (response.getString("response")) {
 					case "success":
-
+						mActivity.finish();
+						mActivity.startActivity(mActivity.getIntent());
+						// TODO take user back to faces page rather than the main page
 						break;
 					case "fail":
+						// TODO display toast message
 						break;
 				}
 			}
@@ -183,6 +184,39 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 		try {
 			request.put("request","deleteface");
 			request.put("id", ID);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		// Set request and start connection
+		client.setRequest(request);
+		client.start();
+	}
+
+	void changeName(Integer ID, String name){
+		// Client to handle response from server
+		Client client = new Client(mActivity) {
+			@Override
+			public void handleResponse(JSONObject response) throws JSONException {
+				switch (response.getString("response")) {
+					case "success":
+						mActivity.finish();
+						mActivity.startActivity(mActivity.getIntent());
+						// TODO take user back to faces page rather than the main page
+						break;
+					case "fail":
+						// TODO display toast message
+						break;
+				}
+			}
+		};
+
+		// JSON Request object
+		JSONObject request = new JSONObject();
+		try {
+			request.put("request","renameface");
+			request.put("id", ID);
+			request.put("name", name);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
