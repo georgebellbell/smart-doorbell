@@ -19,6 +19,24 @@ public class UserProtocol extends Protocol {
 		requestResponse.put("twofactor", new ResponseHandler(this::twoFactor, "username", "code"));
 		requestResponse.put("resendtwofactor", new ResponseHandler(this::resendTwoFactor, "username"));
 		requestResponse.put("faces", new ResponseHandler(this::faces, "username"));
+		requestResponse.put("deleteface", new ResponseHandler(this::deleteFace, "id"));
+		requestResponse.put("renameface", new ResponseHandler(this::renameFace, "id", "name"));
+	}
+
+	public void renameFace() {
+		dataTable.connect();
+		int id = request.getInt("id");
+		String name = request.getString("name");
+		if (dataTable.changeName(id, name))
+			response.put("response", "sucess");
+		dataTable.disconnect();
+	}
+	public void deleteFace() {
+		dataTable.connect();
+		int id = request.getInt("id");
+		if (dataTable.deleteRecordById(id))
+			response.put("response", "success");
+		dataTable.disconnect();
 	}
 
 	public void faces() {
@@ -38,6 +56,7 @@ public class UserProtocol extends Protocol {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				jsonData.put("id", data.getImageID());
 				jsonData.put("image", encodedImage);
 				jsonData.put("person", data.getPersonName());
 				jsonData.put("created", data.getCreatedAt());
@@ -68,9 +87,13 @@ public class UserProtocol extends Protocol {
 			response.put("message", "Successfully logged in!");
 
 			// Create and send 2FA code
-			TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(currentUser);
-			twoFactorAuthentication.generateCode();
-			twoFactorAuthentication.sendEmail();
+			Thread emailThread = new Thread(() -> {
+				TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(currentUser);
+				twoFactorAuthentication.generateCode();
+				twoFactorAuthentication.sendEmail();
+			});
+			emailThread.start();
+
 		}
 		else {
 			// Failed login response

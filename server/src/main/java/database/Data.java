@@ -7,6 +7,7 @@ import java.util.Objects;
 
 public class Data {
 	// Object properties
+	private int imageID;
 	private Blob image;
 	private String deviceID;
 	private String personName;
@@ -14,24 +15,18 @@ public class Data {
 
 	// Double constructor for when retrieving data from database and when adding to the database
 	public Data(String deviceID, Blob image, String personName) {
-		this(deviceID, image, personName, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+		this(-1, deviceID, image, personName, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 	}
-	public Data(String deviceID, Blob image, String personName, String created_at) {
+	public Data(int imageID, String deviceID, Blob image, String personName, String created_at) {
+		this.imageID = imageID;
 		this.deviceID = deviceID;
 		this.image = image;
 		this.personName = personName;
 		this.createdAt = created_at;
 	}
-	@Override
-	public String toString() {
-		return "Data{" +
-				"image='" + image + '\'' +
-				", username='" + deviceID + '\'' +
-				", person_name='" + personName + '\'' +
-				", created_at=" + createdAt +
-				'}';
-	}
 
+	public int getImageID() { return imageID; }
+	public void setImageID(int imageID) { this.imageID = imageID; }
 	public Blob getImage() { return image; }
 	public void setImage(Blob image) { this.image = image; }
 	public String getDeviceID() {
@@ -52,12 +47,25 @@ public class Data {
 	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
 	}
+
+	@Override
+	public String toString() {
+		return "Data{" +
+				"imageID=" + imageID +
+				", image=" + image +
+				", deviceID='" + deviceID + '\'' +
+				", personName='" + personName + '\'' +
+				", createdAt='" + createdAt + '\'' +
+				'}';
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Data data = (Data) o;
-		return Objects.equals(image, data.image) &&
+		return imageID == data.imageID &&
+				Objects.equals(image, data.image) &&
 				Objects.equals(deviceID, data.deviceID) &&
 				Objects.equals(personName, data.personName) &&
 				Objects.equals(createdAt, data.createdAt);
@@ -65,6 +73,6 @@ public class Data {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(image, deviceID, personName, createdAt);
+		return Objects.hash(imageID, image, deviceID, personName, createdAt);
 	}
 }

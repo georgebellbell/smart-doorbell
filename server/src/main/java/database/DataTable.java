@@ -3,6 +3,7 @@ package database;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class DataTable extends DatabaseConnection {
 	 */
 	public boolean addRecord(Data data) {
 		try {
-			String query = "INSERT INTO data (Device_id, Image, Person, Created_at)"
+			String query = "INSERT INTO data (id, Device_id, Image, Person, Created_at)"
 					+ " VALUES (?, ?, ?, ?)";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, data.getDeviceID());
@@ -33,18 +34,19 @@ public class DataTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param username - username of data to retrieve
+	 * @param id - id of data to retrieve
 	 * @return data object if exists in the database
 	 */
 	public Data getRecord(int id) {
 		Data data = null;
 		try {
-			String query = "SELECT Device_id, Image, Person, Created_at FROM data WHERE Id=?";
+			String query = "SELECT Id, Device_id, Image, Person, Created_at FROM data WHERE Id=?";
 			statement = conn.prepareStatement(query);
 			statement.setInt(1, id);
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				data = new Data(
+						resultSet.getInt("Id"),
 						resultSet.getString("Device_id"),
 						resultSet.getBlob("Image"),
 						resultSet.getString("Person"),
@@ -83,12 +85,13 @@ public class DataTable extends DatabaseConnection {
 	public ArrayList<Data> getAllImages(String deviceId) {
 		ArrayList<Data> allImages = new ArrayList<>();
 		try {
-			String query = "SELECT Device_id, Image, Person, Created_at FROM data WHERE Device_id=?";
+			String query = "SELECT Id, Device_id, Image, Person, Created_at FROM data WHERE Device_id=?";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, deviceId);
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				Data data = new Data(
+						resultSet.getInt("Id"),
 						resultSet.getString("Device_id"),
 						resultSet.getBlob("Image"),
 						resultSet.getString("Person"),
@@ -101,5 +104,20 @@ public class DataTable extends DatabaseConnection {
 			return null;
 		}
 		return allImages;
+	}
+
+	public boolean changeName(int id, String name) {
+		try {
+			String query = "UPDATE data Set Person=? WHERE Id=?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, name);
+			statement.setInt(2, id);
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

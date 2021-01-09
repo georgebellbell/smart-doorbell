@@ -30,6 +30,7 @@ with open("PiID.txt", "r") as file:
 # Take picture
 def capture():
 	camera = PiCamera()
+	camera.resolution = (512, 384)
 	camera.capture(imagePath)
 	camera.close()
 
@@ -40,6 +41,7 @@ def sendImage():
 	output = '{"request":"image","id":"' + PiId + '","data":"' + imageData + '"}\r\n'
 	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 		s.connect((host, port))
+		s.sendall(bytes('doorbell\r\n', 'utf-8'))
 		s.sendall(bytes(output, 'utf-8'))
 		data = s.recv(1024)
 
