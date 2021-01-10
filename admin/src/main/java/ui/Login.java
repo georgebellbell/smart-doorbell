@@ -79,6 +79,7 @@ public class Login extends JFrame {
 		// Run request
 		JSONObject response = connection.run(request);
 		if (response.getString("response").equals("success")) {
+			new AdminMenu(connection);
 			dispose();
 		} else {
 			setErrorMessage(response.getString("message"));
