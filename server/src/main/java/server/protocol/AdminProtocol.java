@@ -1,14 +1,81 @@
 package server.protocol;
 
 import authentication.TwoFactorAuthentication;
+import database.Data;
 import database.User;
+import org.json.JSONObject;
 import server.ResponseHandler;
+
+import java.sql.Blob;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class AdminProtocol extends Protocol {
 	private User user;
 
 	public AdminProtocol() {
 		requestResponse.put("login", new ResponseHandler(this::login, "username", "password"));
+		requestResponse.put("user", new ResponseHandler(this::userInfo, "username"));
+		requestResponse.put("deleteuser", new ResponseHandler(this::deleteUser, "username"));
+		requestResponse.put("faces", new ResponseHandler(this::faces, "username"));
+		requestResponse.put("update", new ResponseHandler(this::update, "username"));
+	}
+
+	public void update() {
+
+	}
+
+	public void faces() {
+		dataTable.connect();
+		ArrayList<Data> allImages = dataTable.getAllImages(request.getString("username"));
+		dataTable.disconnect();
+		ArrayList<JSONObject> jsonImages = new ArrayList<>();
+		if (allImages != null) {
+			for (Data data: allImages) {
+				JSONObject jsonData = new JSONObject();
+				Blob blob = data.getImage();
+				byte[] image = null;
+				String encodedImage = null;
+				try {
+					image = blob.getBytes(1, (int) blob.length());
+					encodedImage = java.util.Base64.getEncoder().encodeToString(image);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				jsonData.put("id", data.getImageID());
+				jsonData.put("image", encodedImage);
+				jsonData.put("person", data.getPersonName());
+				jsonData.put("created", data.getCreatedAt());
+				jsonImages.add(jsonData);
+			}
+			response.put("response", "success");
+			response.put("images", jsonImages);
+		}
+		else {
+			response.put("response", "fail");
+			response.put("message", "failure to retrieve all images");
+		}
+	}
+
+	public void deleteUser() {
+		accountTable.connect();
+		accountTable.deleteRecord(request.getString("username"));
+		accountTable.disconnect();
+		response.put("response", "success");
+	}
+
+	public void userInfo() {
+		String username = request.getString("username");
+		accountTable.connect();
+		User user = accountTable.getRecord(username);
+		ArrayList<String> deviceIDs = accountTable.getDeviceID(username);
+		accountTable.disconnect();
+		response.put("response", "success");
+		response.put("username", user.getUsername());
+		response.put("email", user.getEmail());
+		response.put("role", user.getRole());
+		response.put("time", user.getCreated_at());
+		response.put("devices", deviceIDs.toString());
 	}
 
 	public void setUser(User user) {
