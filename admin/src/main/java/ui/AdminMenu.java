@@ -45,15 +45,15 @@ public class AdminMenu extends JFrame{
 		// Create request
 		JSONObject request = new JSONObject();
 		request.put("request", "user");
-		request.put("usernameField", username);
+		request.put("username", username);
 
 		// Run request
 		JSONObject response = connection.run(request);
 		if (response.getString("response").equals("success")) {
 			usernameField.setText(response.getString("username"));
 			emailField.setText(response.getString("email"));
-			devicesField.setText(response.getString("role"));
-			createdField.setText(response.getString("created"));
+			devicesField.setText(response.getString("devices"));
+			createdField.setText(response.getString("time"));
 			roleBox.setSelectedIndex(0);
 		} else {
 			System.out.println(response.getString("message"));
