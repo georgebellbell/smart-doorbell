@@ -55,15 +55,6 @@ public class Client {
 			throw new IllegalStateException("Request is already in progress");
 		}
 
-		// Ensure socket is still running
-		try {
-			if (!socket.getKeepAlive()) {
-				connect();
-			}
-		} catch (IOException e) {
-			throw new IllegalStateException("Connection to server failed");
-		}
-
 		// Send request
 		requestInProgress = true;
 		out.println(request.toString());
