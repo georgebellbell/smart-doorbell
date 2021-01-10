@@ -50,6 +50,11 @@ public class AdminMenu extends JFrame{
 			Thread t = new Thread(() -> deleteUser(username));
 			t.start();
 		});
+
+		logoutButton.addActionListener(actionEvent -> {
+			connection.close();
+			dispose();
+		});
 	}
 
 	private void getUserInformation(String username) {
