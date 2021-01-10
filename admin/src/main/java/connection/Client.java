@@ -20,7 +20,7 @@ public class Client {
 	private BufferedReader in;
 
 	// Status
-	private boolean requestInProgess = false;
+	private boolean requestInProgress = false;
 
 	public Client() {
 		try {
@@ -41,7 +41,7 @@ public class Client {
 	}
 
 	public boolean isRequestInProgress() {
-		return requestInProgess;
+		return requestInProgress;
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class Client {
 		}
 
 		// Send request
-		requestInProgess = true;
+		requestInProgress = true;
 		out.println(request.toString());
 
 		// Get response
@@ -80,7 +80,7 @@ public class Client {
 		}
 
 		// Request is over
-		requestInProgess = false;
+		requestInProgress = false;
 
 		return response;
 	}
