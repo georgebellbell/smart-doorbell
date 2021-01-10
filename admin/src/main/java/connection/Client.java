@@ -19,6 +19,9 @@ public class Client {
 	private PrintWriter out;
 	private BufferedReader in;
 
+	// Status
+	private boolean requestInProgess = false;
+
 	public Client() {
 		try {
 			connect();
@@ -28,9 +31,17 @@ public class Client {
 	}
 
 	private void connect() throws IOException {
+		// Socket connection
 		socket = new Socket(HOST, PORT);
 		out = new PrintWriter(socket.getOutputStream(), true);
 		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+		// Send connection type
+		out.println("admin");
+	}
+
+	public boolean isRequestInProgress() {
+		return requestInProgess;
 	}
 
 	/**
@@ -39,10 +50,22 @@ public class Client {
 	 * @return response from server
 	 */
 	public JSONObject run(JSONObject request) {
-		// Send connection type
-		out.println("admin");
+		// Check request is not already in progress
+		if (isRequestInProgress()) {
+			throw new IllegalStateException("Request is already in progress");
+		}
+
+		// Ensure socket is still running
+		try {
+			if (!socket.getKeepAlive()) {
+				connect();
+			}
+		} catch (IOException e) {
+			throw new IllegalStateException("Connection to server failed");
+		}
 
 		// Send request
+		requestInProgess = true;
 		out.println(request.toString());
 
 		// Get response
@@ -55,6 +78,9 @@ public class Client {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		// Request is over
+		requestInProgess = false;
 
 		return response;
 	}

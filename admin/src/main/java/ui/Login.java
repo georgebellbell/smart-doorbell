@@ -17,12 +17,15 @@ public class Login extends JFrame {
 	private JLabel errorLabel;
 	private JPanel panel;
 
+	private Client connection;
+
 	public Login() {
 		add(panel);
 		setTitle("Quick Solutions: Smart Doorbell Admin Tool");
 		setSize(450,220);
 		setVisible(true);
 		setErrorMessage("");
+		connection = new Client();
 		loginButton.addActionListener(actionEvent -> {
 			String username = usernameField.getText();
 			String password = String.valueOf(passwordField.getPassword());
@@ -62,20 +65,23 @@ public class Login extends JFrame {
 	 * @param password inputted by user
 	 */
 	private void loginToServer(String username, String password) {
+		// Make sure request is not already in progress
+		if (connection.isRequestInProgress()) {
+			return;
+		}
+
 		// Create request
 		JSONObject request = new JSONObject();
 		request.put("request", "login");
 		request.put("username", username);
 		request.put("password", password);
 
-		// Create connection and run request
-		Client connection = new Client();
+		// Run request
 		JSONObject response = connection.run(request);
 		if (response.getString("response").equals("success")) {
 			dispose();
 		} else {
 			setErrorMessage(response.getString("message"));
-			connection.close();
 		}
 
 	}
