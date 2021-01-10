@@ -40,7 +40,7 @@ public class AccountTable extends DatabaseConnection {
 	public User getRecord(String username){
 		User user = null;
 		try {
-			String query = "SELECT Username, Email, Password, Role, Created_at  FROM accounts WHERE Username=?";
+			String query = "SELECT Username, Password, Email, Role, Created_at FROM accounts WHERE Username=?";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, username);
 			ResultSet resultSet = statement.executeQuery();
@@ -62,6 +62,26 @@ public class AccountTable extends DatabaseConnection {
 	}
 
 	/**
+	 * @param username - username of the account to retrieve the deviceID or ID's from
+	 * @return deviceID associated with the user
+	 */
+	public String getDeviceID(String username) {
+		String deviceID = null;
+		try {
+			String query = "SELECT Pi_id FROM doorbelluser WHERE Username=?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, username);
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next())
+				deviceID = resultSet.getString("Pi_id");
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return deviceID;
+	}
+
+	/**
 	 * @param username of record to delete
 	 * @return if record deleted
 	 */
@@ -79,6 +99,12 @@ public class AccountTable extends DatabaseConnection {
 		}
 	}
 
+	/**
+	 * @param username - username of the user's account
+	 * @param password - password of the account
+	 * @param role - role of the user
+	 * @return login retrieved from the database
+	 */
 	public boolean getLogin(String username, String password, String role) {
 		boolean found = false;
 		password = passwordManager.checkPasswords(getPassword(username), password);
@@ -98,6 +124,10 @@ public class AccountTable extends DatabaseConnection {
 		return found;
 	}
 
+	/**
+	 * @param username - username of the account to retrieve the password of
+	 * @return password of the user if found, else null
+	 */
 	public String getPassword(String username) {
 		String found = null;
 		try {
@@ -112,5 +142,27 @@ public class AccountTable extends DatabaseConnection {
 			e.printStackTrace();
 		}
 		return found;
+	}
+
+	/**
+	 * @param username - username of the person to change the password of
+	 * @param password - password to change in the database
+	 * @return if password successfully updated
+	 */
+	public boolean changePassword(String username, String password) {
+		try {
+			String salt = password.substring(0, 29);
+			String query = "UPDATE accounts Set Password = ?, Salt = ? WHERE Username = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, password);
+			statement.setString(2, salt);
+			statement.setString(3, username);
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }
