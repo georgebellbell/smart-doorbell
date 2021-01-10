@@ -2,6 +2,7 @@ package database;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 
 public class AccountTable extends DatabaseConnection {
@@ -65,20 +66,21 @@ public class AccountTable extends DatabaseConnection {
 	 * @param username - username of the account to retrieve the deviceID or ID's from
 	 * @return deviceID associated with the user
 	 */
-	public String getDeviceID(String username) {
-		String deviceID = null;
+	public ArrayList<String> getDeviceID(String username) {
+		ArrayList<String> deviceIDs = new ArrayList<>();
 		try {
 			String query = "SELECT Pi_id FROM doorbelluser WHERE Username=?";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, username);
 			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.next())
-				deviceID = resultSet.getString("Pi_id");
+			while (resultSet.next()){
+				deviceIDs.add(resultSet.getString("Pi_id"));
+			}
 			statement.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return deviceID;
+		return deviceIDs;
 	}
 
 	/**

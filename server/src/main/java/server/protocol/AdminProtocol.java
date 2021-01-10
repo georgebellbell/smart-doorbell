@@ -59,7 +59,7 @@ public class AdminProtocol extends Protocol {
 
 	public void deleteUser() {
 		accountTable.connect();
-		accountTable.deleteRecord(request.getString("usnername"));
+		accountTable.deleteRecord(request.getString("username"));
 		accountTable.disconnect();
 		response.put("response", "success");
 	}
@@ -67,10 +67,15 @@ public class AdminProtocol extends Protocol {
 	public void userInfo() {
 		String username = request.getString("username");
 		accountTable.connect();
-		accountTable.getRecord(username);
-		accountTable.getDeviceID(username);
+		User user = accountTable.getRecord(username);
+		ArrayList<String> deviceIDs = accountTable.getDeviceID(username);
 		accountTable.disconnect();
 		response.put("response", "success");
+		response.put("username", user.getUsername());
+		response.put("email", user.getEmail());
+		response.put("role", user.getRole());
+		response.put("time", user.getCreated_at());
+		response.put("devices", deviceIDs.toString());
 	}
 
 	public void setUser(User user) {
