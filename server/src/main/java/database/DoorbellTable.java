@@ -53,4 +53,20 @@ public class DoorbellTable extends DatabaseConnection {
 			return false;
 		}
 	}
+
+	public boolean updateDoorbell(String id, String name) {
+		try {
+			String query = "UPDATE doorbell Set DoorbellName = ? WHERE Pi_id = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, name);
+			statement.setString(2, id);
+			statement.execute();
+			statement.close();
+			return true;
+		}
+		catch (SQLException e) {
+		System.out.println("Duplicate username");
+		return false;
+		}
+	}
 }
