@@ -4,6 +4,7 @@ from picamera import PiCamera  # This library installed on the raspberry pi by d
 import os
 import socket
 import base64
+import crop
 
 # Setup file path for image location
 cwd = os.getcwd()
@@ -70,11 +71,13 @@ while True:
 		except Exception as e:
 			print("Failed to capture photo")
 
+		crop(imagePath)
+
 		# Send photo to the server
 		try:
 			sendImage()
 			print("Image sent to server")
-			sleep(20)
+			sleep(2)  # 20
 		except Exception as e:
 			print("Failed to send image to server")
 		led1.off()

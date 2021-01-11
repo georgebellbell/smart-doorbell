@@ -7,6 +7,8 @@ class crop:
 		self.imagePath = imagePath
 		self.image = cv2.imread(self.imagePath)
 
+		crop(self)
+
 	def crop(self):
 		grayscale = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
 		faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
