@@ -74,7 +74,7 @@ public class AdminMenu extends JFrame{
 
 		searchButton.addActionListener(actionEvent -> {
 			String username = searchField.getText();
-			Thread t = new Thread(() -> getUserInformation(username));
+			Thread t = new Thread(() -> searchUser(username));
 			t.start();
 		});
 
@@ -115,7 +115,11 @@ public class AdminMenu extends JFrame{
 		super.dispose();
 	}
 
-	private void getUserInformation(String username) {
+	/**
+	 * Sends request to server to search for user and populates user panel if successful
+	 * @param username - Username of user being searched for
+	 */
+	private void searchUser(String username) {
 		// Make sure request is not already in progress
 		if (connection.isRequestInProgress()) {
 			return;
