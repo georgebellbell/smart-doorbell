@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 
 public class AccountTable extends DatabaseConnection {
@@ -189,5 +190,64 @@ public class AccountTable extends DatabaseConnection {
 			System.out.println("Duplicate username");
 			return false;
 		}
+	}
+
+	/**
+	 * @return all emails from the account table
+	 */
+	public HashSet<String> getAllEmails() {
+		HashSet<String> emails = new HashSet<>();
+		try {
+			String query = "SELECT Email FROM accounts";
+			statement = conn.prepareStatement(query);
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next())
+				emails.add(resultSet.getString("email"));
+
+		} catch (SQLException e) {
+			System.out.println("Can't retrieve all emails");
+		}
+		return emails;
+	}
+
+	/**
+	 * @param id - doorbell id that links to the associated users
+	 * @return all email addresses associated to id
+	 */
+	public HashSet<String> getEmailByDoorbell(String id) {
+		HashSet<String> emails = new HashSet<>();
+		try {
+			String query = "SELECT Email FROM accounts, doorbelluser WHERE accounts.Username = doorbelluser.Username AND doorbelluser.Pi_id = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, id);
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next())
+				emails.add(resultSet.getString("email"));
+
+		} catch (SQLException e) {
+			System.out.println("Doorbell doesn't exist");
+		}
+		return emails;
+	}
+
+	/**
+	 * @param username - username of the email to retrieve
+	 * @return email of the associated username
+	 */
+	public String getEmailByUsername(String username) {
+		String email = null;
+		try {
+			String query = "SELECT Email FROM accounts WHERE Username = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, username);
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next())
+				email = resultSet.getString("email");
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Invalid username");
+		}
+		return email;
 	}
 }

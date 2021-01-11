@@ -8,6 +8,10 @@ import java.util.ArrayList;
 public class DoorbellTable extends DatabaseConnection {
 	PreparedStatement statement;
 
+	/**
+	 * @param id - id of the doorbell to retrieve the name of
+	 * @return the user friendly name of the doorbell
+	 */
 	public String getDoorbellName(String id) {
 		String doorbellName = null;
 		try {
@@ -24,6 +28,10 @@ public class DoorbellTable extends DatabaseConnection {
 		return doorbellName;
 	}
 
+	/**
+	 * @param id - id of the doorbell
+	 * @return all assigned users to the doorbell
+	 */
 	public ArrayList<String> getUsers(String id) {
 		ArrayList<String> users = new ArrayList<>();
 		try {
@@ -40,6 +48,10 @@ public class DoorbellTable extends DatabaseConnection {
 		return users;
 	}
 
+	/**
+	 * @param id - id of the doorbell to delete
+	 * @return if doorbell deleted
+	 */
 	public boolean deleteDoorbell(String id) {
 		try {
 			String query = "DELETE FROM doorbell WHERE Pi_id=?";
@@ -54,6 +66,11 @@ public class DoorbellTable extends DatabaseConnection {
 		}
 	}
 
+	/**
+	 * @param id - id of the doorbell to update the name of
+	 * @param name - name to change the doorbell to
+	 * @return if sucessfully updated the name
+	 */
 	public boolean updateDoorbell(String id, String name) {
 		try {
 			String query = "UPDATE doorbell Set DoorbellName = ? WHERE Pi_id = ?";

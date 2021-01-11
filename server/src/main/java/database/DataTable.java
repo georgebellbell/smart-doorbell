@@ -102,6 +102,11 @@ public class DataTable extends DatabaseConnection {
 		return allImages;
 	}
 
+	/**
+	 * @param id - id of image stored in the database
+	 * @param name - name to change the person to be displayed in the app
+	 * @return if name has been changed
+	 */
 	public boolean changeName(int id, String name) {
 		try {
 			String query = "UPDATE data Set Person=? WHERE Id=?";
