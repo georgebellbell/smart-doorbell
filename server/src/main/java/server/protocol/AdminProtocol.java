@@ -21,6 +21,22 @@ public class AdminProtocol extends Protocol {
 		requestResponse.put("update", new ResponseHandler(this::update, "username", "newusername", "newemail"));
 		requestResponse.put("searchdoorbell", new ResponseHandler(this::searchDoorbell, "id"));
 		requestResponse.put("deletedoorbell", new ResponseHandler(this::deleteDoorbell, "id"));
+		requestResponse.put("updatedoobrell", new ResponseHandler(this::updateDoorbell,"id", "name"));
+	}
+
+	public void updateDoorbell() {
+		String id = request.getString("id");
+		String name = request.getString("name");
+		doorbellTable.connect();
+		if (doorbellTable.updateDoorbell(id, name)) {
+			response.put("response", "success");
+			response.put("message", "Doorbell successfully updated");
+		}
+		else {
+			response.put("response", "fail");
+			response.put("message", "Doorbell could not be deleted");
+		}
+		doorbellTable.disconnect();
 	}
 
 	public void deleteDoorbell() {
