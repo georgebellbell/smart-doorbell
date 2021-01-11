@@ -2,6 +2,7 @@ package server.protocol;
 
 import authentication.TwoFactorAuthentication;
 import database.Data;
+import database.DoorbellTable;
 import database.User;
 import org.json.JSONObject;
 import server.ResponseHandler;
@@ -17,8 +18,40 @@ public class AdminProtocol extends Protocol {
 		requestResponse.put("login", new ResponseHandler(this::login, "username", "password"));
 		requestResponse.put("user", new ResponseHandler(this::userInfo, "username"));
 		requestResponse.put("deleteuser", new ResponseHandler(this::deleteUser, "username"));
-		requestResponse.put("faces", new ResponseHandler(this::faces, "username"));
 		requestResponse.put("update", new ResponseHandler(this::update, "username", "newusername", "newemail"));
+		requestResponse.put("searchdoorbell", new ResponseHandler(this::searchDoorbell, "id"));
+		requestResponse.put("deletedoorbell", new ResponseHandler(this::deleteDoorbell, "id"));
+	}
+
+	public void deleteDoorbell() {
+		String id = request.getString("id");
+		doorbellTable.connect();
+		if (doorbellTable.deleteDoorbell(id)) {
+			response.put("response", "success");
+			response.put("message", "Doorbell successfully updated");
+		} else {
+			response.put("response", "fail");
+			response.put("message", "Doorbell could not be deleted");
+		}
+		doorbellTable.disconnect();
+	}
+
+	public void searchDoorbell() {
+		String id = request.getString("id");
+		doorbellTable.connect();
+		String doorbellName = doorbellTable.getDoorbellName(id);
+		ArrayList<String> users = doorbellTable.getUsers(id);
+		doorbellTable.disconnect();
+		faces();
+		if (doorbellName != null) {
+			response.put("response", "success");
+			response.put("id", id);
+			response.put("name",doorbellName);
+			response.put("users", users);
+		} else {
+			response.put("response", "fail");
+			response.put("message", "Doorbell could not be found");
+		}
 	}
 
 	public void update() {
@@ -60,13 +93,8 @@ public class AdminProtocol extends Protocol {
 				jsonData.put("created", data.getCreatedAt());
 				jsonImages.add(jsonData);
 			}
-			response.put("response", "success");
-			response.put("images", jsonImages);
 		}
-		else {
-			response.put("response", "fail");
-			response.put("message", "failure to retrieve all images");
-		}
+		response.put("images", jsonImages);
 	}
 
 	public void deleteUser() {

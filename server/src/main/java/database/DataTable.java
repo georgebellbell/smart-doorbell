@@ -1,9 +1,5 @@
 package database;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -17,7 +13,7 @@ public class DataTable extends DatabaseConnection {
 	 */
 	public boolean addRecord(Data data) {
 		try {
-			String query = "INSERT INTO data (id, Device_id, Image, Person, Created_at)"
+			String query = "INSERT INTO data (Device_id, Image, Person, Created_at)"
 					+ " VALUES (?, ?, ?, ?)";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, data.getDeviceID());
