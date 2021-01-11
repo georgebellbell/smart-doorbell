@@ -28,6 +28,7 @@ public class AdminMenu extends JFrame{
 	private JButton saveChangesButton;
 	private JPanel mainPanel;
 	private JPanel analyticsPanel;
+	private String displayedUser;
 
 	private Client connection;
 
@@ -64,6 +65,13 @@ public class AdminMenu extends JFrame{
 					searchButton.doClick();
 				}
 			}
+		});
+
+		saveChangesButton.addActionListener(actionEvent -> {
+			String newUsername = usernameField.getText();
+			String newEmail = emailField.getText();
+			Thread t = new Thread(() -> updateUser(newUsername, newEmail));
+			t.start();
 		});
 
 		deleteUserButton.addActionListener(actionEvent -> {
@@ -117,6 +125,7 @@ public class AdminMenu extends JFrame{
 	 * @param devices - Doorbell devices of user
 	 */
 	private void populateUserInformation(String username, String email, String role, String time, String devices) {
+		displayedUser = username;
 		usernameField.setText(username);
 		emailField.setText(email);
 		roleField.setText(role);
@@ -131,6 +140,31 @@ public class AdminMenu extends JFrame{
 	private void clearUserInformation() {
 		populateUserInformation("", "", "", "", "");
 		userInfoPanel.setVisible(false);
+	}
+
+	private void updateUser(String newUsername, String newEmail) {
+		// Make sure request is not already in progress
+		if (connection.isRequestInProgress()) {
+			return;
+		}
+
+		// Create request
+		JSONObject request = new JSONObject();
+		request.put("request", "update");
+		request.put("username", displayedUser);
+		request.put("newusername", newUsername);
+		request.put("newemail", newEmail);
+
+		// Run request
+		JSONObject response = connection.run(request);
+		if (response.getString("response").equals("success")) {
+			displayedUser = newUsername;
+			JOptionPane.showMessageDialog(this,
+					"Account successfully updated", "Account", JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(this,
+					"Account could not be updated", "Account", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	/**
@@ -156,7 +190,7 @@ public class AdminMenu extends JFrame{
 					"Account successfully deleted", "Account", JOptionPane.INFORMATION_MESSAGE);
 		} else {
 			JOptionPane.showMessageDialog(this,
-					"Account not deleted", "Account", JOptionPane.ERROR_MESSAGE);
+					response.getString("message"), "Account", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

@@ -2,6 +2,7 @@ package database;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 
@@ -176,7 +177,7 @@ public class AccountTable extends DatabaseConnection {
 	 */
 	public boolean changeDetails(String oldUsername, String newUsername, String newEmail) {
 		try {
-			String query = "UPDATE accounts Set Username = ?, Email =?, WHERE Username = ?";
+			String query = "UPDATE accounts Set Username = ?, Email =? WHERE Username = ?";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, newUsername);
 			statement.setString(2, newEmail);
@@ -184,7 +185,7 @@ public class AccountTable extends DatabaseConnection {
 			statement.execute();
 			statement.close();
 			return true;
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}

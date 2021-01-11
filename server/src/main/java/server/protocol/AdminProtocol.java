@@ -24,7 +24,7 @@ public class AdminProtocol extends Protocol {
 	public void update() {
 		String oldUsername = request.getString("username");
 		String newUsername = request.getString("newusername");
-		String newEmail = request.getString("email");
+		String newEmail = request.getString("newemail");
 		accountTable.connect();
 		accountTable.changeDetails(oldUsername, newUsername, newEmail);
 		accountTable.disconnect();
