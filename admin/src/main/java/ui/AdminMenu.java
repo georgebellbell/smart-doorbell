@@ -126,7 +126,7 @@ public class AdminMenu extends JFrame{
 
 		viewFacesButton.addActionListener(actionEvent -> showDoorbellFaces());
 
-		saveChangesButton.addActionListener(actionEvent -> {
+		saveDoorbellChangesButton.addActionListener(actionEvent -> {
 			String id = displayedDoorbell;
 			String name = doorbellNameField.getText();
 			Thread t = new Thread(() -> updateDoorbell(id, name));

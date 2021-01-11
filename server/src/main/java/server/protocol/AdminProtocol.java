@@ -21,7 +21,7 @@ public class AdminProtocol extends Protocol {
 		requestResponse.put("update", new ResponseHandler(this::update, "username", "newusername", "newemail"));
 		requestResponse.put("searchdoorbell", new ResponseHandler(this::searchDoorbell, "id"));
 		requestResponse.put("deletedoorbell", new ResponseHandler(this::deleteDoorbell, "id"));
-		requestResponse.put("updatedoobrell", new ResponseHandler(this::updateDoorbell,"id", "name"));
+		requestResponse.put("updatedoorbell", new ResponseHandler(this::updateDoorbell,"id", "name"));
 	}
 
 	public void updateDoorbell() {
@@ -34,7 +34,7 @@ public class AdminProtocol extends Protocol {
 		}
 		else {
 			response.put("response", "fail");
-			response.put("message", "Doorbell could not be deleted");
+			response.put("message", "Doorbell could not be updated");
 		}
 		doorbellTable.disconnect();
 	}
