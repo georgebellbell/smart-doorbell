@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 public class AdminMenu extends JFrame{
 	private JButton analyticsButton;
@@ -32,7 +33,19 @@ public class AdminMenu extends JFrame{
 	private JButton emailButton;
 	private JPanel doorbellPanel;
 	private JPanel emailPanel;
+	private JPanel doorbellSearchPanel;
+	private JTextField searchDoorbellField;
+	private JButton doorbellSearchButton;
+	private JPanel doorbellInfoPanel;
+	private JTextField doorbellIdField;
+	private JTextField doorbellNameField;
+	private JTextField doorbellFacesField;
+	private JButton viewFacesButton;
+	private JButton saveDoorbellChangesButton;
+	private JButton deleteDoorbellButton;
 	private String displayedUser;
+	private String displayedDoorbell;
+	private ArrayList<JSONObject> currentFaces;
 
 	private Client connection;
 
@@ -44,6 +57,7 @@ public class AdminMenu extends JFrame{
 		sidePanel.setSize(new Dimension(200, 0));
 
 		userInfoPanel.setVisible(false);
+		doorbellInfoPanel.setVisible(false);
 
 		// Connection
 		this.connection = connection;
@@ -60,7 +74,7 @@ public class AdminMenu extends JFrame{
 
 		searchButton.addActionListener(actionEvent -> {
 			String username = searchField.getText();
-			Thread t = new Thread(() -> getUserInformation(username));
+			Thread t = new Thread(() -> searchUser(username));
 			t.start();
 		});
 
@@ -81,15 +95,11 @@ public class AdminMenu extends JFrame{
 		});
 
 		deleteUserButton.addActionListener(actionEvent -> {
-			String username = searchField.getText();
-			Thread t = new Thread(() -> deleteUser(username));
+			Thread t = new Thread(() -> deleteUser(displayedUser));
 			t.start();
 		});
 
-		logoutButton.addActionListener(actionEvent -> {
-			connection.close();
-			dispose();
-		});
+		logoutButton.addActionListener(actionEvent -> dispose());
 	}
 
 	private void setMainPanel(String panelName) {
@@ -97,7 +107,17 @@ public class AdminMenu extends JFrame{
 		cardLayout.show(mainPanel, panelName);
 	}
 
-	private void getUserInformation(String username) {
+	@Override
+	public void dispose() {
+		connection.close();
+		super.dispose();
+	}
+
+	/**
+	 * Sends request to server to search for user and populates user panel if successful
+	 * @param username - Username of user being searched for
+	 */
+	private void searchUser(String username) {
 		// Make sure request is not already in progress
 		if (connection.isRequestInProgress()) {
 			return;
@@ -199,6 +219,34 @@ public class AdminMenu extends JFrame{
 			JOptionPane.showMessageDialog(this,
 					response.getString("message"), "Account", JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	/**
+	 * Populates doorbell information panel with given information
+	 * @param id - Id of doorbell
+	 * @param name - Name of doorbell
+	 * @param faces - Recognised faces from doorbell
+	 */
+	private void populateDoorbellInformation(String id, String name, ArrayList<JSONObject> faces) {
+		// Store current information
+		displayedDoorbell = id;
+		currentFaces = faces;
+
+		// Set fields
+		doorbellIdField.setText(id);
+		doorbellNameField.setText(name);
+		doorbellFacesField.setText(String.format("(%s recognised faces)", faces.size()));
+
+		// Display panel
+		doorbellInfoPanel.setVisible(true);
+	}
+
+	/**
+	 * Clear fields in doorbell information
+	 */
+	private void clearDoorbellInformation() {
+		populateDoorbellInformation("", "", new ArrayList<>());
+		doorbellInfoPanel.setVisible(false);
 	}
 
 }
