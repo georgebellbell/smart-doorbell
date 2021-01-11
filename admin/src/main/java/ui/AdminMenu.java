@@ -126,6 +126,13 @@ public class AdminMenu extends JFrame{
 
 		viewFacesButton.addActionListener(actionEvent -> showDoorbellFaces());
 
+		saveChangesButton.addActionListener(actionEvent -> {
+			String id = displayedDoorbell;
+			String name = doorbellNameField.getText();
+			Thread t = new Thread(() -> updateDoorbell(id, name));
+			t.start();
+		});
+
 		deleteDoorbellButton.addActionListener(actionEvent -> {
 			String id = displayedDoorbell;
 			Thread t = new Thread(() -> deleteDoorbell(id));
@@ -331,6 +338,29 @@ public class AdminMenu extends JFrame{
 		}
 
 		DisplayUtilities.display("Faces from Doorbell " + displayedDoorbell, images);
+	}
+
+	private void updateDoorbell(String id, String name) {
+		// Make sure request is not already in progress
+		if (connection.isRequestInProgress()) {
+			return;
+		}
+
+		// Create request
+		JSONObject request = new JSONObject();
+		request.put("request", "updatedoorbell");
+		request.put("id", id);
+		request.put("name", name);
+
+		// Run request
+		JSONObject response = connection.run(request);
+		if (response.getString("response").equals("success")) {
+			JOptionPane.showMessageDialog(this,
+					response.getString("message"), "Doorbell", JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(this,
+					response.getString("message"), "Doorbell", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	private void deleteDoorbell(String id) {
