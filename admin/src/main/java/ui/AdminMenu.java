@@ -50,6 +50,17 @@ public class AdminMenu extends JFrame{
 	private JButton viewFacesButton;
 	private JButton saveDoorbellChangesButton;
 	private JButton deleteDoorbellButton;
+	private JPanel sendEmailPanel;
+	private JComboBox emailRecipentTypeComboBox;
+	private JLabel emailUsernameLabel;
+	private JTextField emailUsernameField;
+	private JTextField emailDoorbellField;
+	private JLabel emailDoorbellLabel;
+	private JTextArea emailContentsTextArea;
+	private JButton emailSendButton;
+	private JLabel emailContentsLabel;
+	private JTextField emailSubjectField;
+	private JLabel emailSubjectLabel;
 	private String displayedUser;
 	private String displayedDoorbell;
 	private JSONArray currentDoorbellFaces;
@@ -140,6 +151,22 @@ public class AdminMenu extends JFrame{
 		});
 
 
+		displayEmailRecipientOptions(true, false);
+
+		emailRecipentTypeComboBox.addItemListener(itemEvent -> {
+			int selectedItemKey = emailRecipentTypeComboBox.getSelectedIndex();
+			switch (selectedItemKey) {
+				case 0:
+					displayEmailRecipientOptions(true, false);
+					break;
+				case 1:
+					displayEmailRecipientOptions(false, true);
+					break;
+				case 2:
+					displayEmailRecipientOptions(false, false);
+					break;
+			}
+		});
 	}
 
 	private void setMainPanel(String panelName) {
@@ -387,4 +414,10 @@ public class AdminMenu extends JFrame{
 		}
 	}
 
+	private void displayEmailRecipientOptions(boolean showUsername, boolean showDoorbell) {
+		emailUsernameLabel.setVisible(showUsername);
+		emailUsernameField.setVisible(showUsername);
+		emailDoorbellLabel.setVisible(showDoorbell);
+		emailDoorbellField.setVisible(showDoorbell);
+	}
 }
