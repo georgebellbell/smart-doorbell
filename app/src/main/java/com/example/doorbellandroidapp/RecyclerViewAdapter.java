@@ -3,8 +3,10 @@ package com.example.doorbellandroidapp;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -168,6 +170,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 			public void handleResponse(JSONObject response) throws JSONException {
 				switch (response.getString("response")) {
 					case "success":
+						SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(mContext);
+						preferences.edit().putString("currentTask","Face Deleted").apply();
 						mActivity.finish();
 						mActivity.startActivity(mActivity.getIntent());
 						// TODO take user back to faces page rather than the main page

@@ -88,7 +88,7 @@ public class FacesFragment extends Fragment {
 		try {
 			request.put("request","faces");
 			//request.put("username", username);
-			request.put("username", "unique ID");
+			request.put("username", "00000001");
 
 		} catch (JSONException e) {
 			e.printStackTrace();
