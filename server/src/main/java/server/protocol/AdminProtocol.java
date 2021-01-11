@@ -42,7 +42,7 @@ public class AdminProtocol extends Protocol {
 		String doorbellName = doorbellTable.getDoorbellName(id);
 		ArrayList<String> users = doorbellTable.getUsers(id);
 		doorbellTable.disconnect();
-		faces();
+		faces(id);
 		if (doorbellName != null) {
 			response.put("response", "success");
 			response.put("id", id);
@@ -70,16 +70,16 @@ public class AdminProtocol extends Protocol {
 		accountTable.disconnect();
 	}
 
-	public void faces() {
+	public void faces(String id) {
 		dataTable.connect();
-		ArrayList<Data> allImages = dataTable.getAllImages(request.getString("username"));
+		ArrayList<Data> allImages = dataTable.getAllImages(id);
 		dataTable.disconnect();
 		ArrayList<JSONObject> jsonImages = new ArrayList<>();
 		if (allImages != null) {
 			for (Data data: allImages) {
 				JSONObject jsonData = new JSONObject();
 				Blob blob = data.getImage();
-				byte[] image = null;
+				byte[] image;
 				String encodedImage = null;
 				try {
 					image = blob.getBytes(1, (int) blob.length());

@@ -1,6 +1,7 @@
 package ui;
 
 import connection.Client;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.swing.*;
@@ -35,7 +36,7 @@ public class AdminMenu extends JFrame{
 	private JPanel emailPanel;
 	private JPanel doorbellSearchPanel;
 	private JTextField searchDoorbellField;
-	private JButton doorbellSearchButton;
+	private JButton searchDoorbellButton;
 	private JPanel doorbellInfoPanel;
 	private JTextField doorbellIdField;
 	private JTextField doorbellNameField;
@@ -45,7 +46,8 @@ public class AdminMenu extends JFrame{
 	private JButton deleteDoorbellButton;
 	private String displayedUser;
 	private String displayedDoorbell;
-	private ArrayList<JSONObject> currentFaces;
+	private JSONArray currentDoorbellFaces;
+	private JSONArray currentDoorbellUsers;
 
 	private Client connection;
 
@@ -70,8 +72,9 @@ public class AdminMenu extends JFrame{
 		analyticsButton.addActionListener(actionEvent -> setMainPanel("analytics"));
 		doorbellButton.addActionListener(actionEvent -> setMainPanel("doorbell"));
 		emailButton.addActionListener(actionEvent -> setMainPanel("email"));
+		logoutButton.addActionListener(actionEvent -> dispose());
 
-
+		// Account panel
 		searchButton.addActionListener(actionEvent -> {
 			String username = searchField.getText();
 			Thread t = new Thread(() -> searchUser(username));
@@ -99,7 +102,23 @@ public class AdminMenu extends JFrame{
 			t.start();
 		});
 
-		logoutButton.addActionListener(actionEvent -> dispose());
+		// Doorbell panel
+		searchDoorbellButton.addActionListener(actionEvent -> {
+			String id = searchDoorbellField.getText();
+			Thread t = new Thread(() -> searchDoorbell(id));
+			t.start();
+		});
+
+		searchDoorbellField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					searchDoorbellButton.doClick();
+				}
+			}
+		});
+
+
 	}
 
 	private void setMainPanel(String panelName) {
@@ -227,15 +246,17 @@ public class AdminMenu extends JFrame{
 	 * @param name - Name of doorbell
 	 * @param faces - Recognised faces from doorbell
 	 */
-	private void populateDoorbellInformation(String id, String name, ArrayList<JSONObject> faces) {
+	private void populateDoorbellInformation(String id, String name, JSONArray faces,
+											 JSONArray users) {
 		// Store current information
 		displayedDoorbell = id;
-		currentFaces = faces;
+		currentDoorbellFaces = faces;
+		currentDoorbellUsers = users;
 
 		// Set fields
 		doorbellIdField.setText(id);
 		doorbellNameField.setText(name);
-		doorbellFacesField.setText(String.format("(%s recognised faces)", faces.size()));
+		doorbellFacesField.setText(String.format("(%s faces)", faces.length()));
 
 		// Display panel
 		doorbellInfoPanel.setVisible(true);
@@ -245,8 +266,33 @@ public class AdminMenu extends JFrame{
 	 * Clear fields in doorbell information
 	 */
 	private void clearDoorbellInformation() {
-		populateDoorbellInformation("", "", new ArrayList<>());
+		populateDoorbellInformation("", "", new JSONArray(), new JSONArray());
 		doorbellInfoPanel.setVisible(false);
+	}
+
+	private void searchDoorbell(String id) {
+		// Make sure request is not already in progress
+		if (connection.isRequestInProgress()) {
+			return;
+		}
+
+		// Create request
+		JSONObject request = new JSONObject();
+		request.put("request", "searchdoorbell");
+		request.put("id", id);
+
+		// Run request
+		JSONObject response = connection.run(request);
+		if (response.getString("response").equals("success")) {
+			populateDoorbellInformation(
+					response.getString("id"),
+					response.getString("name"),
+					response.getJSONArray("images"),
+					response.getJSONArray("users"));
+		} else {
+			JOptionPane.showMessageDialog(this,
+					response.getString("message"), "Doorbell not found", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 }
