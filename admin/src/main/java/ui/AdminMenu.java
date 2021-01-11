@@ -99,9 +99,7 @@ public class AdminMenu extends JFrame{
 			t.start();
 		});
 
-		logoutButton.addActionListener(actionEvent -> {
-			dispose();
-		});
+		logoutButton.addActionListener(actionEvent -> dispose());
 	}
 
 	private void setMainPanel(String panelName) {
