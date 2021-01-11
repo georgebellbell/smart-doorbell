@@ -50,6 +50,17 @@ public class AdminMenu extends JFrame{
 	private JButton viewFacesButton;
 	private JButton saveDoorbellChangesButton;
 	private JButton deleteDoorbellButton;
+	private JPanel sendEmailPanel;
+	private JComboBox emailRecipientTypeComboBox;
+	private JLabel emailUsernameLabel;
+	private JTextField emailUsernameField;
+	private JTextField emailDoorbellField;
+	private JLabel emailDoorbellLabel;
+	private JTextArea emailContentsTextArea;
+	private JButton emailSendButton;
+	private JLabel emailContentsLabel;
+	private JTextField emailSubjectField;
+	private JLabel emailSubjectLabel;
 	private String displayedUser;
 	private String displayedDoorbell;
 	private JSONArray currentDoorbellFaces;
@@ -140,6 +151,22 @@ public class AdminMenu extends JFrame{
 		});
 
 
+		displayEmailRecipientOptions(true, false);
+
+		emailRecipientTypeComboBox.addItemListener(itemEvent -> {
+			int selectedItemKey = emailRecipientTypeComboBox.getSelectedIndex();
+			switch (selectedItemKey) {
+				case 0:
+					displayEmailRecipientOptions(true, false);
+					break;
+				case 1:
+					displayEmailRecipientOptions(false, true);
+					break;
+				case 2:
+					displayEmailRecipientOptions(false, false);
+					break;
+			}
+		});
 	}
 
 	private void setMainPanel(String panelName) {
@@ -291,6 +318,10 @@ public class AdminMenu extends JFrame{
 		doorbellInfoPanel.setVisible(false);
 	}
 
+	/**
+	 * Sends a request to server to search for a doorbell and populates doorbell info panel if successful
+	 * @param id - Doorbell ID of doorbell being searched for
+	 */
 	private void searchDoorbell(String id) {
 		// Make sure request is not already in progress
 		if (connection.isRequestInProgress()) {
@@ -316,6 +347,9 @@ public class AdminMenu extends JFrame{
 		}
 	}
 
+	/**
+	 * Shows the faces of the doorbell being shown
+	 */
 	private void showDoorbellFaces() {
 		// Check if there are faces to show
 		if (currentDoorbellFaces.length() == 0) {
@@ -341,6 +375,11 @@ public class AdminMenu extends JFrame{
 		DisplayUtilities.display("Faces from Doorbell " + displayedDoorbell, images);
 	}
 
+	/**
+	 * Send request to server to update doorbell's name
+	 * @param id - Doorbell ID of doorbell being changed
+	 * @param name - New name of doorbell
+	 */
 	private void updateDoorbell(String id, String name) {
 		// Make sure request is not already in progress
 		if (connection.isRequestInProgress()) {
@@ -364,6 +403,10 @@ public class AdminMenu extends JFrame{
 		}
 	}
 
+	/**
+	 * Sends request to server to delete doorbell and displays popup message on response
+	 * @param id - Doorbell ID of doorbell being deleted
+	 */
 	private void deleteDoorbell(String id) {
 		// Make sure request is not already in progress
 		if (connection.isRequestInProgress()) {
@@ -387,4 +430,10 @@ public class AdminMenu extends JFrame{
 		}
 	}
 
+	private void displayEmailRecipientOptions(boolean showUsername, boolean showDoorbell) {
+		emailUsernameLabel.setVisible(showUsername);
+		emailUsernameField.setVisible(showUsername);
+		emailDoorbellLabel.setVisible(showDoorbell);
+		emailDoorbellField.setVisible(showDoorbell);
+	}
 }
