@@ -44,7 +44,7 @@ public class AdminProtocol extends Protocol {
 		doorbellTable.connect();
 		if (doorbellTable.deleteDoorbell(id)) {
 			response.put("response", "success");
-			response.put("message", "Doorbell successfully updated");
+			response.put("message", "Doorbell successfully deleted");
 		} else {
 			response.put("response", "fail");
 			response.put("message", "Doorbell could not be deleted");
