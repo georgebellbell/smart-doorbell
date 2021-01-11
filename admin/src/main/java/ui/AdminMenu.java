@@ -100,7 +100,6 @@ public class AdminMenu extends JFrame{
 		});
 
 		logoutButton.addActionListener(actionEvent -> {
-			connection.close();
 			dispose();
 		});
 	}
@@ -108,6 +107,12 @@ public class AdminMenu extends JFrame{
 	private void setMainPanel(String panelName) {
 		CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
 		cardLayout.show(mainPanel, panelName);
+	}
+
+	@Override
+	public void dispose() {
+		connection.close();
+		super.dispose();
 	}
 
 	private void getUserInformation(String username) {
