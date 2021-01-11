@@ -18,11 +18,16 @@ public class AdminProtocol extends Protocol {
 		requestResponse.put("user", new ResponseHandler(this::userInfo, "username"));
 		requestResponse.put("deleteuser", new ResponseHandler(this::deleteUser, "username"));
 		requestResponse.put("faces", new ResponseHandler(this::faces, "username"));
-		requestResponse.put("update", new ResponseHandler(this::update, "username"));
+		requestResponse.put("update", new ResponseHandler(this::update, "username", "newusername", "newemail"));
 	}
 
 	public void update() {
-
+		String oldUsername = request.getString("username");
+		String newUsername = request.getString("newusername");
+		String newEmail = request.getString("email");
+		accountTable.connect();
+		accountTable.changeDetails(oldUsername, newUsername, newEmail);
+		accountTable.disconnect();
 	}
 
 	public void faces() {
