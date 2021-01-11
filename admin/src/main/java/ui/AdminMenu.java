@@ -321,6 +321,7 @@ public class AdminMenu extends JFrame{
 		if (currentDoorbellFaces.length() == 0) {
 			JOptionPane.showMessageDialog(this,
 					"No faces to show", "Doorbell", JOptionPane.ERROR_MESSAGE);
+			return;
 		}
 
 		ArrayList<FImage> images = new ArrayList<>();
