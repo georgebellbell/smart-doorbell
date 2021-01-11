@@ -95,8 +95,7 @@ public class AdminMenu extends JFrame{
 		});
 
 		deleteUserButton.addActionListener(actionEvent -> {
-			String username = searchField.getText();
-			Thread t = new Thread(() -> deleteUser(username));
+			Thread t = new Thread(() -> deleteUser(displayedUser));
 			t.start();
 		});
 
