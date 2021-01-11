@@ -82,17 +82,46 @@ public class AdminMenu extends JFrame{
 		// Run request
 		JSONObject response = connection.run(request);
 		if (response.getString("response").equals("success")) {
-			usernameField.setText(response.getString("username"));
-			emailField.setText(response.getString("email"));
-			roleField.setText(response.getString("role"));
-			createdField.setText(response.getString("time"));
-			devicesField.setText(response.getString("devices"));
-			userInfoPanel.setVisible(true);
+			populateUserInformation(
+					response.getString("username"),
+					response.getString("email"),
+					response.getString("role"),
+					response.getString("time"),
+					response.getString("devices"));
 		} else {
 			System.out.println(response.getString("message"));
 		}
 	}
 
+	/**
+	 * Populates account panel with user information
+	 * @param username - Username of user
+	 * @param email - Email of user
+	 * @param role - Role of user
+	 * @param time - Creation time of user
+	 * @param devices - Doorbell devices of user
+	 */
+	private void populateUserInformation(String username, String email, String role, String time, String devices) {
+		usernameField.setText(username);
+		emailField.setText(email);
+		roleField.setText(role);
+		createdField.setText(time);
+		devicesField.setText(devices);
+		userInfoPanel.setVisible(true);
+	}
+
+	/**
+	 * Clears fields in account panel
+	 */
+	private void clearUserInformation() {
+		populateUserInformation("", "", "", "", "");
+		userInfoPanel.setVisible(false);
+	}
+
+	/**
+	 * Sends a request to delete user to server and creates a popup message if it was successful
+	 * @param username - Username of user being deleted
+	 */
 	private void deleteUser(String username) {
 		// Make sure request is not already in progress
 		if (connection.isRequestInProgress()) {
@@ -107,7 +136,7 @@ public class AdminMenu extends JFrame{
 		// Run request
 		JSONObject response = connection.run(request);
 		if (response.getString("response").equals("success")) {
-			userInfoPanel.setVisible(false);
+			clearUserInformation();
 			JOptionPane.showMessageDialog(this,
 					"Account successfully deleted", "Account", JOptionPane.INFORMATION_MESSAGE);
 		} else {
