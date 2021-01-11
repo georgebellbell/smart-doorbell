@@ -12,7 +12,6 @@ public class AdminMenu extends JFrame{
 	private JPanel sidePanel;
 	private JButton searchAccountButton;
 	private JButton logoutButton;
-	private JComboBox roleBox;
 	private JButton saveChangesButton;
 	private JPanel accountPanel;
 	private JTextField usernameField;
@@ -24,6 +23,7 @@ public class AdminMenu extends JFrame{
 	private JButton searchButton;
 	private JButton deleteUserButton;
 	private JPanel userInfoPanel;
+	private JTextField roleField;
 
 	private Client connection;
 
@@ -73,9 +73,9 @@ public class AdminMenu extends JFrame{
 		if (response.getString("response").equals("success")) {
 			usernameField.setText(response.getString("username"));
 			emailField.setText(response.getString("email"));
-			devicesField.setText(response.getString("devices"));
+			roleField.setText(response.getString("role"));
 			createdField.setText(response.getString("time"));
-			roleBox.setSelectedIndex(0);
+			devicesField.setText(response.getString("devices"));
 			userInfoPanel.setVisible(true);
 		} else {
 			System.out.println(response.getString("message"));
