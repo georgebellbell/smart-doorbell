@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 public class AdminMenu extends JFrame{
 	private JButton analyticsButton;
@@ -32,7 +33,19 @@ public class AdminMenu extends JFrame{
 	private JButton emailButton;
 	private JPanel doorbellPanel;
 	private JPanel emailPanel;
+	private JPanel doorbellSearchPanel;
+	private JTextField searchDoorbellField;
+	private JButton doorbellSearchButton;
+	private JPanel doorbellInfoPanel;
+	private JTextField doorbellIdField;
+	private JTextField doorbellNameField;
+	private JTextField doorbellFacesField;
+	private JButton viewFacesButton;
+	private JButton saveDoorbellChangesButton;
+	private JButton deleteDoorbellButton;
 	private String displayedUser;
+	private String displayedDoorbell;
+	private ArrayList<JSONObject> currentFaces;
 
 	private Client connection;
 
@@ -44,6 +57,7 @@ public class AdminMenu extends JFrame{
 		sidePanel.setSize(new Dimension(200, 0));
 
 		userInfoPanel.setVisible(false);
+		doorbellInfoPanel.setVisible(false);
 
 		// Connection
 		this.connection = connection;
@@ -199,6 +213,34 @@ public class AdminMenu extends JFrame{
 			JOptionPane.showMessageDialog(this,
 					response.getString("message"), "Account", JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	/**
+	 * Populates doorbell information panel with given information
+	 * @param id - Id of doorbell
+	 * @param name - Name of doorbell
+	 * @param faces - Recognised faces from doorbell
+	 */
+	private void populateDoorbellInformation(String id, String name, ArrayList<JSONObject> faces) {
+		// Store current information
+		displayedDoorbell = id;
+		currentFaces = faces;
+
+		// Set fields
+		doorbellIdField.setText(id);
+		doorbellNameField.setText(name);
+		doorbellFacesField.setText(String.format("(%s recognised faces)", faces.size()));
+
+		// Display panel
+		doorbellInfoPanel.setVisible(true);
+	}
+
+	/**
+	 * Clear fields in doorbell information
+	 */
+	private void clearDoorbellInformation() {
+		populateDoorbellInformation("", "", new ArrayList<>());
+		doorbellInfoPanel.setVisible(false);
 	}
 
 }
