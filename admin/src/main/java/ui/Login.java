@@ -6,6 +6,8 @@ import org.json.JSONObject;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class Login extends JFrame {
 	private JTextField usernameField;
@@ -41,6 +43,15 @@ public class Login extends JFrame {
 			Thread thread = new Thread(() -> loginToServer(username, password));
 			thread.start();
 
+		});
+
+		passwordField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					loginButton.doClick();
+				}
+			}
 		});
 	}
 
