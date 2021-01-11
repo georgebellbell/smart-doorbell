@@ -5,6 +5,8 @@ import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class AdminMenu extends JFrame{
 	private JButton analyticsButton;
@@ -43,6 +45,15 @@ public class AdminMenu extends JFrame{
 			String username = searchField.getText();
 			Thread t = new Thread(() -> getUserInformation(username));
 			t.start();
+		});
+
+		searchField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					searchButton.doClick();
+				}
+			}
 		});
 
 		deleteUserButton.addActionListener(actionEvent -> {
