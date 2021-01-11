@@ -97,12 +97,17 @@ public class AdminProtocol extends Protocol {
 		User user = accountTable.getRecord(username);
 		ArrayList<String> deviceIDs = accountTable.getDeviceID(username);
 		accountTable.disconnect();
-		response.put("response", "success");
-		response.put("username", user.getUsername());
-		response.put("email", user.getEmail());
-		response.put("role", user.getRole());
-		response.put("time", user.getCreated_at());
-		response.put("devices", deviceIDs.toString());
+		if (user != null) {
+			response.put("response", "success");
+			response.put("username", user.getUsername());
+			response.put("email", user.getEmail());
+			response.put("role", user.getRole());
+			response.put("time", user.getCreated_at());
+			response.put("devices", deviceIDs.toString());
+		} else {
+			response.put("response", "fail");
+			response.put("message", "User could not be found");
+		}
 	}
 
 	public void setUser(User user) {

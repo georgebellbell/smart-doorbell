@@ -112,7 +112,8 @@ public class AdminMenu extends JFrame{
 					response.getString("time"),
 					response.getString("devices"));
 		} else {
-			System.out.println(response.getString("message"));
+			JOptionPane.showMessageDialog(this,
+					response.getString("message"), "Account not found", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
