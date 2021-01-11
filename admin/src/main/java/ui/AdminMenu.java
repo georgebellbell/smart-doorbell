@@ -28,6 +28,10 @@ public class AdminMenu extends JFrame{
 	private JButton saveChangesButton;
 	private JPanel mainPanel;
 	private JPanel analyticsPanel;
+	private JButton doorbellButton;
+	private JButton emailButton;
+	private JPanel doorbellPanel;
+	private JPanel emailPanel;
 	private String displayedUser;
 
 	private Client connection;
@@ -50,6 +54,8 @@ public class AdminMenu extends JFrame{
 		// Set actions for navigation buttons
 		searchAccountButton.addActionListener(actionEvent -> setMainPanel("accounts"));
 		analyticsButton.addActionListener(actionEvent -> setMainPanel("analytics"));
+		doorbellButton.addActionListener(actionEvent -> setMainPanel("doorbell"));
+		emailButton.addActionListener(actionEvent -> setMainPanel("email"));
 
 
 		searchButton.addActionListener(actionEvent -> {
