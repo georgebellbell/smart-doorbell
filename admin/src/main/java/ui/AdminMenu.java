@@ -14,18 +14,20 @@ public class AdminMenu extends JFrame{
 	private JPanel sidePanel;
 	private JButton searchAccountButton;
 	private JButton logoutButton;
-	private JButton saveChangesButton;
-	private JPanel accountPanel;
 	private JTextField usernameField;
 	private JTextField emailField;
 	private JTextField devicesField;
 	private JTextField createdField;
-	private JPanel searchPanel;
 	private JTextField searchField;
 	private JButton searchButton;
 	private JButton deleteUserButton;
 	private JPanel userInfoPanel;
 	private JTextField roleField;
+	private JPanel accountPanel;
+	private JPanel searchPanel;
+	private JButton saveChangesButton;
+	private JPanel mainPanel;
+	private JPanel analyticsPanel;
 
 	private Client connection;
 
@@ -40,6 +42,14 @@ public class AdminMenu extends JFrame{
 
 		// Connection
 		this.connection = connection;
+
+		// Set current main panel
+		setMainPanel("accounts");
+
+		// Set actions for navigation buttons
+		searchAccountButton.addActionListener(actionEvent -> setMainPanel("accounts"));
+		analyticsButton.addActionListener(actionEvent -> setMainPanel("analytics"));
+
 
 		searchButton.addActionListener(actionEvent -> {
 			String username = searchField.getText();
@@ -66,6 +76,11 @@ public class AdminMenu extends JFrame{
 			connection.close();
 			dispose();
 		});
+	}
+
+	private void setMainPanel(String panelName) {
+		CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
+		cardLayout.show(mainPanel, panelName);
 	}
 
 	private void getUserInformation(String username) {
