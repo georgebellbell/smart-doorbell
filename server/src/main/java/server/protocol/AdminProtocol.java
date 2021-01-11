@@ -26,7 +26,14 @@ public class AdminProtocol extends Protocol {
 		String newUsername = request.getString("newusername");
 		String newEmail = request.getString("newemail");
 		accountTable.connect();
-		accountTable.changeDetails(oldUsername, newUsername, newEmail);
+		if (accountTable.changeDetails(oldUsername, newUsername, newEmail)){
+			response.put("response", "success");
+			response.put("message", "Account successfully updated");
+		}
+		else {
+			response.put("response", "fail");
+			response.put("message", "Account username is already taken");
+		}
 		accountTable.disconnect();
 	}
 
@@ -63,10 +70,25 @@ public class AdminProtocol extends Protocol {
 	}
 
 	public void deleteUser() {
+		String username = request.getString("username");
+
+		// Check user is not deleting itself
+		if (username.equals(user.getUsername())) {
+			response.put("response", "fail");
+			response.put("message", "You cannot delete your own account");
+			return;
+		}
+
+		// Delete user
 		accountTable.connect();
-		accountTable.deleteRecord(request.getString("username"));
+		if (accountTable.deleteRecord(username)){
+			response.put("response", "success");
+			response.put("message", "Account successfully deleted");
+		} else {
+			response.put("response", "fail");
+			response.put("message", "Account not deleted");
+		}
 		accountTable.disconnect();
-		response.put("response", "success");
 	}
 
 	public void userInfo() {

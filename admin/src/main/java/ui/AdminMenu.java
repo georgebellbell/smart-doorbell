@@ -160,10 +160,10 @@ public class AdminMenu extends JFrame{
 		if (response.getString("response").equals("success")) {
 			displayedUser = newUsername;
 			JOptionPane.showMessageDialog(this,
-					"Account successfully updated", "Account", JOptionPane.INFORMATION_MESSAGE);
+					response.getString("message"), "Account", JOptionPane.INFORMATION_MESSAGE);
 		} else {
 			JOptionPane.showMessageDialog(this,
-					"Account could not be updated", "Account", JOptionPane.ERROR_MESSAGE);
+					response.getString("message"), "Account", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -187,7 +187,7 @@ public class AdminMenu extends JFrame{
 		if (response.getString("response").equals("success")) {
 			clearUserInformation();
 			JOptionPane.showMessageDialog(this,
-					"Account successfully deleted", "Account", JOptionPane.INFORMATION_MESSAGE);
+					response.getString("message"), "Account", JOptionPane.INFORMATION_MESSAGE);
 		} else {
 			JOptionPane.showMessageDialog(this,
 					response.getString("message"), "Account", JOptionPane.ERROR_MESSAGE);

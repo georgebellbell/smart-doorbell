@@ -186,7 +186,7 @@ public class AccountTable extends DatabaseConnection {
 			statement.close();
 			return true;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("Duplicate username");
 			return false;
 		}
 	}
