@@ -3,11 +3,17 @@ package ui;
 import connection.Client;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.openimaj.image.DisplayUtilities;
+import org.openimaj.image.FImage;
+import org.openimaj.image.ImageUtilities;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class AdminMenu extends JFrame{
@@ -117,6 +123,8 @@ public class AdminMenu extends JFrame{
 				}
 			}
 		});
+
+		viewFacesButton.addActionListener(actionEvent -> showDoorbellFaces());
 
 
 	}
@@ -293,6 +301,30 @@ public class AdminMenu extends JFrame{
 			JOptionPane.showMessageDialog(this,
 					response.getString("message"), "Doorbell not found", JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	private void showDoorbellFaces() {
+		// Check if there are faces to show
+		if (currentDoorbellFaces.length() == 0) {
+			JOptionPane.showMessageDialog(this,
+					"No faces to show", "Doorbell", JOptionPane.ERROR_MESSAGE);
+		}
+
+		ArrayList<FImage> images = new ArrayList<>();
+		for (int i=0; i < currentDoorbellFaces.length(); i++) {
+			JSONObject imageObject = currentDoorbellFaces.getJSONObject(i);
+			String image = imageObject.getString("image");
+			byte[] imageBytes =  java.util.Base64.getDecoder().decode(image.getBytes());
+			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(imageBytes);
+			try {
+				final FImage imageToDisplay = ImageUtilities.createFImage(ImageIO.read(byteArrayInputStream));
+				images.add(imageToDisplay);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		DisplayUtilities.display("Faces from Doorbell " + displayedDoorbell, images);
 	}
 
 }

@@ -58,8 +58,8 @@ public class FaceSimilarity {
 		try {
 			for (Data allImage : allImages) {
 				byte[] imageFromDB = allImage.getImage().getBytes(1, (int) allImage.getImage().length());
-				ByteArrayInputStream bais2 = new ByteArrayInputStream(imageFromDB);
-				final FImage imageToCompare = ImageUtilities.createFImage(ImageIO.read(bais2));
+				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(imageFromDB);
+				final FImage imageToCompare = ImageUtilities.createFImage(ImageIO.read(byteArrayInputStream));
 
 				engine.setQuery(image1, "doorbell");
 				engine.setTest(imageToCompare, "database");
