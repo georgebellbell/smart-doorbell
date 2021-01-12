@@ -38,10 +38,20 @@ public class AdminProtocol extends Protocol {
 		switch (type) {
 			case 0:
 				String userEmail = accountTable.getEmailByUsername(id);
+				if (userEmail == null) {
+					response.put("response", "fail");
+					response.put("message", "Username does not exist");
+					return;
+				}
 				email.addRecipient(userEmail);
 				break;
 			case 1:
 				ArrayList<String> doorbellEmails = accountTable.getEmailByDoorbell(id);
+				if (doorbellEmails == null) {
+					response.put("response", "fail");
+					response.put("message", "Doorbell ID does not exist");
+					return;
+				}
 				email.addRecipients(doorbellEmails);
 				break;
 			case 2:

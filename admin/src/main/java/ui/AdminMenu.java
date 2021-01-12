@@ -167,6 +167,28 @@ public class AdminMenu extends JFrame{
 					break;
 			}
 		});
+
+		emailSendButton.addActionListener(actionEvent -> {
+			int type = emailRecipientTypeComboBox.getSelectedIndex();
+			String recipient = null;
+			switch (type) {
+				case 0:
+					recipient = emailUsernameField.getText();
+					break;
+				case 1:
+					recipient = emailDoorbellField.getText();
+					break;
+				case 2:
+					recipient = "all";
+					break;
+			}
+			String subject = emailSubjectField.getText();
+			String contents = emailContentsTextArea.getText();
+			String finalContents = contents.replace("\n", "<br>");
+			String finalRecipient = recipient;
+			Thread t = new Thread(() -> sendEmail(type, finalRecipient, subject, finalContents));
+			t.start();
+		});
 	}
 
 	private void setMainPanel(String panelName) {
@@ -435,5 +457,38 @@ public class AdminMenu extends JFrame{
 		emailUsernameField.setVisible(showUsername);
 		emailDoorbellLabel.setVisible(showDoorbell);
 		emailDoorbellField.setVisible(showDoorbell);
+	}
+
+	private void clearEmailForm() {
+		emailSubjectField.setText("");
+		emailDoorbellField.setText("");
+		emailUsernameField.setText("");
+		emailContentsTextArea.setText("");
+	}
+
+	private void sendEmail(int type, String recipient, String subject, String contents) {
+		// Make sure request is not already in progress
+		if (connection.isRequestInProgress()) {
+			return;
+		}
+
+		// Create request
+		JSONObject request = new JSONObject();
+		request.put("request", "email");
+		request.put("type", type);
+		request.put("subject", subject);
+		request.put("contents", contents);
+		request.put("recipient", recipient);
+
+		// Run request
+		JSONObject response = connection.run(request);
+		if (response.getString("response").equals("success")) {
+			clearEmailForm();
+			JOptionPane.showMessageDialog(this,
+					response.getString("message"), "Doorbell", JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(this,
+					response.getString("message"), "Doorbell", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }
