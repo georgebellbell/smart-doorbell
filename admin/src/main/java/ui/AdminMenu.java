@@ -244,9 +244,6 @@ public class AdminMenu extends JFrame{
 					response.getInt("images"),
 					response.getInt("doorbells"),
 					response.getJSONArray("imagegraph"));
-		} else {
-			JOptionPane.showMessageDialog(this,
-					response.getString("message"), "Account not found", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
