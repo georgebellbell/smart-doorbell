@@ -1,5 +1,6 @@
 package server.protocol;
 
+import authentication.PasswordManager;
 import authentication.TwoFactorAuthentication;
 import database.Data;
 import database.DoorbellTable;
@@ -13,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class AdminProtocol extends Protocol {
+	private PasswordManager passwordManager = new PasswordManager();
 	private User user;
 
 	public AdminProtocol() {
@@ -24,6 +26,36 @@ public class AdminProtocol extends Protocol {
 		requestResponse.put("deletedoorbell", new ResponseHandler(this::deleteDoorbell, "id"));
 		requestResponse.put("updatedoorbell", new ResponseHandler(this::updateDoorbell,"id", "name"));
 		requestResponse.put("email", new ResponseHandler(this::sendEmail, "type", "subject", "contents", "recipient"));
+		requestResponse.put("newpassword", new ResponseHandler(this::newPassword, "username"));
+	}
+
+	public void newPassword() {
+		String username = request.getString("username");
+		String newPassword = passwordManager.generateString();
+		accountTable.connect();
+		String emailAddress = accountTable.getEmailByUsername(username);
+		boolean changedPassword = accountTable.changePassword(username, newPassword);
+		accountTable.disconnect();
+
+		if (changedPassword) {
+			accountTable.disconnect();
+			Email email = new Email();
+			email.addRecipient(emailAddress);
+			email.setSubject("Password reset");
+			email.setContents("Dear user: " + username +  " your new password is: " + newPassword);
+			if (email.send()) {
+				response.put("response", "success");
+				response.put("message", "Password change email sent");
+			}
+			else {
+				response.put("response", "fail");
+				response.put("message", "Password change email not sent");
+			}
+		}
+		else {
+			response.put("response", "fail");
+			response.put("message", "Password can't be changed");
+		}
 	}
 
 	public void sendEmail() {

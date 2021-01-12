@@ -1,6 +1,8 @@
-package database;
+package authentication;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
+
+import java.util.Random;
 
 public class PasswordManager {
 	/**
@@ -29,5 +31,14 @@ public class PasswordManager {
 			return storedPassword;
 		else
 			return null;
+	}
+
+	/**
+	 * @return a generated String of size 15 using ASCII range from 33 (special chars) to 122 (lowercase z)
+	 */
+	public String generateString() {
+		String password = new Random().ints(15, 33, 122).collect(StringBuilder::new,
+				StringBuilder::appendCodePoint, StringBuilder::append).toString();
+		return password;
 	}
 }

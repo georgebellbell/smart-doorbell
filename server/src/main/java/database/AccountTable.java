@@ -1,10 +1,11 @@
 package database;
 
+import authentication.PasswordManager;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 
 public class AccountTable extends DatabaseConnection {
@@ -155,10 +156,10 @@ public class AccountTable extends DatabaseConnection {
 	 */
 	public boolean changePassword(String username, String password) {
 		try {
-			String salt = password.substring(0, 29);
+			String salt = passwordManager.generateSalt();
 			String query = "UPDATE accounts Set Password = ?, Salt = ? WHERE Username = ?";
 			statement = conn.prepareStatement(query);
-			statement.setString(1, password);
+			statement.setString(1, passwordManager.hashPassword(password, salt));
 			statement.setString(2, salt);
 			statement.setString(3, username);
 			statement.execute();
