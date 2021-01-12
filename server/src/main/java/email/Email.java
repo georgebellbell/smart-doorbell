@@ -4,6 +4,7 @@ import javax.mail.*;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Properties;
 
@@ -66,6 +67,14 @@ public class Email {
 		recipients.add(email);
 	}
 
+	/**
+	 * Adds multiple recipients for email to be sent to
+	 * @param emails - List of emails of recipients
+	 */
+	public void addRecipients(ArrayList<String> emails) {
+		recipients.addAll(emails);
+	}
+
 	public HashSet<String> getRecipients() {
 		return recipients;
 	}
@@ -75,6 +84,7 @@ public class Email {
 		int i = 0;
 		for (String address: recipients) {
 			addresses[i] = new InternetAddress(address);
+			i++;
 		}
 		return addresses;
 	}
