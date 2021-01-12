@@ -74,6 +74,7 @@ while True:
 		faces = Crop.main(photoPath)
 		if faces == 0:
 			print("ERROR - No faces found")
+			led1.off()
 		else:
 			print(faces + " Face(s) found")
 
