@@ -1,5 +1,7 @@
 package database;
 
+import authentication.PasswordManager;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
