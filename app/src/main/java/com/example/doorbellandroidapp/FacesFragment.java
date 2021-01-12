@@ -3,6 +3,7 @@ package com.example.doorbellandroidapp;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -39,6 +40,8 @@ public class FacesFragment extends Fragment {
 
 	private SharedPreferences preferences;
 	private String currentUser;
+	private TextView tvFaces;
+	private ImageView ivAddFace;
 
 	private View view;
 
@@ -51,6 +54,9 @@ public class FacesFragment extends Fragment {
 
 		preferences= PreferenceManager.getDefaultSharedPreferences(getContext());
 		currentUser= preferences.getString("currentUser",null);
+		ivAddFace = view.findViewById(R.id.ivAddFace);
+		tvFaces = view.findViewById(R.id.tvFaces);
+		tvFaces.setText(currentUser+"'s Faces");
 
 		progressDialog = new ProgressDialog(getContext());
 		progressDialog.setMax(100);
@@ -78,6 +84,14 @@ public class FacesFragment extends Fragment {
 		}).start();
 
 		loadImages();
+
+		ivAddFace.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(getContext(), "you want to add new face? come back later", Toast.LENGTH_SHORT).show();
+				// TODO Add functionality to add new faces
+			}
+		});
 
 		Log.d(TAG, "onCreateView: loop exited");
 		return view;
