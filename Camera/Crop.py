@@ -10,7 +10,7 @@ def crop(image, faces):
 		# Crop out a section where a face was detected
 		imageSection = image[y:y + h, x:x + w]
 		# Save the section containing the face to a file
-		cv2.imwrite((str(x) + ".jpg"), imageSection)
+		cv2.imwrite((str(n) + ".jpg"), imageSection)
 		n += 1
 
 	return len(faces)
