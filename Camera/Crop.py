@@ -4,16 +4,14 @@ import sys
 
 
 def crop(image, faces):
-	x = 0
+	n = 0
 	# iterate over all faces found in the image
-	print(faces)
 	for (x, y, w, h) in faces:
 		# Crop out a section where a face was detected
 		imageSection = image[y:y + h, x:x + w]
 		# Save the section containing the face to a file
 		cv2.imwrite((str(x) + ".jpg"), imageSection)
-		print("Image Saved", x)
-		x += 1
+		n += 1
 
 	return len(faces)
 
