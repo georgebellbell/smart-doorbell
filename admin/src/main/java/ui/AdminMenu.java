@@ -62,6 +62,11 @@ public class AdminMenu extends JFrame{
 	private JTextField emailSubjectField;
 	private JLabel emailSubjectLabel;
 	private JButton accountResetPasswordButton;
+	private JPanel analyticsBriefPanel;
+	private JLabel analyticsUsers;
+	private JLabel analyticsAdmins;
+	private JLabel analyticsImages;
+	private JLabel analyticsDoorbells;
 	private String displayedUser;
 	private String displayedDoorbell;
 	private JSONArray currentDoorbellFaces;
@@ -84,6 +89,8 @@ public class AdminMenu extends JFrame{
 
 		// Set current main panel
 		setMainPanel("accounts");
+
+		getAnalytics();
 
 		// Set actions for navigation buttons
 		searchAccountButton.addActionListener(actionEvent -> setMainPanel("accounts"));
@@ -206,6 +213,37 @@ public class AdminMenu extends JFrame{
 	public void dispose() {
 		connection.close();
 		super.dispose();
+	}
+
+	private void getAnalytics() {
+		// Make sure request is not already in progress
+		if (connection.isRequestInProgress()) {
+			return;
+		}
+
+		// Create request
+		JSONObject request = new JSONObject();
+		request.put("request", "analysis");
+
+		// Run request
+		JSONObject response = connection.run(request);
+		if (response.getString("response").equals("success")) {
+			populateAnalytics(
+					response.getInt("users"),
+					response.getInt("admins"),
+					response.getInt("images"),
+					response.getInt("doorbells"));
+		} else {
+			JOptionPane.showMessageDialog(this,
+					response.getString("message"), "Account not found", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	private void populateAnalytics(int users, int admins, int images, int doorbells) {
+		analyticsUsers.setText("Total Users: " + users);
+		analyticsAdmins.setText("Total Admins: " + admins);
+		analyticsImages.setText("Total Images: " + images);
+		analyticsDoorbells.setText("Total Doorbells: " + doorbells);
 	}
 
 	/**

@@ -25,7 +25,7 @@ public class AdminProtocol extends Protocol {
 		requestResponse.put("updatedoorbell", new ResponseHandler(this::updateDoorbell,"id", "name"));
 		requestResponse.put("email", new ResponseHandler(this::sendEmail, "type", "subject", "contents", "recipient"));
 		requestResponse.put("newpassword", new ResponseHandler(this::newPassword, "username"));
-		requestResponse.put("analysis", new ResponseHandler(this::performAnalysis, ""));
+		requestResponse.put("analysis", new ResponseHandler(this::performAnalysis));
 	}
 
 	public void performAnalysis() {
