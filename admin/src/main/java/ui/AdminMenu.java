@@ -1,6 +1,10 @@
 package ui;
 
 import connection.Client;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openimaj.image.DisplayUtilities;
@@ -67,6 +71,7 @@ public class AdminMenu extends JFrame{
 	private JLabel analyticsAdmins;
 	private JLabel analyticsImages;
 	private JLabel analyticsDoorbells;
+	private JPanel analyticsImagePanel;
 	private String displayedUser;
 	private String displayedDoorbell;
 	private JSONArray currentDoorbellFaces;
@@ -77,7 +82,7 @@ public class AdminMenu extends JFrame{
 	public AdminMenu(Client connection) {
 		add(panel);
 		setTitle("Quick Solutions: Smart Doorbell Admin Tool");
-		setSize(500, 300);
+		setSize(550, 350);
 		setVisible(true);
 		sidePanel.setSize(new Dimension(200, 0));
 
@@ -90,11 +95,13 @@ public class AdminMenu extends JFrame{
 		// Set current main panel
 		setMainPanel("accounts");
 
-		getAnalytics();
-
 		// Set actions for navigation buttons
 		searchAccountButton.addActionListener(actionEvent -> setMainPanel("accounts"));
-		analyticsButton.addActionListener(actionEvent -> setMainPanel("analytics"));
+		analyticsButton.addActionListener(actionEvent -> {
+			setMainPanel("analytics");
+			Thread t = new Thread(this::getAnalytics);
+			t.start();
+		});
 		doorbellButton.addActionListener(actionEvent -> setMainPanel("doorbell"));
 		emailButton.addActionListener(actionEvent -> setMainPanel("email"));
 		logoutButton.addActionListener(actionEvent -> dispose());
@@ -215,6 +222,9 @@ public class AdminMenu extends JFrame{
 		super.dispose();
 	}
 
+	/**
+	 * Retrieves analytics data from server
+	 */
 	private void getAnalytics() {
 		// Make sure request is not already in progress
 		if (connection.isRequestInProgress()) {
@@ -232,18 +242,56 @@ public class AdminMenu extends JFrame{
 					response.getInt("users"),
 					response.getInt("admins"),
 					response.getInt("images"),
-					response.getInt("doorbells"));
+					response.getInt("doorbells"),
+					response.getJSONArray("imagegraph"));
 		} else {
 			JOptionPane.showMessageDialog(this,
 					response.getString("message"), "Account not found", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
-	private void populateAnalytics(int users, int admins, int images, int doorbells) {
+	/**
+	 * Creates pie chart for image distribution in analytics
+	 * @param graphData - Data retrieved by the server
+	 * @return pie chart
+	 */
+	private JFreeChart createAnalyticsPieChart(JSONArray graphData) {
+		DefaultPieDataset<String> dataset = new DefaultPieDataset<>( );
+		for (int i=0; i < graphData.length(); i++) {
+			JSONObject doorbellInfo = graphData.getJSONObject(i);
+			dataset.setValue(doorbellInfo.getString("id"), doorbellInfo.getInt("count"));
+		}
+
+		return ChartFactory.createPieChart(
+				"Image Distribution by Doorbell",
+				dataset,
+				true,
+				true,
+				false);
+	}
+
+	/**
+	 * Populates the analytics panel
+	 * @param users - Total number of users
+	 * @param admins - Total number of admins
+	 * @param images - Total number of images
+	 * @param doorbells - Total number of doorbells
+	 * @param imageGraphData - Image distribution graph data
+	 */
+	private void populateAnalytics(int users, int admins, int images, int doorbells, JSONArray imageGraphData) {
+		// Set overview panel
 		analyticsUsers.setText("Total Users: " + users);
 		analyticsAdmins.setText("Total Admins: " + admins);
 		analyticsImages.setText("Total Images: " + images);
 		analyticsDoorbells.setText("Total Doorbells: " + doorbells);
+
+		// Image distribution pie chart
+		JFreeChart chart = createAnalyticsPieChart(imageGraphData);
+		ChartPanel chartPanel = new ChartPanel(chart);
+		chartPanel.setVisible(true);
+		analyticsImagePanel.removeAll();
+		analyticsImagePanel.add(chartPanel);
+		analyticsImagePanel.updateUI();
 	}
 
 	/**
