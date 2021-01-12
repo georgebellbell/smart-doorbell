@@ -1,10 +1,7 @@
 package server.protocol;
 
 import authentication.TwoFactorAuthentication;
-import database.AccountTable;
-import database.Data;
-import database.DataTable;
-import database.User;
+import database.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.security.crypto.codec.Base64;
@@ -23,6 +20,7 @@ public class Protocol {
 	JSONObject response = new JSONObject();
 	AccountTable accountTable = new AccountTable();
 	DataTable dataTable = new DataTable();
+	DoorbellTable doorbellTable = new DoorbellTable();
 	HashMap<String, ResponseHandler> requestResponse = new HashMap<>();
 
 	/**

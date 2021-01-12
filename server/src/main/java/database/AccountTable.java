@@ -2,6 +2,9 @@ package database;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 
 public class AccountTable extends DatabaseConnection {
@@ -40,7 +43,7 @@ public class AccountTable extends DatabaseConnection {
 	public User getRecord(String username){
 		User user = null;
 		try {
-			String query = "SELECT Username, Email, Password, Role, Created_at  FROM accounts WHERE Username=?";
+			String query = "SELECT Username, Password, Email, Role, Created_at FROM accounts WHERE Username=?";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, username);
 			ResultSet resultSet = statement.executeQuery();
@@ -62,6 +65,27 @@ public class AccountTable extends DatabaseConnection {
 	}
 
 	/**
+	 * @param username - username of the account to retrieve the deviceID or ID's from
+	 * @return deviceID associated with the user
+	 */
+	public ArrayList<String> getDeviceID(String username) {
+		ArrayList<String> deviceIDs = new ArrayList<>();
+		try {
+			String query = "SELECT Pi_id FROM doorbelluser WHERE Username=?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, username);
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()){
+				deviceIDs.add(resultSet.getString("Pi_id"));
+			}
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return deviceIDs;
+	}
+
+	/**
 	 * @param username of record to delete
 	 * @return if record deleted
 	 */
@@ -79,6 +103,12 @@ public class AccountTable extends DatabaseConnection {
 		}
 	}
 
+	/**
+	 * @param username - username of the user's account
+	 * @param password - password of the account
+	 * @param role - role of the user
+	 * @return login retrieved from the database
+	 */
 	public boolean getLogin(String username, String password, String role) {
 		boolean found = false;
 		password = passwordManager.checkPasswords(getPassword(username), password);
@@ -98,6 +128,10 @@ public class AccountTable extends DatabaseConnection {
 		return found;
 	}
 
+	/**
+	 * @param username - username of the account to retrieve the password of
+	 * @return password of the user if found, else null
+	 */
 	public String getPassword(String username) {
 		String found = null;
 		try {
@@ -112,5 +146,108 @@ public class AccountTable extends DatabaseConnection {
 			e.printStackTrace();
 		}
 		return found;
+	}
+
+	/**
+	 * @param username - username of the person to change the password of
+	 * @param password - password to change in the database
+	 * @return if password successfully updated
+	 */
+	public boolean changePassword(String username, String password) {
+		try {
+			String salt = password.substring(0, 29);
+			String query = "UPDATE accounts Set Password = ?, Salt = ? WHERE Username = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, password);
+			statement.setString(2, salt);
+			statement.setString(3, username);
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * @param oldUsername - username that the user had previously
+	 * @param newUsername - username to be changed to
+	 * @param newEmail - email to change to
+	 * @return details changed
+	 */
+	public boolean changeDetails(String oldUsername, String newUsername, String newEmail) {
+		try {
+			String query = "UPDATE accounts Set Username = ?, Email =? WHERE Username = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, newUsername);
+			statement.setString(2, newEmail);
+			statement.setString(3, oldUsername);
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (SQLException e) {
+			System.out.println("Duplicate username");
+			return false;
+		}
+	}
+
+	/**
+	 * @return all emails from the account table
+	 */
+	public HashSet<String> getAllEmails() {
+		HashSet<String> emails = new HashSet<>();
+		try {
+			String query = "SELECT Email FROM accounts";
+			statement = conn.prepareStatement(query);
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next())
+				emails.add(resultSet.getString("email"));
+
+		} catch (SQLException e) {
+			System.out.println("Can't retrieve all emails");
+		}
+		return emails;
+	}
+
+	/**
+	 * @param id - doorbell id that links to the associated users
+	 * @return all email addresses associated to id
+	 */
+	public HashSet<String> getEmailByDoorbell(String id) {
+		HashSet<String> emails = new HashSet<>();
+		try {
+			String query = "SELECT Email FROM accounts, doorbelluser WHERE accounts.Username = doorbelluser.Username AND doorbelluser.Pi_id = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, id);
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next())
+				emails.add(resultSet.getString("email"));
+
+		} catch (SQLException e) {
+			System.out.println("Doorbell doesn't exist");
+		}
+		return emails;
+	}
+
+	/**
+	 * @param username - username of the email to retrieve
+	 * @return email of the associated username
+	 */
+	public String getEmailByUsername(String username) {
+		String email = null;
+		try {
+			String query = "SELECT Email FROM accounts WHERE Username = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, username);
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next())
+				email = resultSet.getString("email");
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Invalid username");
+		}
+		return email;
 	}
 }
