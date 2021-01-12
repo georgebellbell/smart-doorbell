@@ -4,6 +4,7 @@ import authentication.PasswordManager;
 import database.Data;
 import database.User;
 import email.Email;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import server.ResponseHandler;
 
@@ -38,12 +39,14 @@ public class AdminProtocol extends Protocol {
 		dataTable.disconnect();
 		doorbellTable.connect();
 		int doorbells = doorbellTable.getTotalDoorbells();
+		JSONArray jsonArray = doorbellTable.getDoorbellPieData();
 		doorbellTable.disconnect();
 		response.put("response", "success");
 		response.put("users", users);
 		response.put("admins", admins);
 		response.put("images", images);
 		response.put("doorbells", doorbells);
+		response.put("imagegraph", jsonArray);
 	}
 
 	public void newPassword() {
