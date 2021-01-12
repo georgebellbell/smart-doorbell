@@ -71,7 +71,7 @@ while True:
 		except Exception as e:
 			print("Failed to capture photo")
 
-		Crop(imagePath)
+		Crop.Crop(imagePath)
 
 		# Send photo to the server
 		try:
