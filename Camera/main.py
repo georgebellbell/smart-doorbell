@@ -71,7 +71,8 @@ while True:
 		except Exception as e:
 			print("Failed to capture photo")
 
-		Crop.Crop(imagePath)
+		# Crop the faces from the image
+		Crop.main(imagePath)
 
 		# Send photo to the server
 		try:
