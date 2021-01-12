@@ -1,9 +1,7 @@
 package server.protocol;
 
 import authentication.PasswordManager;
-import authentication.TwoFactorAuthentication;
 import database.Data;
-import database.DoorbellTable;
 import database.User;
 import email.Email;
 import org.json.JSONObject;
@@ -27,6 +25,25 @@ public class AdminProtocol extends Protocol {
 		requestResponse.put("updatedoorbell", new ResponseHandler(this::updateDoorbell,"id", "name"));
 		requestResponse.put("email", new ResponseHandler(this::sendEmail, "type", "subject", "contents", "recipient"));
 		requestResponse.put("newpassword", new ResponseHandler(this::newPassword, "username"));
+		requestResponse.put("analysis", new ResponseHandler(this::performAnalysis, ""));
+	}
+
+	public void performAnalysis() {
+		accountTable.connect();
+		int users = accountTable.getTotalUsers("user");
+		int admins = accountTable.getTotalUsers("admin");
+		accountTable.disconnect();
+		dataTable.connect();
+		int images = dataTable.getTotalImages();
+		dataTable.disconnect();
+		doorbellTable.connect();
+		int doorbells = doorbellTable.getTotalDoorbells();
+		doorbellTable.disconnect();
+		response.put("response", "success");
+		response.put("users", users);
+		response.put("admins", admins);
+		response.put("images", images);
+		response.put("doorbells", doorbells);
 	}
 
 	public void newPassword() {
