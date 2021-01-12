@@ -1,10 +1,11 @@
 package database;
 
+import authentication.PasswordManager;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 
 public class AccountTable extends DatabaseConnection {
@@ -155,10 +156,10 @@ public class AccountTable extends DatabaseConnection {
 	 */
 	public boolean changePassword(String username, String password) {
 		try {
-			String salt = password.substring(0, 29);
+			String salt = passwordManager.generateSalt();
 			String query = "UPDATE accounts Set Password = ?, Salt = ? WHERE Username = ?";
 			statement = conn.prepareStatement(query);
-			statement.setString(1, password);
+			statement.setString(1, passwordManager.hashPassword(password, salt));
 			statement.setString(2, salt);
 			statement.setString(3, username);
 			statement.execute();
@@ -195,8 +196,8 @@ public class AccountTable extends DatabaseConnection {
 	/**
 	 * @return all emails from the account table
 	 */
-	public HashSet<String> getAllEmails() {
-		HashSet<String> emails = new HashSet<>();
+	public ArrayList<String> getAllEmails() {
+		ArrayList<String> emails = new ArrayList<>();
 		try {
 			String query = "SELECT Email FROM accounts";
 			statement = conn.prepareStatement(query);
@@ -214,8 +215,8 @@ public class AccountTable extends DatabaseConnection {
 	 * @param id - doorbell id that links to the associated users
 	 * @return all email addresses associated to id
 	 */
-	public HashSet<String> getEmailByDoorbell(String id) {
-		HashSet<String> emails = new HashSet<>();
+	public ArrayList<String> getEmailByDoorbell(String id) {
+		ArrayList<String> emails = new ArrayList<>();
 		try {
 			String query = "SELECT Email FROM accounts, doorbelluser WHERE accounts.Username = doorbelluser.Username AND doorbelluser.Pi_id = ?";
 			statement = conn.prepareStatement(query);
@@ -250,4 +251,26 @@ public class AccountTable extends DatabaseConnection {
 		}
 		return email;
 	}
+
+	/**
+	 * @param role - role assigned to the registered user
+	 * @return number of users with the assigned role
+	 */
+	public int getTotalUsers(String role) {
+		int total = 0;
+		try {
+			String query = "SELECT COUNT(*) FROM accounts WHERE Role = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, role);
+			ResultSet resultSet = statement.executeQuery();
+			resultSet.next();
+			total = resultSet.getInt(1);
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return total;
+	}
+
+
 }

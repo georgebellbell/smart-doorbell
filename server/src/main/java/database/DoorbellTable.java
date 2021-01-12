@@ -1,5 +1,8 @@
 package database;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -85,5 +88,46 @@ public class DoorbellTable extends DatabaseConnection {
 		System.out.println("Duplicate username");
 		return false;
 		}
+	}
+
+	/**
+	 * @return total doorbells stored in the database
+	 */
+	public int getTotalDoorbells() {
+		int total = 0;
+		try {
+			String query = "SELECT COUNT(*) FROM doorbell";
+			statement = conn.prepareStatement(query);
+			ResultSet resultSet = statement.executeQuery();
+			resultSet.next();
+			total = resultSet.getInt(1);
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return total;
+	}
+
+	/**
+	 * @return JSON array with the count of images and ids of the doorbells
+	 */
+	public JSONArray getDoorbellPieData() {
+		JSONArray jsonArray = new JSONArray();
+		try {
+			String query = "SELECT Device_id, COUNT(*) FROM data Group By Device_id";
+			statement = conn.prepareStatement(query);
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				String id = resultSet.getString("Device_id");
+				int count = resultSet.getInt(2);
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("id", id);
+				jsonObject.put("count", count);
+				jsonArray.put(jsonObject);
+			}
+		} catch (Exception e) {
+				e.printStackTrace();
+		}
+		return jsonArray;
 	}
 }

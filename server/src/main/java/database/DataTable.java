@@ -121,4 +121,22 @@ public class DataTable extends DatabaseConnection {
 			return false;
 		}
 	}
+
+	/**
+	 * @return total images stored in the database
+	 */
+	public int getTotalImages() {
+		int total = 0;
+		try {
+			String query = "SELECT COUNT(*) FROM data";
+			statement = conn.prepareStatement(query);
+			ResultSet resultSet = statement.executeQuery();
+			resultSet.next();
+			total = resultSet.getInt(1);
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return total;
+	}
 }

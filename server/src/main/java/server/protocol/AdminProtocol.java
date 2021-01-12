@@ -1,9 +1,10 @@
 package server.protocol;
 
-import authentication.TwoFactorAuthentication;
+import authentication.PasswordManager;
 import database.Data;
-import database.DoorbellTable;
 import database.User;
+import email.Email;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import server.ResponseHandler;
 
@@ -12,6 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class AdminProtocol extends Protocol {
+	private PasswordManager passwordManager = new PasswordManager();
 	private User user;
 
 	public AdminProtocol() {
@@ -22,6 +24,106 @@ public class AdminProtocol extends Protocol {
 		requestResponse.put("searchdoorbell", new ResponseHandler(this::searchDoorbell, "id"));
 		requestResponse.put("deletedoorbell", new ResponseHandler(this::deleteDoorbell, "id"));
 		requestResponse.put("updatedoorbell", new ResponseHandler(this::updateDoorbell,"id", "name"));
+		requestResponse.put("email", new ResponseHandler(this::sendEmail, "type", "subject", "contents", "recipient"));
+		requestResponse.put("newpassword", new ResponseHandler(this::newPassword, "username"));
+		requestResponse.put("analysis", new ResponseHandler(this::performAnalysis));
+	}
+
+	public void performAnalysis() {
+		accountTable.connect();
+		int users = accountTable.getTotalUsers("user");
+		int admins = accountTable.getTotalUsers("admin");
+		accountTable.disconnect();
+		dataTable.connect();
+		int images = dataTable.getTotalImages();
+		dataTable.disconnect();
+		doorbellTable.connect();
+		int doorbells = doorbellTable.getTotalDoorbells();
+		JSONArray jsonArray = doorbellTable.getDoorbellPieData();
+		doorbellTable.disconnect();
+		response.put("response", "success");
+		response.put("users", users);
+		response.put("admins", admins);
+		response.put("images", images);
+		response.put("doorbells", doorbells);
+		response.put("imagegraph", jsonArray);
+	}
+
+	public void newPassword() {
+		String username = request.getString("username");
+		String newPassword = passwordManager.generateString();
+		accountTable.connect();
+		String emailAddress = accountTable.getEmailByUsername(username);
+		boolean changedPassword = accountTable.changePassword(username, newPassword);
+		accountTable.disconnect();
+
+		if (changedPassword) {
+			accountTable.disconnect();
+			Email email = new Email();
+			email.addRecipient(emailAddress);
+			email.setSubject("Password reset");
+			email.setContents("Dear user: " + username +  " your new password is: " + newPassword);
+			if (email.send()) {
+				response.put("response", "success");
+				response.put("message", "Password change email sent");
+			}
+			else {
+				response.put("response", "fail");
+				response.put("message", "Password change email not sent");
+			}
+		}
+		else {
+			response.put("response", "fail");
+			response.put("message", "Password can't be changed");
+		}
+	}
+
+	public void sendEmail() {
+		int type = request.getInt("type");
+		String subject = request.getString("subject");
+		String content = request.getString("contents");
+		String id = request.getString("recipient");
+		Email email = new Email();
+
+		accountTable.connect();
+		// Send by email type, 0 is by username, 1 is by doorbell id, and 2 is all
+		switch (type) {
+			case 0:
+				String userEmail = accountTable.getEmailByUsername(id);
+				if (userEmail == null) {
+					response.put("response", "fail");
+					response.put("message", "Username does not exist");
+					return;
+				}
+				email.addRecipient(userEmail);
+				break;
+			case 1:
+				ArrayList<String> doorbellEmails = accountTable.getEmailByDoorbell(id);
+				if (doorbellEmails == null) {
+					response.put("response", "fail");
+					response.put("message", "Doorbell ID does not exist");
+					return;
+				}
+				email.addRecipients(doorbellEmails);
+				break;
+			case 2:
+				ArrayList<String> allEmails = accountTable.getAllEmails();
+				email.addRecipients(allEmails);
+				break;
+		}
+
+		accountTable.disconnect();
+		email.setSubject(subject);
+		email.setContents(content);
+
+		if (email.send()) {
+			response.put("response", "success");
+			response.put("message", "Email successfully sent");
+		}
+		else {
+			response.put("response", "fail");
+			response.put("message", "Email could not be sent");
+		}
 	}
 
 	public void updateDoorbell() {
