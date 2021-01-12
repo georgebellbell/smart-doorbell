@@ -51,7 +51,7 @@ public class UserProtocol extends Protocol {
 		}
 		dataTable.disconnect();
 		ArrayList<JSONObject> jsonImages = new ArrayList<>();
-		if (allImages != null) {
+		if (allImages.size() != 0) {
 			for (Data data: allImages) {
 				JSONObject jsonData = new JSONObject();
 				Blob blob = data.getImage();
