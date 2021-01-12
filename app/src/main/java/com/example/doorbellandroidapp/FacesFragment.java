@@ -135,7 +135,7 @@ public class FacesFragment extends Fragment {
 		try {
 			request.put("request","faces");
 			//request.put("username", username);
-			request.put("username", "00000001");
+			request.put("username", preferences.getString("currentUser",null));
 
 		} catch (JSONException e) {
 			e.printStackTrace();
