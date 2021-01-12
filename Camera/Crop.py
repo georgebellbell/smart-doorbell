@@ -24,7 +24,6 @@ def identifyFaces(image):
 	# Get the coordinates of the faces from the image
 	faces = faceCascade.detectMultiScale(grayscale, scaleFactor=1.3, minNeighbors=3, minSize=(30, 30))
 
-	print("Found", len(faces), "face(s)")
 	return faces
 
 
