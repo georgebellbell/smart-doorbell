@@ -3,6 +3,7 @@ package com.example.doorbellandroidapp;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,9 +46,12 @@ public class FacesFragment extends Fragment {
 	private TextView tvFaces;
 	private ImageView ivAddFace;
 
+	private boolean pictureTaken;
+
 	private View view;
 
 	private ProgressDialog progressDialog;
+	Dialog dialog;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,6 +64,8 @@ public class FacesFragment extends Fragment {
 		tvFaces = view.findViewById(R.id.tvFaces);
 		tvFaces.setText(currentUser+"'s Faces");
 
+
+		dialog = new Dialog(getContext());
 		progressDialog = new ProgressDialog(getContext());
 		progressDialog.setMax(100);
 		progressDialog.setMessage("Please wait...");
@@ -89,6 +97,7 @@ public class FacesFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				Toast.makeText(getContext(), "you want to add new face? come back later", Toast.LENGTH_SHORT).show();
+				showPopup();
 				// TODO Add functionality to add new faces
 			}
 		});
@@ -172,6 +181,61 @@ public class FacesFragment extends Fragment {
 		recyclerView.setAdapter(adapter);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 	}
+
+	public void showPopup() {
+		pictureTaken = false;
+		final EditText etEditImageName;
+		final ImageView ivAddPicture, ivNewFace;
+		Button btnAddNewFace, btnCancelAddNewFace;
+		dialog.setContentView(R.layout.addfacepopup);
+
+
+		etEditImageName = (EditText) dialog.findViewById(R.id.etEditImageName);
+		ivAddPicture = dialog.findViewById(R.id.ivAddPicture);
+		ivNewFace = dialog.findViewById(R.id.ivNewFace);
+		pictureTaken = false;
+		btnAddNewFace = dialog.findViewById(R.id.btnAddNewFace);
+		btnCancelAddNewFace = dialog.findViewById(R.id.btnCancelAddNewFace);
+
+		etEditImageName.setHint("New Face");
+		ivAddPicture.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(getContext(), "Taking Picture", Toast.LENGTH_SHORT).show();
+				// TODO Take picture using phones camera
+				pictureTaken = true;
+			}
+		});
+		btnAddNewFace.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				String newFaceName = etEditImageName.getText().toString();
+				if (newFaceName.equals("") || newFaceName==null){
+					Toast.makeText(getContext(), "Put a name to the face!", Toast.LENGTH_SHORT).show();
+				}
+				else{
+					if (!pictureTaken){
+						Toast.makeText(getContext(), "Make sure to take a picture for the face!", Toast.LENGTH_SHORT).show();
+						
+					}
+					else{
+						Toast.makeText(getContext(), "New Face Added", Toast.LENGTH_SHORT).show();
+						// TODO Add new face to database for that user and refresh faces page
+					}
+				}
+
+			}
+		});
+		btnCancelAddNewFace.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+		});
+
+		dialog.show();
+	}
+
 
 
 
