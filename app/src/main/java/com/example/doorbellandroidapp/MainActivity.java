@@ -69,10 +69,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		if (savedInstanceState == null) {
 			FragmentTransaction t = fm.beginTransaction();
 			String currentTask = preferences.getString("currentTask",null);
-			if (currentTask.equals("Face Deleted"))
+			if (currentTask!=null)
 			{
 				navigationView.setCheckedItem(R.id.nav_faces);
-				preferences.edit().putString("currentTask","none").apply();
+				preferences.edit().putString("currentTask",null).apply();
 				fragment = new FacesFragment();
 			}
 			else{

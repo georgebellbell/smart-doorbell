@@ -73,7 +73,7 @@ public class TwoFactorAuthActivity extends AppCompatActivity {
 	void twoFactorSuccess() {
 		// Set current user and default task
 		preferences.edit().putString("currentUser",currentUser).apply();
-		preferences.edit().putString("currentTask","none").apply();
+		preferences.edit().putString("currentTask",null).apply();
 
 		// Success notification
 		Toast.makeText(getApplicationContext(), "Login Successful",
