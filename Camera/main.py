@@ -76,7 +76,7 @@ while True:
 			print("ERROR - No faces found")
 			led1.off()
 		else:
-			print(faces + " Face(s) found")
+			print(str(faces) + " Face(s) found")
 
 			# Send faces to the server
 			try:
