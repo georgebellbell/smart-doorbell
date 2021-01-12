@@ -4,12 +4,14 @@ import sys
 
 
 def crop(image, faces):
+	x = 0
 	# iterate over all faces found in the image
 	for (x, y, w, h) in faces:
 		# Crop out a section where a face was detected
 		imageSection = image[y:y + h, x:x + w]
-		# Save the section
-		cv2.imwrite(str(w) + str(h) + "_faces.jpg", imageSection)
+		# Save the section containing the face to a file
+		cv2.imwrite((str(x) + ".jpg"), imageSection)
+		x += 1
 
 	return len(faces)
 
@@ -22,7 +24,7 @@ def identifyFaces(image):
 	# Get the coordinates of the faces from the image
 	faces = faceCascade.detectMultiScale(grayscale, scaleFactor=1.3, minNeighbors=3, minSize=(30, 30))
 
-	print("Found", len(faces), "face(s)", faces)
+	print("Found", len(faces), "face(s)")
 	return faces
 
 

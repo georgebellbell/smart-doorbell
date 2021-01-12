@@ -7,8 +7,8 @@ import base64
 import Crop
 
 # Setup file path for image location
-cwd = os.getcwd()
-imagePath = cwd + "/photo.jpg"
+cwd = os.getcwd() + "/"
+photoPath = cwd + "photo.jpg"
 
 # GPIO pin setup
 led1 = LED(10)
@@ -29,15 +29,15 @@ with open("PiID.txt", "r") as file:
 
 
 # Take picture
-def capture():
+def capture(path):
 	camera = PiCamera()
-	camera.capture(imagePath)
+	camera.capture(path)
 	camera.close()
 
 
 # Send the photo to the socket server
-def sendImage():
-	imageData = getImage()
+def sendImage(path):
+	imageData = getImage(path)
 	output = '{"request":"image","id":"' + PiId + '","data":"' + imageData + '"}\r\n'
 	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 		s.connect((host, port))
@@ -45,13 +45,13 @@ def sendImage():
 		s.sendall(bytes(output, 'utf-8'))
 		data = s.recv(1024)
 
-	print("Recived", repr(data))
+	print("Received", repr(data))
 	return
 
 
 # Get the photo from the filesystem and return it in the correct format
-def getImage():
-	with open("photo.jpg", "rb") as image:
+def getImage(path):
+	with open(path, "rb") as image:
 		imageData = str(base64.encodebytes(image.read()))[2:-3]
 
 	return imageData
@@ -65,22 +65,36 @@ while True:
 
 		# Take a photo
 		try:
-			capture()
+			capture(photoPath)
 			print("Captured photo")
 		except Exception as e:
 			print("Failed to capture photo")
 
 		# Crop the faces from the image
-		Crop.main(imagePath)
+		faces = Crop.main(photoPath)
+		if faces == 0:
+			print("ERROR - No faces found")
+		else:
+			print(faces + " Face(s) found")
 
-		# Send photo to the server
-		try:
-			sendImage()
-			print("Image sent to server")
-			sleep(2)  # 20
-		except Exception as e:
-			print("Failed to send image to server")
-		led1.off()
+			# Send faces to the server
+			try:
+				for n in range(faces):
+					sendImage(cwd + str(n) + ".jpg")
+					print("Image " + str(n) + "sent to server")
+
+				# Flash led to show picture has finished being sent
+				led1.off()
+				sleep(1)
+				led1.on()
+				# Delay before being able to be ring the doorbell again
+				sleep(2)  # 20
+
+			except Exception as e:
+				print("Failed to send image to server")
+
+			finally:
+				led1.off()
 
 	# Close the program if button 2 is pressed
 	if button2.is_pressed:
