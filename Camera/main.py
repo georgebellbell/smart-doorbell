@@ -83,7 +83,7 @@ while True:
 			try:
 				for n in range(faces):
 					sendImage(cwd + str(n) + ".jpg")
-					print("Image " + str(n) + "sent to server")
+					print("Image " + str(n) + " sent to server")
 
 				# Flash led to show picture has finished being sent
 				led1.off()
