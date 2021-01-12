@@ -251,4 +251,26 @@ public class AccountTable extends DatabaseConnection {
 		}
 		return email;
 	}
+
+	/**
+	 * @param role - role assigned to the registered user
+	 * @return number of users with the assigned role
+	 */
+	public int getTotalUsers(String role) {
+		int total = 0;
+		try {
+			String query = "SELECT COUNT(*) FROM accounts WHERE Role = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, role);
+			ResultSet resultSet = statement.executeQuery();
+			resultSet.next();
+			total = resultSet.getInt(1);
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return total;
+	}
+
+
 }

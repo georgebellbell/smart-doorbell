@@ -86,4 +86,22 @@ public class DoorbellTable extends DatabaseConnection {
 		return false;
 		}
 	}
+
+	/**
+	 * @return total doorbells stored in the database
+	 */
+	public int getTotalDoorbells() {
+		int total = 0;
+		try {
+			String query = "SELECT COUNT(*) FROM doorbell";
+			statement = conn.prepareStatement(query);
+			ResultSet resultSet = statement.executeQuery();
+			resultSet.next();
+			total = resultSet.getInt(1);
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return total;
+	}
 }
