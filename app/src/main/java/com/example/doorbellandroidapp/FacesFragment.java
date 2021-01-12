@@ -1,13 +1,18 @@
 package com.example.doorbellandroidapp;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +42,8 @@ public class FacesFragment extends Fragment {
 
 	private View view;
 
+	private ProgressDialog progressDialog;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		view =  inflater.inflate(R.layout.fragment_faces, container, false);
@@ -45,7 +52,33 @@ public class FacesFragment extends Fragment {
 		preferences= PreferenceManager.getDefaultSharedPreferences(getContext());
 		currentUser= preferences.getString("currentUser",null);
 
+		progressDialog = new ProgressDialog(getContext());
+		progressDialog.setMax(100);
+		progressDialog.setMessage("Please wait...");
+		progressDialog.setTitle("Loading Faces");
+		progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		progressDialog.show();
+
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (progressDialog.getProgress() <= progressDialog.getMax()){
+					try {
+						Thread.sleep(30);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					progressDialog.incrementProgressBy(1);
+					if (progressDialog.getProgress()==progressDialog.getMax()){
+						progressDialog.dismiss();
+					}
+
+				}
+			}
+		}).start();
+
 		loadImages();
+
 		Log.d(TAG, "onCreateView: loop exited");
 		return view;
 	}
@@ -125,5 +158,7 @@ public class FacesFragment extends Fragment {
 		recyclerView.setAdapter(adapter);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 	}
+
+
 
 }
