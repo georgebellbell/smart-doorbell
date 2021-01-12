@@ -17,8 +17,8 @@ def crop(image, faces):
 
 
 def identifyFaces(image):
-	# Make the image grayscale to work better for face identification
-	grayscale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+	# Make the image grayscale and equalise the histogram to work better for face identification
+	grayscale = cv2.equalizeHist(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
 	# Pre trained machine learning algorithm to detect faces from the opencv library
 	faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 	# Get the coordinates of the faces from the image
@@ -29,8 +29,9 @@ def identifyFaces(image):
 
 
 def main(imagePath):
-	# Read the image from the file path
+	# Read image from file path
 	image = cv2.imread(imagePath)
 
+	# Extract the faces
 	faces = identifyFaces(image)
 	return crop(image, faces)
