@@ -28,12 +28,12 @@ public class AdminMenu extends JFrame{
 	private JTextField createdField;
 	private JTextField searchField;
 	private JButton searchButton;
-	private JButton deleteUserButton;
+	private JButton accountDeleteButton;
 	private JPanel userInfoPanel;
 	private JTextField roleField;
 	private JPanel accountPanel;
 	private JPanel searchPanel;
-	private JButton saveChangesButton;
+	private JButton accountSaveChangesButton;
 	private JPanel mainPanel;
 	private JPanel analyticsPanel;
 	private JButton doorbellButton;
@@ -61,6 +61,7 @@ public class AdminMenu extends JFrame{
 	private JLabel emailContentsLabel;
 	private JTextField emailSubjectField;
 	private JLabel emailSubjectLabel;
+	private JButton accountResetPasswordButton;
 	private String displayedUser;
 	private String displayedDoorbell;
 	private JSONArray currentDoorbellFaces;
@@ -107,14 +108,14 @@ public class AdminMenu extends JFrame{
 			}
 		});
 
-		saveChangesButton.addActionListener(actionEvent -> {
+		accountSaveChangesButton.addActionListener(actionEvent -> {
 			String newUsername = usernameField.getText();
 			String newEmail = emailField.getText();
 			Thread t = new Thread(() -> updateUser(newUsername, newEmail));
 			t.start();
 		});
 
-		deleteUserButton.addActionListener(actionEvent -> {
+		accountDeleteButton.addActionListener(actionEvent -> {
 			Thread t = new Thread(() -> deleteUser(displayedUser));
 			t.start();
 		});
