@@ -6,6 +6,7 @@ import sys
 def crop(image, faces):
 	x = 0
 	# iterate over all faces found in the image
+	print(faces)
 	for (x, y, w, h) in faces:
 		# Crop out a section where a face was detected
 		imageSection = image[y:y + h, x:x + w]

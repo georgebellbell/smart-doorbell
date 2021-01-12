@@ -72,6 +72,7 @@ while True:
 
 		# Crop the faces from the image
 		faces = Crop.main(photoPath)
+
 		if faces == 0:
 			print("ERROR - No faces found")
 			led1.off()
