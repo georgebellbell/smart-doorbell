@@ -120,6 +120,11 @@ public class AdminMenu extends JFrame{
 			t.start();
 		});
 
+		accountResetPasswordButton.addActionListener(actionEvent -> {
+			Thread t = new Thread(() -> resetUserPassword(displayedUser));
+			t.start();
+		});
+
 		// Doorbell panel
 		searchDoorbellButton.addActionListener(actionEvent -> {
 			String id = searchDoorbellField.getText();
@@ -303,6 +308,28 @@ public class AdminMenu extends JFrame{
 		JSONObject response = connection.run(request);
 		if (response.getString("response").equals("success")) {
 			clearUserInformation();
+			JOptionPane.showMessageDialog(this,
+					response.getString("message"), "Account", JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(this,
+					response.getString("message"), "Account", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	private void resetUserPassword(String username) {
+		// Make sure request is not already in progress
+		if (connection.isRequestInProgress()) {
+			return;
+		}
+
+		// Create request
+		JSONObject request = new JSONObject();
+		request.put("request", "newpassword");
+		request.put("username", username);
+
+		// Run request
+		JSONObject response = connection.run(request);
+		if (response.getString("response").equals("success")) {
 			JOptionPane.showMessageDialog(this,
 					response.getString("message"), "Account", JOptionPane.INFORMATION_MESSAGE);
 		} else {

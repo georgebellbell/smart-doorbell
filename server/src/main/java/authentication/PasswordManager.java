@@ -34,10 +34,10 @@ public class PasswordManager {
 	}
 
 	/**
-	 * @return a generated String of size 15 using ASCII range from 33 (special chars) to 122 (lowercase z)
+	 * @return a generated String of size 15 using ASCII range from 48 (numbers) to 122 (lowercase z)
 	 */
 	public String generateString() {
-		String password = new Random().ints(15, 33, 122).collect(StringBuilder::new,
+		String password = new Random().ints(15, 48, 122).collect(StringBuilder::new,
 				StringBuilder::appendCodePoint, StringBuilder::append).toString();
 		return password;
 	}
