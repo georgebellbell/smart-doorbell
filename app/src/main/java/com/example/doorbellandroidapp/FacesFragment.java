@@ -1,14 +1,20 @@
 package com.example.doorbellandroidapp;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +51,7 @@ public class FacesFragment extends Fragment {
 	private SharedPreferences preferences;
 	private String currentUser;
 	private TextView tvFaces;
-	private ImageView ivAddFace;
+	private ImageView ivAddFace, ivNewFace;
 
 	private boolean pictureTaken;
 
@@ -185,7 +192,7 @@ public class FacesFragment extends Fragment {
 	public void showPopup() {
 		pictureTaken = false;
 		final EditText etEditImageName;
-		final ImageView ivAddPicture, ivNewFace;
+		final ImageView ivAddPicture;
 		Button btnAddNewFace, btnCancelAddNewFace;
 		dialog.setContentView(R.layout.addfacepopup);
 
@@ -202,8 +209,12 @@ public class FacesFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				Toast.makeText(getContext(), "Taking Picture", Toast.LENGTH_SHORT).show();
-				// TODO Take picture using phones camera
-				pictureTaken = true;
+				//Requests for camera runtime permission
+				if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
+					ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.CAMERA},100);
+				}
+				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				startActivityForResult(intent,100);
 			}
 		});
 		btnAddNewFace.setOnClickListener(new View.OnClickListener() {
@@ -223,7 +234,6 @@ public class FacesFragment extends Fragment {
 						// TODO Add new face to database for that user and refresh faces page
 					}
 				}
-
 			}
 		});
 		btnCancelAddNewFace.setOnClickListener(new View.OnClickListener() {
@@ -236,7 +246,13 @@ public class FacesFragment extends Fragment {
 		dialog.show();
 	}
 
-
-
-
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode==100){
+			Bitmap newFaceBitmap = (Bitmap) data.getExtras().get("data");
+			ivNewFace.setImageBitmap(newFaceBitmap);
+			pictureTaken = true;
+		}
+	}
 }
