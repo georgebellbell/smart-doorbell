@@ -4,6 +4,7 @@ import authentication.TwoFactorAuthentication;
 import database.Data;
 import database.DoorbellTable;
 import database.User;
+import email.Email;
 import org.json.JSONObject;
 import server.ResponseHandler;
 
@@ -22,6 +23,45 @@ public class AdminProtocol extends Protocol {
 		requestResponse.put("searchdoorbell", new ResponseHandler(this::searchDoorbell, "id"));
 		requestResponse.put("deletedoorbell", new ResponseHandler(this::deleteDoorbell, "id"));
 		requestResponse.put("updatedoorbell", new ResponseHandler(this::updateDoorbell,"id", "name"));
+		requestResponse.put("email", new ResponseHandler(this::sendEmail, "type", "subject", "contents", "recipient"));
+	}
+
+	public void sendEmail() {
+		int type = request.getInt("type");
+		String subject = request.getString("subject");
+		String content = request.getString("contents");
+		String id = request.getString("recipient");
+		Email email = new Email();
+
+		accountTable.connect();
+		// Send by email type, 0 is by username, 1 is by doorbell id, and 2 is all
+		switch (type) {
+			case 0:
+				String userEmail = accountTable.getEmailByUsername(id);
+				email.addRecipient(userEmail);
+				break;
+			case 1:
+				ArrayList<String> doorbellEmails = accountTable.getEmailByDoorbell(id);
+				email.addRecipients(doorbellEmails);
+				break;
+			case 2:
+				ArrayList<String> allEmails = accountTable.getAllEmails();
+				email.addRecipients(allEmails);
+				break;
+		}
+
+		accountTable.disconnect();
+		email.setSubject(subject);
+		email.setContents(content);
+
+		if (email.send()) {
+			response.put("response", "success");
+			response.put("message", "Email successfully sent");
+		}
+		else {
+			response.put("response", "fail");
+			response.put("message", "Email could not be sent");
+		}
 	}
 
 	public void updateDoorbell() {
