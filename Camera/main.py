@@ -19,7 +19,7 @@ led2.on()
 button2 = Button(3)
 
 # Socket
-host = "192.168.1.122"
+host = "192.168.1.123"
 port = 4444
 
 # Read the Raspberry Pi's unique ID from a file (ID assigned at factory)
