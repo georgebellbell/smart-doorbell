@@ -8,8 +8,7 @@ def crop(image, faces):
 	# iterate over all faces found in the image
 	for (x, y, w, h) in faces:
 		# Crop out a section where a face was detected
-		print((y + round(0.1*h)),(y + round(h*1.2)))
-		imageSection = image[(y + round(0.1*h)):(y + round(h*1.2)), x:x + w]
+		imageSection = image[(y + int(round(0.1*h))):(y + int(round(h*1.2))), x:x + w]
 		# Save the section containing the face to a file
 		cv2.imwrite((str(n) + ".jpg"), imageSection)
 		n += 1
