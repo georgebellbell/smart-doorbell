@@ -261,6 +261,34 @@ public class FacesFragment extends Fragment {
 
 	public void addFace(Bitmap newFaceBitmap, String newFaceName){
 		String newFace = bitmapToString(newFaceBitmap);
+		// Client to handle login response from server
+		Client client = new Client(getActivity()) {
+			@Override
+			public void handleResponse(JSONObject response) throws JSONException {
+				switch (response.getString("response")) {
+					case "success":
+						System.out.println("Works!!!!!!");
+						break;
+					case "fail":
+						Toast.makeText(getContext(), "FAILURE TO ADD IMAGE", Toast.LENGTH_SHORT).show();
+						break;
+				}
+			}
+		};
+
+		// JSON Request object
+		JSONObject request = new JSONObject();
+		try {
+			request.put("request","addface");
+			request.put("username", preferences.getString("currentUser",null));
+			request.put("personname", newFaceName);
+			request.put("image", newFace);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		// Set request and start connection
+		client.setRequest(request);
+		client.start();
 
 	}
 	public String bitmapToString(Bitmap bitmap){
