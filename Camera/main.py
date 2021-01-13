@@ -23,7 +23,7 @@ host = "192.168.1.123"
 port = 4444
 
 # Read the Raspberry Pi's unique ID from a file (ID assigned at factory)
-with open("PiID.txt", "r") as file:
+with open(cwd+"/PiID.txt", "r") as file:
 	PiId = file.readline()
 	print("Unique Device ID: " + PiId)
 
