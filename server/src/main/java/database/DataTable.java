@@ -1,8 +1,10 @@
 package database;
 
+import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DataTable extends DatabaseConnection {
 	PreparedStatement statement;
@@ -138,5 +140,30 @@ public class DataTable extends DatabaseConnection {
 			e.printStackTrace();
 		}
 		return total;
+	}
+
+	/**
+	 * @param deviceID - deviceID of the doorbell
+	 * @return HashMap of the image as the key and time as the value
+	 */
+	public HashMap<Blob, String> getRecentImage(String deviceID) {
+		HashMap<Blob, String> imageTime = new HashMap<>();
+		Blob image = null;
+		String time = null;
+		try {
+			String query = "SELECT Device_id, Image, MAX(created_at) FROM data WHERE Device_id = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, deviceID);
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next()) {
+				image = resultSet.getBlob("Image");
+				time = resultSet.getString("MAX(created_at)");
+			}
+			imageTime.put(image, time);
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return imageTime;
 	}
 }
