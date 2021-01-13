@@ -123,7 +123,7 @@ public class Email {
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(EMAIL));
 			message.setRecipients(
-					Message.RecipientType.TO,
+					Message.RecipientType.BCC,
 					getInternetAddressRecipients()
 			);
 			message.setSubject(subject);
