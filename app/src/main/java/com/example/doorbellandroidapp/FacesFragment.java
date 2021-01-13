@@ -1,23 +1,44 @@
 package com.example.doorbellandroidapp;
 
+import android.Manifest;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.media.Image;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 
@@ -27,11 +48,21 @@ public class FacesFragment extends Fragment {
 	//vars
 	private ArrayList<String> mNames = new ArrayList<>();
 	private ArrayList<String> mImages = new ArrayList<>();
+	private ArrayList<Integer> mImageIDs = new ArrayList<>();
 
 	private SharedPreferences preferences;
 	private String currentUser;
+	private TextView tvFaces;
+	private ImageView ivAddFace, ivNewFace;
+
+	private boolean pictureTaken;
+	private Bitmap newFaceBitmap;
+
 
 	private View view;
+
+	private ProgressDialog progressDialog;
+	Dialog dialog;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,8 +71,46 @@ public class FacesFragment extends Fragment {
 
 		preferences= PreferenceManager.getDefaultSharedPreferences(getContext());
 		currentUser= preferences.getString("currentUser",null);
+		ivAddFace = view.findViewById(R.id.ivAddFace);
+		tvFaces = view.findViewById(R.id.tvFaces);
+		tvFaces.setText(currentUser+"'s Faces");
+
+
+		dialog = new Dialog(getContext());
+		progressDialog = new ProgressDialog(getContext());
+		progressDialog.setMax(100);
+		progressDialog.setMessage("Please wait...");
+		progressDialog.setTitle("Loading Faces");
+		progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		progressDialog.show();
+
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (progressDialog.getProgress() <= progressDialog.getMax()){
+					try {
+						Thread.sleep(30);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					progressDialog.incrementProgressBy(1);
+					if (progressDialog.getProgress()==progressDialog.getMax()){
+						progressDialog.dismiss();
+					}
+
+				}
+			}
+		}).start();
 
 		loadImages();
+
+		ivAddFace.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				showPopup();
+			}
+		});
+
 		Log.d(TAG, "onCreateView: loop exited");
 		return view;
 	}
@@ -84,7 +153,7 @@ public class FacesFragment extends Fragment {
 		try {
 			request.put("request","faces");
 			//request.put("username", username);
-			request.put("username", "unique ID");
+			request.put("username", preferences.getString("currentUser",null));
 
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -105,6 +174,7 @@ public class FacesFragment extends Fragment {
 			Log.d(TAG, "initImageBitmaps: "+currentImage.getString("image"));
 			mImages.add(currentImage.getString("image"));
 			mNames.add(currentImage.getString("person"));
+			mImageIDs.add(currentImage.getInt("id"));
 		}
 
 	}
@@ -116,10 +186,118 @@ public class FacesFragment extends Fragment {
 	private void initRecyclerView(View view){
 		Log.d(TAG, "initRecyclerView: init recyclerview.");
 		RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
-		RecyclerViewAdapter adapter = new RecyclerViewAdapter(getActivity(), mNames, mImages);
+		RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), getActivity(), mNames, mImages, mImageIDs);
 		recyclerView.setAdapter(adapter);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+	}
+
+	public void showPopup() {
+		pictureTaken = false;
+		final EditText etEditImageName;
+		final ImageView ivAddPicture;
+		Button btnAddNewFace, btnCancelAddNewFace;
+		dialog.setContentView(R.layout.addfacepopup);
 
 
+		etEditImageName = (EditText) dialog.findViewById(R.id.etEditImageName);
+		ivAddPicture = dialog.findViewById(R.id.ivAddPicture);
+		ivNewFace = dialog.findViewById(R.id.ivNewFace);
+		pictureTaken = false;
+		btnAddNewFace = dialog.findViewById(R.id.btnAddNewFace);
+		btnCancelAddNewFace = dialog.findViewById(R.id.btnCancelAddNewFace);
+
+		etEditImageName.setHint("New Face");
+		ivAddPicture.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(getContext(), "Taking Picture", Toast.LENGTH_SHORT).show();
+				//Requests for camera runtime permission
+				if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
+					ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.CAMERA},100);
+				}
+				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				startActivityForResult(intent,100);
+			}
+		});
+		btnAddNewFace.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				String newFaceName = etEditImageName.getText().toString();
+				if (newFaceName.equals("") || newFaceName==null){
+					Toast.makeText(getContext(), "Put a name to the face!", Toast.LENGTH_SHORT).show();
+				}
+				else{
+					if (!pictureTaken){
+						Toast.makeText(getContext(), "Make sure to take a picture for the face!", Toast.LENGTH_SHORT).show();
+						
+					}
+					else{
+						Toast.makeText(getContext(), "New Face Added", Toast.LENGTH_SHORT).show();
+						addFace(newFaceBitmap,newFaceName);
+						// TODO Add new face to database for that user and refresh faces page
+					}
+				}
+			}
+		});
+		btnCancelAddNewFace.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+		});
+
+		dialog.show();
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode==100){
+			newFaceBitmap = (Bitmap) data.getExtras().get("data");
+			ivNewFace.setImageBitmap(newFaceBitmap);
+			pictureTaken = true;
+		}
+	}
+
+	public void addFace(Bitmap newFaceBitmap, String newFaceName){
+		String newFace = bitmapToString(newFaceBitmap);
+		// Client to handle login response from server
+		Client client = new Client(getActivity()) {
+			@Override
+			public void handleResponse(JSONObject response) throws JSONException {
+				switch (response.getString("response")) {
+					case "success":
+						SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(getContext());
+						preferences.edit().putString("currentTask","Face Added").apply();
+						getActivity().finish();
+						getActivity().startActivity(getActivity().getIntent());
+						break;
+					case "fail":
+						Toast.makeText(getContext(), "NO DOORBELL ASSIGNED, PLEASE CONTACT ADMIN", Toast.LENGTH_SHORT).show();
+						break;
+				}
+			}
+		};
+
+		// JSON Request object
+		JSONObject request = new JSONObject();
+		try {
+			request.put("request","addface");
+			request.put("username", preferences.getString("currentUser",null));
+			request.put("personname", newFaceName);
+			request.put("image", newFace);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		// Set request and start connection
+		client.setRequest(request);
+		client.start();
+
+	}
+	public String bitmapToString(Bitmap bitmap){
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+		byte[] byteArray = byteArrayOutputStream .toByteArray();
+		return Base64.encodeToString(byteArray,Base64.DEFAULT);
 	}
 }

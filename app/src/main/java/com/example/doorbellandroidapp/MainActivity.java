@@ -63,13 +63,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 		// navigation view select home menu by default
 		//navigationView.getMenu().getItem(0).setChecked(true);
-		navigationView.setCheckedItem(R.id.nav_home);
+
 
 		fm = getSupportFragmentManager();
 		if (savedInstanceState == null) {
-
 			FragmentTransaction t = fm.beginTransaction();
-			fragment = new HomeFragment();
+			String currentTask = preferences.getString("currentTask",null);
+			if (currentTask!=null)
+			{
+				navigationView.setCheckedItem(R.id.nav_faces);
+				preferences.edit().putString("currentTask",null).apply();
+				fragment = new FacesFragment();
+			}
+			else{
+				navigationView.setCheckedItem(R.id.nav_home);
+				fragment = new HomeFragment();
+			}
 			t.replace(R.id.content_frame, fragment);
 			t.commit();
 		} else {
