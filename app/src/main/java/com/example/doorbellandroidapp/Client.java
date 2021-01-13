@@ -2,6 +2,15 @@ package com.example.doorbellandroidapp;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,7 +23,7 @@ import java.net.Socket;
 
 public abstract class Client extends Thread {
     // Connection details
-    private static final String HOST = "172.17.255.145";
+    private static final String HOST = "192.168.56.1";
     private static final int PORT = 4444;
 
     private Activity activity;
@@ -26,6 +35,11 @@ public abstract class Client extends Thread {
 
     public void setRequest(JSONObject request) {
         this.request = request;
+        try {
+            this.request.put("token", FirebaseInstanceId.getInstance().getToken());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getStringRequest() {
