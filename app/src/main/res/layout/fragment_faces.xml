@@ -19,9 +19,9 @@
         android:id="@+id/ivAddFace"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:layout_marginLeft="325dp"
+        android:layout_marginLeft="300dp"
+        android:padding="3dp"
         android:src="@drawable/ic_add_face">
-
     </ImageView>
 
     <androidx.recyclerview.widget.RecyclerView

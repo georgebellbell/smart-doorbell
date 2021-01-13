@@ -23,6 +23,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 
@@ -54,6 +56,8 @@ public class FacesFragment extends Fragment {
 	private ImageView ivAddFace, ivNewFace;
 
 	private boolean pictureTaken;
+	private Bitmap newFaceBitmap;
+
 
 	private View view;
 
@@ -103,9 +107,7 @@ public class FacesFragment extends Fragment {
 		ivAddFace.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(getContext(), "you want to add new face? come back later", Toast.LENGTH_SHORT).show();
 				showPopup();
-				// TODO Add functionality to add new faces
 			}
 		});
 
@@ -231,6 +233,7 @@ public class FacesFragment extends Fragment {
 					}
 					else{
 						Toast.makeText(getContext(), "New Face Added", Toast.LENGTH_SHORT).show();
+						addFace(newFaceBitmap,newFaceName);
 						// TODO Add new face to database for that user and refresh faces page
 					}
 				}
@@ -250,9 +253,20 @@ public class FacesFragment extends Fragment {
 	public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode==100){
-			Bitmap newFaceBitmap = (Bitmap) data.getExtras().get("data");
+			newFaceBitmap = (Bitmap) data.getExtras().get("data");
 			ivNewFace.setImageBitmap(newFaceBitmap);
 			pictureTaken = true;
 		}
+	}
+
+	public void addFace(Bitmap newFaceBitmap, String newFaceName){
+		String newFace = bitmapToString(newFaceBitmap);
+
+	}
+	public String bitmapToString(Bitmap bitmap){
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+		byte[] byteArray = byteArrayOutputStream .toByteArray();
+		return Base64.encodeToString(byteArray,Base64.DEFAULT);
 	}
 }
