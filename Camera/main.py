@@ -1,15 +1,13 @@
 from gpiozero import *
 from time import sleep
 from picamera import PiCamera  # This library installed on the raspberry pi by default
-import os
 import socket
 import base64
 import Crop
 
-# Setup file path for image location
-cwd = os.getcwd() + "/"
-print(__file__[:-7])
-photoPath = cwd + "photo.jpg"
+# Get file path
+fileLocation = __file__[:-7]
+photoPath = fileLocation + "photo.jpg"
 
 # GPIO pin setup
 led1 = LED(10)
@@ -24,7 +22,7 @@ host = "192.168.1.123"
 port = 4444
 
 # Read the Raspberry Pi's unique ID from a file (ID assigned at factory)
-with open(__file__[:-7] + "PiID.txt", "r") as file:
+with open(fileLocation + "PiID.txt", "r") as file:
 	PiId = file.readline()
 	print("Unique Device ID: " + PiId)
 
@@ -83,7 +81,7 @@ while True:
 			# Send faces to the server
 			try:
 				for n in range(faces):
-					sendImage(cwd + str(n) + ".jpg")
+					sendImage(fileLocation + str(n) + ".jpg")
 					print("Image " + str(n) + " sent to server")
 
 				# Flash led to show picture has finished being sent
