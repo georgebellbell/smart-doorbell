@@ -273,7 +273,7 @@ public class FacesFragment extends Fragment {
 						getActivity().startActivity(getActivity().getIntent());
 						break;
 					case "fail":
-						Toast.makeText(getContext(), "FAILURE TO ADD IMAGE", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getContext(), "NO DOORBELL ASSIGNED, PLEASE CONTACT ADMIN", Toast.LENGTH_SHORT).show();
 						break;
 				}
 			}
