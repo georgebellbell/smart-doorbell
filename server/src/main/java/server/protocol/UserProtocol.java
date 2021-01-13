@@ -40,11 +40,18 @@ public class UserProtocol extends Protocol {
 	}
 
 	public void faces() {
+		String username = request.getString("username");
+		accountTable.connect();
+		ArrayList<String> doorbells = accountTable.getDeviceID(username);
+		accountTable.disconnect();
 		dataTable.connect();
-		ArrayList<Data> allImages = dataTable.getAllImages(request.getString("username"));
+		ArrayList<Data> allImages = new ArrayList<>();
+		for (String doorbell : doorbells) {
+			allImages.addAll(dataTable.getAllImages(doorbell));
+		}
 		dataTable.disconnect();
 		ArrayList<JSONObject> jsonImages = new ArrayList<>();
-		if (allImages != null) {
+		if (allImages.size() != 0) {
 			for (Data data: allImages) {
 				JSONObject jsonData = new JSONObject();
 				Blob blob = data.getImage();

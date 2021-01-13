@@ -1,9 +1,5 @@
 package database;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -17,7 +13,7 @@ public class DataTable extends DatabaseConnection {
 	 */
 	public boolean addRecord(Data data) {
 		try {
-			String query = "INSERT INTO data (id, Device_id, Image, Person, Created_at)"
+			String query = "INSERT INTO data (Device_id, Image, Person, Created_at)"
 					+ " VALUES (?, ?, ?, ?)";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, data.getDeviceID());
@@ -106,6 +102,11 @@ public class DataTable extends DatabaseConnection {
 		return allImages;
 	}
 
+	/**
+	 * @param id - id of image stored in the database
+	 * @param name - name to change the person to be displayed in the app
+	 * @return if name has been changed
+	 */
 	public boolean changeName(int id, String name) {
 		try {
 			String query = "UPDATE data Set Person=? WHERE Id=?";
@@ -119,5 +120,23 @@ public class DataTable extends DatabaseConnection {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	/**
+	 * @return total images stored in the database
+	 */
+	public int getTotalImages() {
+		int total = 0;
+		try {
+			String query = "SELECT COUNT(*) FROM data";
+			statement = conn.prepareStatement(query);
+			ResultSet resultSet = statement.executeQuery();
+			resultSet.next();
+			total = resultSet.getInt(1);
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return total;
 	}
 }
