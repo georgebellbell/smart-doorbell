@@ -8,7 +8,7 @@ import Crop
 
 # Setup file path for image location
 cwd = os.getcwd() + "/"
-print(__file__)
+print(__file__[:-7])
 photoPath = cwd + "photo.jpg"
 
 # GPIO pin setup
@@ -24,7 +24,7 @@ host = "192.168.1.123"
 port = 4444
 
 # Read the Raspberry Pi's unique ID from a file (ID assigned at factory)
-with open("PiID.txt", "r") as file:
+with open(__file__[:-7] + "PiID.txt", "r") as file:
 	PiId = file.readline()
 	print("Unique Device ID: " + PiId)
 
