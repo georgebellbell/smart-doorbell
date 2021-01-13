@@ -21,6 +21,40 @@ public class UserProtocol extends Protocol {
 		requestResponse.put("faces", new ResponseHandler(this::faces, "username"));
 		requestResponse.put("deleteface", new ResponseHandler(this::deleteFace, "id"));
 		requestResponse.put("renameface", new ResponseHandler(this::renameFace, "id", "name"));
+		requestResponse.put("addface", new ResponseHandler(this::addFace, "username", "personname", "image"));
+	}
+
+	public void addFace() {
+		try {
+			String username = request.getString("username");
+			String personName = request.getString("personname");
+			byte[] image = Base64.decode(request.getString("image").getBytes());
+			accountTable.connect();
+			ArrayList<String> deviceID = accountTable.getDeviceID(username);
+			accountTable.disconnect();
+
+			dataTable.connect();
+			Connection conn = dataTable.getConn();
+			Blob blobImage = conn.createBlob();
+			blobImage.setBytes(1, image);
+
+			if (deviceID.size() != 0) {
+				for (int i = 0; i < deviceID.size(); i++) {
+					dataTable.addRecord(new Data(
+							deviceID.get(i),
+							blobImage,
+							personName
+					));
+				}
+				response.put("response", "success");
+				dataTable.disconnect();
+			} else {
+				response.put("response", "fail");
+			}
+
+		} catch (SQLException e) {
+			response.put("response", "fail");
+		}
 	}
 
 	public void renameFace() {
