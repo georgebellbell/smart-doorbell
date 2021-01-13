@@ -16,16 +16,6 @@ public class NotificationMessenger {
 	public static void sendNotification(String token, String title, String text) throws IOException {
 
 
-
-		FileInputStream serviceAccount =
-				new FileInputStream("key.json");
-
-		FirebaseOptions options = new FirebaseOptions.Builder()
-				.setCredentials(GoogleCredentials.fromStream(serviceAccount))
-				.build();
-
-		FirebaseApp.initializeApp(options);
-
 		// This registration token comes from the client FCM SDKs.
 		String registrationToken = "dIOSu3QMSIOy8_G3ZAiPN3:APA91bF1HmL1wx29nruL2xheo9KNGZnjuQPv88RguGNxl5enwrAWtYIBYfdxKbeTxzzg49WCmx0ZFn-Ja9sD8XiqPv2xwBUOhINSjhzz2pssF2c7kKm9-nnfU1hqFMr7r7XX77W7eH5_";
 

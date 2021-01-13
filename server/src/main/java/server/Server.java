@@ -1,5 +1,9 @@
 package server;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+
 import java.net.*;
 import java.io.*;
 
@@ -12,6 +16,15 @@ public class Server {
 	public void run() {
 		try {
 			ServerSocket serverSocket = new ServerSocket(PORT);
+
+			FileInputStream serviceAccount =
+					new FileInputStream("key.json");
+
+			FirebaseOptions options = new FirebaseOptions.Builder()
+					.setCredentials(GoogleCredentials.fromStream(serviceAccount))
+					.build();
+
+			FirebaseApp.initializeApp(options);
 
 			while (true) {
 				// Accept new client connection
