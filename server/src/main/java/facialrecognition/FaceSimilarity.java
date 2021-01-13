@@ -29,7 +29,7 @@ import javax.imageio.ImageIO;
 public class FaceSimilarity {
 	DataTable dataTable = new DataTable();
 
-	public boolean compareFaces(byte[] doorbellImage, String deviceID) throws IOException {
+	public String compareFaces(byte[] doorbellImage, String deviceID) throws IOException {
 		//haar cascade detector used to find faces
 		final HaarCascadeDetector detector = HaarCascadeDetector.BuiltInCascade.frontalface_alt2.load();
 
@@ -51,12 +51,16 @@ public class FaceSimilarity {
 		ByteArrayInputStream bais = new ByteArrayInputStream(doorbellImage);
 		final FImage image1 = ImageUtilities.createFImage(ImageIO.read(bais));
 
+		String name = null;
+
 		dataTable.connect();
 		ArrayList<Data> allImages = dataTable.getAllImages(deviceID);
 		dataTable.disconnect();
+
 		try {
 			for (Data allImage : allImages) {
 				byte[] imageFromDB = allImage.getImage().getBytes(1, (int) allImage.getImage().length());
+				name = allImage.getPersonName();
 				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(imageFromDB);
 				final FImage imageToCompare = ImageUtilities.createFImage(ImageIO.read(byteArrayInputStream));
 
@@ -70,13 +74,13 @@ public class FaceSimilarity {
 				double bestScore = 40;
 				for (final Entry<String, Double> matches : e.getValue().entrySet()) {
 					if (matches.getValue() < bestScore) {
-						return true;
+						return name;
 					}
 				}
 			}
 		} catch (SQLException ioException) {
 			ioException.printStackTrace();
 		}
-		return false;
+		return name;
 	}
 }

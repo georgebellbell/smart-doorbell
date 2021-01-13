@@ -17,7 +17,8 @@ public class DoorbellProtocol extends Protocol{
 	public void image() {
 		try {
 			byte[] image = Base64.decode(request.getString("data").getBytes());
-			if (!faceSimilarity.compareFaces(image, request.getString("id"))) {
+			String faceRecognised = faceSimilarity.compareFaces(image, request.getString("id"));
+			if (faceRecognised == null) {
 				dataTable.connect();
 				Connection conn = dataTable.getConn();
 				byte[] Image = Base64.decode(request.getString("data").getBytes());
@@ -32,7 +33,7 @@ public class DoorbellProtocol extends Protocol{
 			else {
 				System.out.println("Recognised face");
 				response.put("response", "success");
-				response.put("message", "Jeff is at the door");
+				response.put("message", faceRecognised + " is at the door");
 			}
 		} catch (Exception e) {
 			System.out.println(e);
