@@ -267,7 +267,10 @@ public class FacesFragment extends Fragment {
 			public void handleResponse(JSONObject response) throws JSONException {
 				switch (response.getString("response")) {
 					case "success":
-						System.out.println("Works!!!!!!");
+						SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(getContext());
+						preferences.edit().putString("currentTask","Face Added").apply();
+						getActivity().finish();
+						getActivity().startActivity(getActivity().getIntent());
 						break;
 					case "fail":
 						Toast.makeText(getContext(), "FAILURE TO ADD IMAGE", Toast.LENGTH_SHORT).show();
