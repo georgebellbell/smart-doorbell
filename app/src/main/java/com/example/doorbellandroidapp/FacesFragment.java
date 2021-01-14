@@ -212,11 +212,13 @@ public class FacesFragment extends Fragment {
 			public void onClick(View v) {
 				Toast.makeText(getContext(), "Taking Picture", Toast.LENGTH_SHORT).show();
 				//Requests for camera runtime permission
-				if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
+				if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED ){
 					ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.CAMERA},100);
 				}
-				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-				startActivityForResult(intent,100);
+				else{
+					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+					startActivityForResult(intent,100);
+				}
 			}
 		});
 		btnAddNewFace.setOnClickListener(new View.OnClickListener() {

@@ -177,7 +177,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 						// TODO take user back to faces page rather than the main page
 						break;
 					case "fail":
-						// TODO display toast message
+						Toast.makeText(mContext, "FAILED TO DELETE FACE", Toast.LENGTH_SHORT).show();
 						break;
 				}
 			}

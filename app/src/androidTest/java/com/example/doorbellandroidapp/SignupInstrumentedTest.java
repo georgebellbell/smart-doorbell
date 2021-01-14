@@ -39,7 +39,7 @@ public class SignupInstrumentedTest {
 		onView(withId(R.id.pwdPassword)).perform(typeText("Password123"), closeSoftKeyboard());
 		onView(withId(R.id.btnSignUp)).perform(click());
 		Thread.sleep(2000);
-		onView(withId(R.id.tvHome)).check(matches(isDisplayed()));
+		onView(withId(R.layout.fragment_home)).check(matches(isDisplayed()));
 		//ADD SQL TO CHECK IF VALUE IS ACTUALLY ADDED
 	}
 
