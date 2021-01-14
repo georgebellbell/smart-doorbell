@@ -31,14 +31,15 @@ public class NotificationMessenger {
 					.build();
 			try {
 				FirebaseMessaging.getInstance().send(message);
-			} catch (FirebaseMessagingException e) {
-				e.printStackTrace();
+			} catch (FirebaseMessagingException ignored) {
 			}
 		}
 	}
 
 	public void setDoorbellGroup(String doorbellID) {
+		userTokenTable.connect();
 		tokens = userTokenTable.getTokensByDoorbell(doorbellID);
+		userTokenTable.disconnect();
 	}
 
 	public void setMessage(String title, String body) {
