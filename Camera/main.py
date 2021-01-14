@@ -7,7 +7,7 @@ import os
 import Crop
 
 # Get file path
-cwd = os.getcwd()
+cwd = os.getcwd() + "/"
 fileLocation = cwd + __file__[:-7]
 photoPath = fileLocation + "photo.jpg"
 
