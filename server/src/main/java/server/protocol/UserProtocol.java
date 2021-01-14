@@ -3,6 +3,7 @@ package server.protocol;
 import authentication.TwoFactorAuthentication;
 import database.Data;
 import database.User;
+import database.UserTokenTable;
 import org.json.JSONObject;
 import org.springframework.security.crypto.codec.Base64;
 import server.ResponseHandler;
@@ -13,6 +14,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class UserProtocol extends Protocol {
+	private User user;
+
+	ArrayList<String> noValidTokenRequests;
+
 	public UserProtocol() {
 		requestResponse.put("login", new ResponseHandler(this::login, "username", "password"));
 		requestResponse.put("signup", new ResponseHandler(this::signUp, "username", "email", "password"));
@@ -23,6 +28,51 @@ public class UserProtocol extends Protocol {
 		requestResponse.put("renameface", new ResponseHandler(this::renameFace, "id", "name"));
 		requestResponse.put("addface", new ResponseHandler(this::addFace, "username", "personname", "image"));
 		requestResponse.put("lastface", new ResponseHandler(this::lastFace, "username"));
+
+		noValidTokenRequests = new ArrayList<String>(){{
+			add("login");
+			add("signup");
+			add("twofactor");
+			add("resendtwofactor");
+		}};
+	}
+
+	@Override
+	public boolean isRequestValid(String request) {
+		if (!super.isRequestValid(request)) {
+			return false;
+		}
+		JSONObject requestObject = new JSONObject(request);
+		// All Android requests must include token
+		return (requestObject.get("token") != null);
+	}
+
+	/**
+	 * Checks if user's token is valid
+	 * @return if user's token is valid
+	 */
+	private boolean checkToken() {
+		String requestName = request.getString("request");
+		String token = request.getString("token");
+		if (!noValidTokenRequests.contains(requestName)) {
+			userTokenTable.connect();
+			user = userTokenTable.getUserByToken(token);
+			userTokenTable.disconnect();
+			if (user == null) {
+				response.put("response", "invalid");
+				response.put("message", "Session has expired");
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public String processInput() {
+		if (!checkToken()) {
+			return response.toString();
+		}
+		return super.processInput();
 	}
 
 	public void lastFace(){
@@ -189,6 +239,7 @@ public class UserProtocol extends Protocol {
 	public void twoFactor() {
 		String username = request.getString("username");
 		String code = request.getString("code");
+		String token = request.getString("token");
 
 		// Get user trying to enter 2FA code
 		accountTable.connect();
@@ -212,6 +263,12 @@ public class UserProtocol extends Protocol {
 				// Correct 2FA code entered
 				response.put("response", "success");
 				response.put("message", "2FA code is correct");
+
+				// Add user's token
+				userTokenTable.connect();
+				userTokenTable.deleteByToken(token);
+				userTokenTable.addToken(token, username);
+				userTokenTable.disconnect();
 			} else {
 				// Incorrect 2FA code entered
 				response.put("response", "fail");
