@@ -23,11 +23,11 @@ public class UserProtocol extends Protocol {
 		requestResponse.put("signup", new ResponseHandler(this::signUp, "username", "email", "password"));
 		requestResponse.put("twofactor", new ResponseHandler(this::twoFactor, "username", "code"));
 		requestResponse.put("resendtwofactor", new ResponseHandler(this::resendTwoFactor, "username"));
-		requestResponse.put("faces", new ResponseHandler(this::faces, "username"));
+		requestResponse.put("faces", new ResponseHandler(this::faces));
 		requestResponse.put("deleteface", new ResponseHandler(this::deleteFace, "id"));
 		requestResponse.put("renameface", new ResponseHandler(this::renameFace, "id", "name"));
-		requestResponse.put("addface", new ResponseHandler(this::addFace, "username", "personname", "image"));
-		requestResponse.put("lastface", new ResponseHandler(this::lastFace, "username"));
+		requestResponse.put("addface", new ResponseHandler(this::addFace, "personname", "image"));
+		requestResponse.put("lastface", new ResponseHandler(this::lastFace));
 
 		noValidTokenRequests = new ArrayList<String>(){{
 			add("login");
@@ -88,7 +88,7 @@ public class UserProtocol extends Protocol {
 	}
 
 	public void lastFace(){
-		String username = request.getString("username");
+		String username = user.getUsername();
 		JSONObject image = new JSONObject();
 		dataTable.connect();
 		Data recentImage = dataTable.getRecentImage(username);
@@ -113,7 +113,7 @@ public class UserProtocol extends Protocol {
 
 	public void addFace() {
 		try {
-			String username = request.getString("username");
+			String username = user.getUsername();
 			String personName = request.getString("personname");
 			byte[] image = Base64.decode(request.getString("image").getBytes());
 			accountTable.connect();
@@ -161,7 +161,7 @@ public class UserProtocol extends Protocol {
 	}
 
 	public void faces() {
-		String username = request.getString("username");
+		String username = user.getUsername();
 		accountTable.connect();
 		ArrayList<String> doorbells = accountTable.getDeviceID(username);
 		accountTable.disconnect();
