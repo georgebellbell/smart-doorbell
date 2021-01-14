@@ -26,7 +26,7 @@ import org.json.JSONObject;
 public class HomeFragment extends Fragment {
 	private ImageView ivLastFace;
 	private Button btnOpenDoor, btnLeaveClosed;
-	private TextView tvDoorInformation, tvLastFaceTime;
+	private TextView tvDoorInformation, tvLastFaceTime, tvLastFace;
 
 	private SharedPreferences preferences;
 	private String currentUser;
@@ -67,6 +67,7 @@ public class HomeFragment extends Fragment {
 		btnLeaveClosed = view.findViewById(R.id.btnLeaveClosed);
 		tvDoorInformation = view.findViewById(R.id.tvDoorInformation);
 		tvLastFaceTime = view.findViewById(R.id.tvLastFaceTime);
+		tvLastFace = view.findViewById(R.id.tvLastFace);
 	}
 
 	private void contactDoor(boolean response){
@@ -83,13 +84,19 @@ public class HomeFragment extends Fragment {
 					case "success":
 						JSONObject image = response.getJSONObject("image");
 						String time = response.getString("time");
+						String doorbellName = response.getString("doorbellname");
+						String personAtDoor = response.getString("person");
 						byte[] decodedString = Base64.decode(image.getString("image"),Base64.DEFAULT);
 						final Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString,0, decodedString.length);
 						ivLastFace.setImageBitmap(decodedByte);
 						tvLastFaceTime.setText(time);
+						tvLastFace.setText(personAtDoor + " just used the " + doorbellName +" doorbell");
 						break;
 					case "fail":
+						// TODO display error picture?
+						tvLastFace.setText("Unknown person is using doorbell");
 						Toast.makeText(getContext(), "FAILURE TO GET IMAGES", Toast.LENGTH_SHORT).show();
+
 						break;
 				}
 			}
