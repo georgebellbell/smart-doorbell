@@ -65,6 +65,6 @@ def main(imagePath):
 	crops = crop(image, faces)
 	for n in range(len(crops)):
 		# Save the section containing the face to a file
-		cv2.imwrite(imagePath[:-9](str(n) + ".jpg"), crops[n])
+		cv2.imwrite(imagePath[:-9] + str(n) + ".jpg", crops[n])
 
 	return len(crops)
