@@ -7,6 +7,7 @@ import ui.admin.AdminMenu;
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 public class Login extends JFrame {
 	private JTextField usernameField;
@@ -21,12 +22,25 @@ public class Login extends JFrame {
 	private Client connection;
 
 	public Login() {
+		// Connect to server
+		try {
+			connection = new Client();
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(this,
+					"Failed to connect to the server.\nError: " + e.getMessage() +
+							"\nMake sure host address is correct and server is running.",
+					"Connection", JOptionPane.ERROR_MESSAGE);
+			dispose();
+			return;
+		}
+
+		// Login frame
 		add(panel);
 		setTitle("Quick Solutions: Smart Doorbell Admin Tool");
 		setSize(450,220);
 		setVisible(true);
 		setErrorMessage("");
-		connection = new Client();
+
 		loginButton.addActionListener(actionEvent -> {
 			String username = usernameField.getText();
 			String password = String.valueOf(passwordField.getPassword());
@@ -41,7 +55,6 @@ public class Login extends JFrame {
 			// Attempt to login to the server
 			Thread thread = new Thread(() -> loginToServer(username, password));
 			thread.start();
-
 		});
 
 		passwordField.addKeyListener(new KeyAdapter() {
@@ -52,6 +65,9 @@ public class Login extends JFrame {
 				}
 			}
 		});
+
+		cancelButton.addActionListener(actionEvent -> dispose());
+
 	}
 
 

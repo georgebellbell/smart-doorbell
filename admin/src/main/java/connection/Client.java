@@ -22,12 +22,8 @@ public class Client {
 	// Status
 	private boolean requestInProgress = false;
 
-	public Client() {
-		try {
-			connect();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public Client() throws IOException {
+		connect();
 	}
 
 	private void connect() throws IOException {

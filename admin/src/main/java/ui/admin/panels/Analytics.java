@@ -20,10 +20,6 @@ public class Analytics extends AdminPanel {
 	private JPanel analyticsImagePanel;
 	private JPanel root;
 
-	public Analytics() {
-		this.connection = new Client();
-	}
-
 	/**
 	 * Retrieves analytics data from server
 	 */
