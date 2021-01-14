@@ -81,7 +81,8 @@ public class HomeFragment extends Fragment {
 			public void handleResponse(JSONObject response) throws JSONException {
 				switch (response.getString("response")) {
 					case "success":
-						byte[] decodedString = Base64.decode(response.getString("lastface"),Base64.DEFAULT);
+						JSONObject image = response.getJSONObject("image");
+						byte[] decodedString = Base64.decode(image.getString("image"),Base64.DEFAULT);
 						final Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString,0, decodedString.length);
 						ivLastFace.setImageBitmap(decodedByte);
 						tvLastFaceTime.setText(response.getString("time"));
