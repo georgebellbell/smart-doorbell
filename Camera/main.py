@@ -3,10 +3,12 @@ from time import sleep
 from picamera import PiCamera  # This library installed on the raspberry pi by default
 import socket
 import base64
+import os
 import Crop
 
 # Get file path
-fileLocation = __file__[:-7]
+cwd = os.getcwd()
+fileLocation = cwd + __file__[:-7]
 photoPath = fileLocation + "photo.jpg"
 
 # GPIO pin setup
