@@ -4,7 +4,7 @@ import re
 # Directory of runOnBoot
 cwd = os.getcwd()
 fileLocation = (cwd + "/" + __file__)[:-12]
-print(fileLocation)
+print("Directory of Program", fileLocation)
 
 # Path to file that is to be edited
 path = "/etc/rc.local"
