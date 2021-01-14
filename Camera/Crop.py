@@ -2,7 +2,7 @@ import cv2
 
 
 def crop(image, faces):
-	n = 0
+	results = []
 	# Get image resolution
 	resY, resX, c = image.shape
 	
@@ -39,11 +39,9 @@ def crop(image, faces):
 			w = resX
 		
 		imageSection = image[y:y + h, x:x + w]
-		# Save the section containing the face to a file
-		cv2.imwrite((str(n) + ".jpg"), imageSection)
-		n += 1
+		results.append(imageSection)
 
-	return len(faces)
+	return results
 
 
 def identifyFaces(image):
@@ -64,4 +62,9 @@ def main(imagePath):
 
 	# Extract the faces
 	faces = identifyFaces(image)
-	return crop(image, faces)
+	crops = crop(image, faces)
+	for n in range(len(crops)):
+		# Save the section containing the face to a file
+		cv2.imwrite(imagePath[:-9](str(n) + ".jpg"), crops[n])
+
+	return len(crops)
