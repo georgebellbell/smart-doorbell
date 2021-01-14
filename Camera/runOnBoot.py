@@ -4,6 +4,7 @@ import sys
 
 # Get arguments
 arguments = sys.argv
+print(arguments, len(arguments))
 
 # Directory of runOnBoot
 cwd = os.getcwd()
@@ -23,7 +24,7 @@ if os.path.exists(path):
 	# Opens file in read mode
 	file = open(path, "r")
 
-	flag = False
+	status = "FAILURE"
 	add = None
 
 	# Output array
@@ -33,8 +34,6 @@ if os.path.exists(path):
 	for line in file:
 		# Check for the end of the file
 		if line == "exit 0\n":
-			flag = True
-
 			if len(arguments) == 2:
 				if str(arguments[1]).lower() == "true":
 					add = True
@@ -44,15 +43,19 @@ if os.path.exists(path):
 					print("Program takes up to 1 argument. true or false \nAborted")
 					add = False
 
-			elif len(arguments) > 2:
+			elif len(arguments) >= 3:
 				print("Program takes up to 1 argument. true or false \nAborted")
 				add = False
 			else:
 				add = True
 
-			if add and flag:
+			if add:
+				status = "SUCCESS: Run On Boot ENABLED"
 				# Add the script to run the camera on boot
 				output.append("sudo -u pi python3 " + fileLocation + "/main.py &\n")
+				output.append(line)
+			else:
+				status = "SUCCESS: Run On Boot Dissabled"
 				output.append(line)
 
 		elif None != re.search("main\.py", line):
@@ -71,10 +74,11 @@ if os.path.exists(path):
 	file.close()
 
 	# Print error if it failed to find exit 0 in the file
-	if flag:
-		print("Success")
-	else:
+	
+	if status == "FAILURE":
 		print("ERROR: EOF not found")
+	print(status)
+	
 else:
 	# Output error if the file doesn't exist
 	print("ERROR: File not found")
