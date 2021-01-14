@@ -1,4 +1,4 @@
-package ui;
+package ui.login;
 
 import connection.Client;
 import org.json.JSONObject;
