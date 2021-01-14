@@ -24,6 +24,7 @@ if os.path.exists(path):
 	file = open(path, "r")
 
 	flag = False
+	add = None
 
 	# Output array
 	output = []
@@ -49,7 +50,7 @@ if os.path.exists(path):
 			else:
 				add = True
 
-			if add:
+			if add and flag:
 				output.append("sudo -u pi python3 " + fileLocation + "/main.py &\n")
 				output.append(line)
 
