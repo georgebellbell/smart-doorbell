@@ -82,10 +82,11 @@ public class HomeFragment extends Fragment {
 				switch (response.getString("response")) {
 					case "success":
 						JSONObject image = response.getJSONObject("image");
+						String time = response.getString("time");
 						byte[] decodedString = Base64.decode(image.getString("image"),Base64.DEFAULT);
 						final Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString,0, decodedString.length);
 						ivLastFace.setImageBitmap(decodedByte);
-						tvLastFaceTime.setText(response.getString("time"));
+						tvLastFaceTime.setText(time);
 						break;
 					case "fail":
 						Toast.makeText(getContext(), "FAILURE TO GET IMAGES", Toast.LENGTH_SHORT).show();

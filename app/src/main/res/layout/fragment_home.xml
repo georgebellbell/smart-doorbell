@@ -1,83 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeFragment">
+    tools:context=".HomeFragment"
+    android:layout_centerHorizontal="true">
+
 
     <ImageView
         android:id="@+id/ivLastFace"
-        android:layout_width="258dp"
-        android:layout_height="276dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.318"
+        android:layout_width="275dp"
+        android:layout_height="275dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tvLastFace"
         tools:src="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/tvLastFace"
         android:layout_width="255dp"
         android:layout_height="37dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
         android:text="Here's who was last at the door..."
-        android:textSize="17sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.506"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.155" />
+        android:textSize="17sp" />
 
     <Button
         android:id="@+id/btnOpenDoor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#4CAF50"
+        android:layout_below="@+id/tvLastFaceTime"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
         android:text="OPEN DOOR"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.245"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.676" />
+        android:layout_alignStart="@+id/ivLastFace"
+        android:layout_alignLeft="@+id/ivLastFace" />
 
     <Button
         android:id="@+id/btnLeaveClosed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="76dp"
-        android:layout_marginRight="76dp"
         android:background="#F44336"
-        android:text="LEAVE CLOSED"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.972"
-        app:layout_constraintStart_toEndOf="@+id/btnOpenDoor"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.676" />
+        android:layout_below="@+id/tvLastFaceTime"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignRight="@+id/ivLastFace"
+        android:text="LEAVE CLOSED" />
 
-    <TextView
-        android:id="@+id/tvDoorInformation"
-        android:layout_width="248dp"
-        android:layout_height="22dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivLastFace" />
 
     <TextView
         android:id="@+id/tvLastFaceTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivLastFace"
-        app:layout_constraintVertical_bias="0.048" />
+        android:layout_below="@+id/ivLastFace"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="11dp"
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:padding="15dp"
+        android:text="DD/MM/YYYY"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/tvDoorInformation"
+        android:layout_width="248dp"
+        android:layout_height="22dp"
+        android:layout_below="@+id/tvLastFaceTime"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="132dp" />
+
+
+</RelativeLayout>
