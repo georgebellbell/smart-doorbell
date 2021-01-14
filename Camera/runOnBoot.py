@@ -1,11 +1,11 @@
 import os
 import re
 
-# Current working directory
+# Directory of runOnBoot
 cwd = os.getcwd()
-cwd = os.getcwd()
-fileLocation = cwd + "/" + __file__
+fileLocation = (cwd + "/" + __file__)[:-12]
 print(fileLocation)
+
 # Path to file that is to be edited
 path = "/etc/rc.local"
 
@@ -30,7 +30,7 @@ if os.path.exists(path):
 		if line == "exit 0\n":
 			flag = True
 			# Add the script to run the camera on boot
-			output.append("cd " + cwd + " && sudo -u pi python3 " + cwd + "/main.py &\n")
+			output.append("sudo -u pi python3 " + fileLocation + "/main.py &\n")
 			output.append(line)
 
 		elif None != re.search("main\.py", line):
