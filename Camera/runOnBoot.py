@@ -3,7 +3,8 @@ import re
 
 # Current working directory
 cwd = os.getcwd()
-print(fileLocation = __file__[:-0])
+fileLocation = __file__[:-0]
+print(fileLocation)
 # Path to file that is to be edited
 path = "/etc/rc.local"
 
