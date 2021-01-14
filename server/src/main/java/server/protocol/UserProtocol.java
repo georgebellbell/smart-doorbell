@@ -93,6 +93,9 @@ public class UserProtocol extends Protocol {
 		dataTable.connect();
 		Data recentImage = dataTable.getRecentImage(username);
 		dataTable.disconnect();
+		doorbellTable.connect();
+		String doorbellName = doorbellTable.getDoorbellName(recentImage.getDeviceID());
+		doorbellTable.disconnect();
 		Blob blob = recentImage.getImage();
 		byte[] imageBytes = null;
 		String encodedImage = null;
@@ -104,6 +107,9 @@ public class UserProtocol extends Protocol {
 			response.put("response", "success");
 			response.put("image", image);
 			response.put("time", recentImage.getCreatedAt());
+			response.put("person", recentImage.getPersonName());
+			response.put("doorbellname", doorbellName);
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			response.put("response", "fail");
