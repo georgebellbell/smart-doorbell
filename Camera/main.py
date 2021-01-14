@@ -60,6 +60,7 @@ def getImage(path):
 while True:
 	if button1.is_pressed:
 		led1.on()
+		# Delay before capture after pressing them button
 		sleep(0.5)
 
 		# Take a photo

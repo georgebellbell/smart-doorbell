@@ -5,10 +5,43 @@ import sys
 
 def crop(image, faces):
 	n = 0
+	# Get image resoltion
+	resY, resX, c = image.shape
+	
 	# iterate over all faces found in the image
 	for (x, y, w, h) in faces:
 		# Crop out a section where a face was detected
-		imageSection = image[y:y + h, x:x + w]
+		
+		# Adjust image crop in Y axis
+		if int(round(y - 0.3*h)) < 0:
+			# Top of head is cut off
+			h = int(round(1.5*h + (y-0.3*h)))
+			y = 0
+		else:
+			# Head intact
+			y = int(round(y - 0.3*h))
+			h = int(round(1.5*h))
+			
+			
+		# make sure that crop doesn't go past the end of the image
+		if h > resY:
+			h = resY
+		
+		# Adjust image crop in X axis
+		if int(round(x-0.1*w)) < 0:
+			# cut off
+			w = int(round(w*1.2 + (x-0.1*w)))
+			x = 0
+		else:
+			# intact
+			x = int(round(x-w*0.1))
+			w = int(round(w*1.2))
+			
+		# make sure that crop doesn't go past the end of the image
+		if w > resX:
+			w = resX
+		
+		imageSection = image[y:y + h, x:x+ w]
 		# Save the section containing the face to a file
 		cv2.imwrite((str(n) + ".jpg"), imageSection)
 		n += 1
@@ -22,7 +55,8 @@ def identifyFaces(image):
 	# Pre trained machine learning algorithm to detect faces from the opencv library
 	faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 	# Get the coordinates of the faces from the image
-	faces = faceCascade.detectMultiScale(grayscale, scaleFactor=1.3, minNeighbors=3, minSize=(30, 30))
+	# minSize 130 x 130 is slightly over 2m from the doorbell at 1080p
+	faces = faceCascade.detectMultiScale(grayscale, scaleFactor=1.3, minNeighbors=3, minSize=(130, 130))
 
 	return faces
 
