@@ -1,5 +1,10 @@
 import os
 import re
+import sys
+
+# Get arguments
+arguments = sys.argv
+print(arguments)
 
 # Directory of runOnBoot
 cwd = os.getcwd()
