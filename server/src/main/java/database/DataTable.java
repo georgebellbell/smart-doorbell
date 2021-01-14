@@ -143,15 +143,20 @@ public class DataTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param deviceID - deviceID of the doorbell
+	 * @param username - username of the doorbell
 	 * @return HashMap of the image as the key and time as the value
 	 */
-	public Data getRecentImage(String deviceID) {
+	public Data getRecentImage(String username) {
 		Data recentImage = null;
 		try {
-			String query = "SELECT data.*, Max(Created_at) FROM data WHERE Device_id = ?";
+			String query = "SELECT * FROM data WHERE Created_at = " +
+					"(SELECT Max(Created_at) FROM data WHERE Device_id IN" +
+					" (SELECT Pi_id FROM doorbelluser d2 WHERE Username = ?))" +
+					" AND Device_id IN (SELECT Pi_id FROM doorbelluser d2 WHERE Username = ?)" +
+					" LIMIT 1";
 			statement = conn.prepareStatement(query);
-			statement.setString(1, deviceID);
+			statement.setString(1, username);
+			statement.setString(2, username);
 			ResultSet resultSet = statement.executeQuery();
 			if (resultSet.next()) {
 				recentImage = new Data(
@@ -159,7 +164,7 @@ public class DataTable extends DatabaseConnection {
 						resultSet.getString("Device_id"),
 						resultSet.getBlob("Image"),
 						resultSet.getString("Person"),
-						resultSet.getString("Max(Created_at)")
+						resultSet.getString("Created_at")
 				);
 			}
 			statement.close();
@@ -167,12 +172,5 @@ public class DataTable extends DatabaseConnection {
 			e.printStackTrace();
 		}
 		return recentImage;
-	}
-
-	public static void main(String[] args) {
-		DataTable dataTable = new DataTable();
-		dataTable.connect();
-		System.out.println(dataTable.getRecentImage("00000001"));
-		dataTable.disconnect();
 	}
 }

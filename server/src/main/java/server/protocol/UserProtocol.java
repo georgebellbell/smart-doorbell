@@ -22,6 +22,30 @@ public class UserProtocol extends Protocol {
 		requestResponse.put("deleteface", new ResponseHandler(this::deleteFace, "id"));
 		requestResponse.put("renameface", new ResponseHandler(this::renameFace, "id", "name"));
 		requestResponse.put("addface", new ResponseHandler(this::addFace, "username", "personname", "image"));
+		requestResponse.put("lastface", new ResponseHandler(this::lastFace, "username"));
+	}
+
+	public void lastFace(){
+		String username = request.getString("username");
+		JSONObject image = new JSONObject();
+		dataTable.connect();
+		Data recentImage = dataTable.getRecentImage(username);
+		Blob blob = recentImage.getImage();
+		byte[] imageBytes = null;
+		String encodedImage = null;
+		try {
+			imageBytes = blob.getBytes(1, (int) blob.length());
+			encodedImage = java.util.Base64.getEncoder().encodeToString(imageBytes);
+			image.put("image", encodedImage);
+
+			response.put("response", "success");
+			response.put("image", image);
+			response.put("time", recentImage.getCreatedAt());
+		} catch (SQLException e) {
+			e.printStackTrace();
+			response.put("response", "fail");
+			response.put("message", "failed to retrieve recent image");
+		}
 	}
 
 	public void addFace() {
