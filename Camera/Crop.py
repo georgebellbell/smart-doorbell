@@ -5,7 +5,7 @@ import sys
 
 def crop(image, faces):
 	n = 0
-	# Get image resoltion
+	# Get image resolution
 	resY, resX, c = image.shape
 	
 	# iterate over all faces found in the image
@@ -21,8 +21,7 @@ def crop(image, faces):
 			# Head intact
 			y = int(round(y - 0.3*h))
 			h = int(round(1.5*h))
-			
-			
+
 		# make sure that crop doesn't go past the end of the image
 		if h > resY:
 			h = resY
@@ -41,7 +40,7 @@ def crop(image, faces):
 		if w > resX:
 			w = resX
 		
-		imageSection = image[y:y + h, x:x+ w]
+		imageSection = image[y:y + h, x:x + w]
 		# Save the section containing the face to a file
 		cv2.imwrite((str(n) + ".jpg"), imageSection)
 		n += 1
