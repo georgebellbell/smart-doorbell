@@ -16,28 +16,30 @@ public class DoorbellProtocol extends Protocol{
 	}
 
 	public void image() {
+		String doorbellID = request.getString("id");
 		try {
 			byte[] image = Base64.decode(request.getString("data").getBytes());
-			String faceRecognised = faceSimilarity.compareFaces(image, request.getString("id"));
+			String faceRecognised = faceSimilarity.compareFaces(image,doorbellID);
 			if (faceRecognised == null) {
 				dataTable.connect();
 				Connection conn = dataTable.getConn();
 				byte[] Image = Base64.decode(request.getString("data").getBytes());
 				Blob blobImage = conn.createBlob();
 				blobImage.setBytes(1, Image);
-				dataTable.addRecord(new Data(request.getString("id"), blobImage, "Unknown"));
+				dataTable.addRecord(new Data(doorbellID, blobImage, "Unknown"));
 				dataTable.disconnect();
-				NotificationMessenger.sendNotification("dIOSu3QMSIOy8_G3ZAiPN3:APA91bF1HmL1wx29nruL2xheo9KNGZnjuQPv88RguGNxl5enwrAWtYIBYfdxKbeTxzzg49WCmx0ZFn-Ja9sD8XiqPv2xwBUOhINSjhzz2pssF2c7kKm9-nnfU1hqFMr7r7XX77W7eH5_",
-						"Someone is at your door", "Open app to find out more");
-				System.out.println("Unrecognised face");
+				NotificationMessenger notificationMessenger = new NotificationMessenger();
+				notificationMessenger.setDoorbellGroup(doorbellID);
+				notificationMessenger.setMessage("Unrecognised person is at the door", "Open app to find out more!");
+				notificationMessenger.sendNotification();
 				response.put("response", "fail");
 				response.put("message", "Unknown user at the door");
 			}
 			else {
-				NotificationMessenger.sendNotification("dIOSu3QMSIOy8_G3ZAiPN3:APA91bF1HmL1wx29nruL2xheo9KNGZnjuQPv88RguGNxl5enwrAWtYIBYfdxKbeTxzzg49WCmx0ZFn-Ja9sD8XiqPv2xwBUOhINSjhzz2pssF2c7kKm9-nnfU1hqFMr7r7XX77W7eH5_",
-						faceRecognised + " is at the door", "Open app to let them in");
-
-				System.out.println("Recognised face");
+				NotificationMessenger notificationMessenger = new NotificationMessenger();
+				notificationMessenger.setDoorbellGroup(doorbellID);
+				notificationMessenger.setMessage(faceRecognised + " is at the door", "Open app to find out more!");
+				notificationMessenger.sendNotification();
 				response.put("response", "success");
 				response.put("message", faceRecognised + " is at the door");
 			}

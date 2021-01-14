@@ -88,6 +88,28 @@ public class UserTokenTable extends DatabaseConnection {
 	}
 
 	/**
+	 * @param doorbellID - doorbell id to retrieve all tokens to the associated users
+	 * @return list of tokens from assigned users to the doorbell
+	 */
+	public ArrayList<String> getTokensByDoorbell(String doorbellID) {
+		ArrayList<String> allTokens = new ArrayList<>();
+		try {
+			String query = "SELECT u.Token FROM doorbelluser d, usertoken u WHERE d.Username = u.Username AND d.Pi_id = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, doorbellID);
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				String token = resultSet.getString("Token");
+				allTokens.add(token);
+			}
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return allTokens;
+	}
+
+	/**
 	 * @param token - token used to search for the user
 	 * @return a user with their data from the database
 	 */

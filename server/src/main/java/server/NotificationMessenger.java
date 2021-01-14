@@ -7,37 +7,42 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
+import database.UserTokenTable;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class NotificationMessenger {
-	public static void sendNotification(String token, String title, String text) throws IOException {
+	private String title;
+	private String body;
+	private ArrayList<String> tokens = new ArrayList<>();
+	UserTokenTable userTokenTable = new UserTokenTable();
 
-
-		// This registration token comes from the client FCM SDKs.
-		String registrationToken = "dIOSu3QMSIOy8_G3ZAiPN3:APA91bF1HmL1wx29nruL2xheo9KNGZnjuQPv88RguGNxl5enwrAWtYIBYfdxKbeTxzzg49WCmx0ZFn-Ja9sD8XiqPv2xwBUOhINSjhzz2pssF2c7kKm9-nnfU1hqFMr7r7XX77W7eH5_";
-
-// See documentation on defining a message payload.
-		Message message = Message.builder()
-				.setNotification(com.google.firebase.messaging.Notification.builder()
-						.setTitle(title)
-						.setBody(text)
-						.build())
-				.setToken(token)
-				.build();
-
-// Send a message to the device corresponding to the provided
-// registration token.
-		String response = null;
-		try {
-			response = FirebaseMessaging.getInstance().send(message);
-		} catch (FirebaseMessagingException e) {
-			e.printStackTrace();
+	public void sendNotification() throws IOException {
+		for (String token : tokens) {
+			Message message = Message.builder()
+					.setNotification(com.google.firebase.messaging.Notification.builder()
+							.setTitle(title)
+							.setBody(body)
+							.build())
+					.setToken(token)
+					.build();
+			try {
+				FirebaseMessaging.getInstance().send(message);
+			} catch (FirebaseMessagingException e) {
+				e.printStackTrace();
+			}
 		}
-// Response is a message ID string.
-		System.out.println("Successfully sent message: " + response);
+	}
 
+	public void setDoorbellGroup(String doorbellID) {
+		tokens = userTokenTable.getTokensByDoorbell(doorbellID);
+	}
+
+	public void setMessage(String title, String body) {
+		this.title = title;
+		this.body = body;
 	}
 }
