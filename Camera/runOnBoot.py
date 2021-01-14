@@ -4,7 +4,6 @@ import sys
 
 # Get arguments
 arguments = sys.argv
-print(arguments)
 
 # Directory of runOnBoot
 cwd = os.getcwd()
@@ -31,9 +30,29 @@ if os.path.exists(path):
 
 	# Go through every line in the file
 	for line in file:
-		# Check fo the end of the file
+		# Check for the end of the file
 		if line == "exit 0\n":
 			flag = True
+
+			if len(arguments) == 2:
+				if str(arguments[1]).lower() == "true":
+					add = True
+				elif str(arguments[1]).lower == "false":
+					add = False
+				else:
+					print("Program takes up to 1 argument. true or false \nAborted")
+					add = False
+
+			elif len(arguments) > 2:
+				print("Program takes up to 1 argument. true or false \nAborted")
+				add = False
+			else:
+				add = True
+
+			if add:
+				output.append("sudo -u pi python3 " + fileLocation + "/main.py &\n")
+				output.append(line)
+
 			# Add the script to run the camera on boot
 			output.append("sudo -u pi python3 " + fileLocation + "/main.py &\n")
 			output.append(line)
