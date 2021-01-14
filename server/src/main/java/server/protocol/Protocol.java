@@ -19,6 +19,7 @@ public class Protocol {
 	JSONObject request;
 	JSONObject response = new JSONObject();
 	AccountTable accountTable = new AccountTable();
+	UserTokenTable userTokenTable = new UserTokenTable();
 	DataTable dataTable = new DataTable();
 	DoorbellTable doorbellTable = new DoorbellTable();
 	HashMap<String, ResponseHandler> requestResponse = new HashMap<>();

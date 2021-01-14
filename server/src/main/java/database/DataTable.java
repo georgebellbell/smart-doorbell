@@ -1,8 +1,10 @@
 package database;
 
+import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DataTable extends DatabaseConnection {
 	PreparedStatement statement;
@@ -138,5 +140,37 @@ public class DataTable extends DatabaseConnection {
 			e.printStackTrace();
 		}
 		return total;
+	}
+
+	/**
+	 * @param username - username of the doorbell
+	 * @return HashMap of the image as the key and time as the value
+	 */
+	public Data getRecentImage(String username) {
+		Data recentImage = null;
+		try {
+			String query = "SELECT * FROM data WHERE Created_at = " +
+					"(SELECT Max(Created_at) FROM data WHERE Device_id IN" +
+					" (SELECT Pi_id FROM doorbelluser d2 WHERE Username = ?))" +
+					" AND Device_id IN (SELECT Pi_id FROM doorbelluser d2 WHERE Username = ?)" +
+					" LIMIT 1";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, username);
+			statement.setString(2, username);
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next()) {
+				recentImage = new Data(
+						resultSet.getInt("id"),
+						resultSet.getString("Device_id"),
+						resultSet.getBlob("Image"),
+						resultSet.getString("Person"),
+						resultSet.getString("Created_at")
+				);
+			}
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return recentImage;
 	}
 }
