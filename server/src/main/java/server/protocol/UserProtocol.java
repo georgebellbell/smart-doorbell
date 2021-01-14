@@ -28,6 +28,7 @@ public class UserProtocol extends Protocol {
 		requestResponse.put("renameface", new ResponseHandler(this::renameFace, "id", "name"));
 		requestResponse.put("addface", new ResponseHandler(this::addFace, "personname", "image"));
 		requestResponse.put("lastface", new ResponseHandler(this::lastFace));
+		requestResponse.put("logout", new ResponseHandler(this::logout));
 
 		noValidTokenRequests = new ArrayList<String>(){{
 			add("login");
@@ -45,6 +46,14 @@ public class UserProtocol extends Protocol {
 		JSONObject requestObject = new JSONObject(request);
 		// All Android requests must include token
 		return (requestObject.get("token") != null);
+	}
+
+	public void logout() {
+		String token = request.getString("token");
+		userTokenTable.connect();
+		if (userTokenTable.deleteByToken(token))
+			response.put("response", "success");
+		userTokenTable.disconnect();
 	}
 
 	/**
