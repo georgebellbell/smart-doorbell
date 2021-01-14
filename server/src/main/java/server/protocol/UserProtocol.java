@@ -67,6 +67,18 @@ public class UserProtocol extends Protocol {
 		return true;
 	}
 
+	/**
+	 * Saves username and token to database
+	 * @param username - Username of token
+	 * @param token - Token of user
+	 */
+	private void saveToken(String username, String token) {
+		userTokenTable.connect();
+		userTokenTable.deleteByToken(token);
+		userTokenTable.addToken(token, username);
+		userTokenTable.disconnect();
+	}
+
 	@Override
 	public String processInput() {
 		if (!checkToken()) {
@@ -223,11 +235,15 @@ public class UserProtocol extends Protocol {
 		String username = request.getString("username");
 		String email = request.getString("email");
 		String password = request.getString("password");
+		String token = request.getString("token");
 		User user = new User(username, email, password, "user");
 		accountTable.connect();
 		if (accountTable.addRecord(user)) {
 			response.put("response", "success");
 			response.put("message", "Account created");
+
+			// Add user's token
+			saveToken(username, token);
 		}
 		else {
 			response.put("response", "fail");
@@ -265,10 +281,7 @@ public class UserProtocol extends Protocol {
 				response.put("message", "2FA code is correct");
 
 				// Add user's token
-				userTokenTable.connect();
-				userTokenTable.deleteByToken(token);
-				userTokenTable.addToken(token, username);
-				userTokenTable.disconnect();
+				saveToken(username, token);
 			} else {
 				// Incorrect 2FA code entered
 				response.put("response", "fail");
