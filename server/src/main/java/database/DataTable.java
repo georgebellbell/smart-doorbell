@@ -146,24 +146,33 @@ public class DataTable extends DatabaseConnection {
 	 * @param deviceID - deviceID of the doorbell
 	 * @return HashMap of the image as the key and time as the value
 	 */
-	public HashMap<Blob, String> getRecentImage(String deviceID) {
-		HashMap<Blob, String> imageTime = new HashMap<>();
-		Blob image = null;
-		String time = null;
+	public Data getRecentImage(String deviceID) {
+		Data recentImage = null;
 		try {
-			String query = "SELECT Device_id, Image, MAX(created_at) FROM data WHERE Device_id = ?";
+			String query = "SELECT data.*, Max(Created_at) FROM data WHERE Device_id = ?";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, deviceID);
 			ResultSet resultSet = statement.executeQuery();
 			if (resultSet.next()) {
-				image = resultSet.getBlob("Image");
-				time = resultSet.getString("MAX(created_at)");
+				recentImage = new Data(
+						resultSet.getInt("id"),
+						resultSet.getString("Device_id"),
+						resultSet.getBlob("Image"),
+						resultSet.getString("Person"),
+						resultSet.getString("Max(Created_at)")
+				);
 			}
-			imageTime.put(image, time);
 			statement.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return imageTime;
+		return recentImage;
+	}
+
+	public static void main(String[] args) {
+		DataTable dataTable = new DataTable();
+		dataTable.connect();
+		System.out.println(dataTable.getRecentImage("00000001"));
+		dataTable.disconnect();
 	}
 }
