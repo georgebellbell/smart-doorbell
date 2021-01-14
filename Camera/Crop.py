@@ -1,6 +1,4 @@
-import numpy
 import cv2
-import sys
 
 
 def crop(image, faces):
