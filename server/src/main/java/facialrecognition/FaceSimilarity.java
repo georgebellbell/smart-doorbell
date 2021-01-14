@@ -48,6 +48,7 @@ public class FaceSimilarity {
 				new FaceSimilarityEngine<KEDetectedFace, FacePatchFeature, FImage>(kedetector, extractor, comparator);
 
 		//load the two images, a face from database and face from doorbell
+		//long startTime = System.currentTimeMillis();
 		ByteArrayInputStream bais = new ByteArrayInputStream(doorbellImage);
 		final FImage image1 = ImageUtilities.createFImage(ImageIO.read(bais));
 
@@ -58,6 +59,7 @@ public class FaceSimilarity {
 		dataTable.disconnect();
 
 		try {
+			double startTime = System.currentTimeMillis();
 			for (Data allImage : allImages) {
 				byte[] imageFromDB = allImage.getImage().getBytes(1, (int) allImage.getImage().length());
 				name = allImage.getPersonName();
@@ -78,6 +80,8 @@ public class FaceSimilarity {
 					}
 				}
 			}
+			double endTime = System.currentTimeMillis();
+			System.out.println(endTime-startTime);
 		} catch (SQLException ioException) {
 			ioException.printStackTrace();
 		}
