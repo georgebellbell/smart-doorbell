@@ -20,11 +20,13 @@
     <TextView
         android:id="@+id/tvLastFace"
         android:layout_width="255dp"
+        android:textAlignment="center"
         android:layout_height="37dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
         android:text="Here's who was last at the door..."
-        android:textSize="17sp" />
+        android:textSize="17sp"
+        android:gravity="center_horizontal" />
 
     <Button
         android:id="@+id/btnOpenDoor"
