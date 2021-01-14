@@ -1,11 +1,16 @@
 package com.example.doorbellandroidapp;
 
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.os.Bundle;
 
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 
+import android.preference.PreferenceManager;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +19,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 public class HomeFragment extends Fragment {
 	private ImageView ivLastFace;
 	private Button btnOpenDoor, btnLeaveClosed;
-	private TextView tvDoorInformation;
+	private TextView tvDoorInformation, tvLastFaceTime;
+
+	private SharedPreferences preferences;
+	private String currentUser;
+
 
 
 	@Override
@@ -26,6 +38,10 @@ public class HomeFragment extends Fragment {
 							 Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_home, container, false);
 		assign(view);
+		preferences= PreferenceManager.getDefaultSharedPreferences(getContext());
+		currentUser= preferences.getString("currentUser",null);
+
+		loadImage();
 
 		// TODO Get most recent picture from raspberry pi and set it to ivLastFace
 		btnOpenDoor.setOnClickListener(new View.OnClickListener() {
@@ -50,10 +66,44 @@ public class HomeFragment extends Fragment {
 		btnOpenDoor = view.findViewById(R.id.btnOpenDoor);
 		btnLeaveClosed = view.findViewById(R.id.btnLeaveClosed);
 		tvDoorInformation = view.findViewById(R.id.tvDoorInformation);
+		tvLastFaceTime = view.findViewById(R.id.tvLastFaceTime);
 	}
 
 	private void contactDoor(boolean response){
 		Toast.makeText(getContext(), "Woah, your doorbell message in on route", Toast.LENGTH_SHORT).show();
 		// TODO Send response to doorbell
+	}
+
+	void loadImage(){
+		// Client to handle login response from server
+		Client client = new Client(getActivity()) {
+			@Override
+			public void handleResponse(JSONObject response) throws JSONException {
+				switch (response.getString("response")) {
+					case "success":
+						byte[] decodedString = Base64.decode(response.getString("lastface"),Base64.DEFAULT);
+						final Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString,0, decodedString.length);
+						ivLastFace.setImageBitmap(decodedByte);
+						tvLastFaceTime.setText(response.getString("time"));
+						break;
+					case "fail":
+						Toast.makeText(getContext(), "FAILURE TO GET IMAGES", Toast.LENGTH_SHORT).show();
+						break;
+				}
+			}
+		};
+
+		// JSON Request object
+		JSONObject request = new JSONObject();
+		try {
+			request.put("request","lastface");
+			request.put("username", currentUser);
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		// Set request and start connection
+		client.setRequest(request);
+		client.start();
 	}
 }
