@@ -68,4 +68,31 @@ public class UserTokenTable extends DatabaseConnection {
 		}
 		return allTokens;
 	}
+
+	/**
+	 * @param token - token used to search for the user
+	 * @return a user with their data from the database
+	 */
+	public User getUserByToken(String token) {
+		User user = null;
+		try {
+			String query = "SELECT a.* FROM accounts a, usertoken u WHERE u.Username = a.Username AND token = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, token);
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next()) {
+				user = new User(
+						resultSet.getString("Username"),
+						resultSet.getString("Email"),
+						resultSet.getString("Password"),
+						resultSet.getString("Role"),
+						resultSet.getString("Created_at")
+				);
+			}
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return user;
+	}
 }
