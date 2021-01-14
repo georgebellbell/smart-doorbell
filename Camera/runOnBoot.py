@@ -51,12 +51,9 @@ if os.path.exists(path):
 				add = True
 
 			if add and flag:
+				# Add the script to run the camera on boot
 				output.append("sudo -u pi python3 " + fileLocation + "/main.py &\n")
 				output.append(line)
-
-			# Add the script to run the camera on boot
-			output.append("sudo -u pi python3 " + fileLocation + "/main.py &\n")
-			output.append(line)
 
 		elif None != re.search("main\.py", line):
 			pass  # Skips adding the old script to the file
