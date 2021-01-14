@@ -30,6 +30,7 @@ public class UserProtocol extends Protocol {
 		JSONObject image = new JSONObject();
 		dataTable.connect();
 		Data recentImage = dataTable.getRecentImage(username);
+		dataTable.disconnect();
 		Blob blob = recentImage.getImage();
 		byte[] imageBytes = null;
 		String encodedImage = null;
