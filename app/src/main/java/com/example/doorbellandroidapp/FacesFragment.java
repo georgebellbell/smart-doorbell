@@ -55,7 +55,6 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	private ArrayList<Integer> mImageIDs = new ArrayList<>();
 	private ArrayList<String> doorbells = new ArrayList<>();
 
-	private String[] IDs = new String[]{};
 
 	private SharedPreferences preferences;
 	private String currentUser;
@@ -225,7 +224,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 
 
 		chooseDoorbell = dialog.findViewById(R.id.spinnerAddID);
-		ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, IDs);
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, doorbells);
 		chooseDoorbell.setAdapter(adapter);
 		chooseDoorbell.setOnItemSelectedListener(this);
 
