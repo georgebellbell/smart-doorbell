@@ -257,7 +257,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 					}
 					else{
 						Toast.makeText(getContext(), "New Face Added", Toast.LENGTH_SHORT).show();
-						addFace(newFaceBitmap,newFaceName, chooseDoorbell.getSelectedItem().toString());
+						addFace(newFaceBitmap,newFaceName, doorbellIDs.get(chooseDoorbell.getSelectedItemPosition()));
 					}
 				}
 			}
@@ -308,6 +308,8 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 			request.put("request","addface");
 			request.put("username", preferences.getString("currentUser",null));
 			request.put("personname", newFaceName);
+			// TODO make not hardcoded
+			request.put("doorbellID",doorbellID);
 			request.put("image", newFace);
 		} catch (JSONException e) {
 			e.printStackTrace();
