@@ -122,7 +122,7 @@ class main:
 				self.socket.connect((self.host, self.port))
 				self.socket.settimeout(None)
 				self.socket.sendall(bytes('doorbell\r\n', 'utf-8'))
-				self.socket.sendall(bytes('{"request":"poll"}\r\n', 'utf-8'))
+				self.socket.sendall(bytes('{"request":"poll", "id":"' + self.PiId + '"}\r\n', 'utf-8'))
 				data = self.socket.recv(1024)
 
 				# handle response from server
