@@ -1,6 +1,7 @@
 import socketserver
 from multiprocessing import Process
 import os
+import SocketTestSend
 
 
 class SocketListener(socketserver.BaseRequestHandler):
@@ -21,8 +22,11 @@ def runServer(host, port):
 if __name__ == "__main__":
 	host, port = "localhost", 4445
 
-	p = Process(target=runServer, args=(host, port))
-	p.start()
+	p1 = Process(target=runServer, args=(host, port))
+	p1.start()
+
+	p2 = Process(target=SocketTestSend.send)
+	p2.start()
 	print(os.getpid())
 
 
