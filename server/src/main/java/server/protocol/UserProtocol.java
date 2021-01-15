@@ -4,6 +4,7 @@ import authentication.TwoFactorAuthentication;
 import database.Data;
 import database.User;
 import database.UserTokenTable;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.security.crypto.codec.Base64;
 import server.ResponseHandler;
@@ -23,12 +24,18 @@ public class UserProtocol extends Protocol {
 		requestResponse.put("signup", new ResponseHandler(this::signUp, "username", "email", "password"));
 		requestResponse.put("twofactor", new ResponseHandler(this::twoFactor, "username", "code"));
 		requestResponse.put("resendtwofactor", new ResponseHandler(this::resendTwoFactor, "username"));
-		requestResponse.put("faces", new ResponseHandler(this::faces));
+		requestResponse.put("faces", new ResponseHandler(this::faces, "doorbellID"));
 		requestResponse.put("deleteface", new ResponseHandler(this::deleteFace, "id"));
 		requestResponse.put("renameface", new ResponseHandler(this::renameFace, "id", "name"));
-		requestResponse.put("addface", new ResponseHandler(this::addFace, "personname", "image"));
+		requestResponse.put("addface", new ResponseHandler(this::addFace, "personname", "image", "doorbellID"));
 		requestResponse.put("lastface", new ResponseHandler(this::lastFace));
 		requestResponse.put("logout", new ResponseHandler(this::logout));
+		requestResponse.put("opendoor", new ResponseHandler(this::openDoor, "message"));
+		requestResponse.put("getdoorbells", new ResponseHandler(this::getDoorbells));
+		requestResponse.put("connectdoorbell", new ResponseHandler(this::connectDoorbell));
+		requestResponse.put("changepassword", new ResponseHandler(this::changePassword, "password"));
+		requestResponse.put("changeemail", new ResponseHandler(this::changeEmail, "email"));
+		requestResponse.put("deleteaccount", new ResponseHandler(this::deleteAccount));
 
 		noValidTokenRequests = new ArrayList<String>(){{
 			add("login");
@@ -46,6 +53,69 @@ public class UserProtocol extends Protocol {
 		JSONObject requestObject = new JSONObject(request);
 		// All Android requests must include token
 		return (requestObject.get("token") != null);
+	}
+
+	public void connectDoorbell() {
+		String username = user.getUsername();
+		doorbellTable.connect();
+		doorbellTable.disconnect();
+	}
+
+	public void deleteAccount() {
+		String username = user.getUsername();
+		accountTable.connect();
+		if (accountTable.deleteRecord(username))
+			response.put("response", "success");
+		else
+			response.put("response", "fail");
+	}
+
+	public void changePassword() {
+		String username = user.getUsername();
+		String password = request.getString("password");
+		accountTable.connect();
+		boolean passwordChanged = accountTable.changePassword(username, password);
+		accountTable.disconnect();
+		if (passwordChanged)
+			response.put("response", "success");
+		else
+			response.put("response", "fail");
+	}
+
+	public void changeEmail() {
+		String username = user.getUsername();
+		String email = request.getString("password");
+		accountTable.connect();
+		boolean passwordChanged = accountTable.changeEmail(username, email);
+		accountTable.disconnect();
+		if (passwordChanged)
+			response.put("response", "success");
+		else
+			response.put("response", "fail");
+	}
+
+	public void getDoorbells() {
+		String username = user.getUsername();
+		doorbellTable.connect();
+		JSONArray doorbells = doorbellTable.getDoorbells(username);
+		doorbellTable.disconnect();
+		if (doorbells.length() != 0) {
+			response.put("response", "success");
+			response.put("doorbells", doorbells);
+		} else {
+			response.put("response", "fail");
+			response.put("message", "You have 0 doorbells assigned");
+		}
+	}
+
+	public void openDoor() {
+		String message = request.getString("message");
+		if (message.equals("open")) {
+			response.put("response", "open");
+		}
+		else {
+			response.put("response", "close");
+		}
 	}
 
 	public void logout() {
@@ -128,32 +198,16 @@ public class UserProtocol extends Protocol {
 
 	public void addFace() {
 		try {
-			String username = user.getUsername();
+			String doorbellID = request.getString("doorbellID");
 			String personName = request.getString("personname");
 			byte[] image = Base64.decode(request.getString("image").getBytes());
-			accountTable.connect();
-			ArrayList<String> deviceID = accountTable.getDeviceID(username);
-			accountTable.disconnect();
-
 			dataTable.connect();
 			Connection conn = dataTable.getConn();
 			Blob blobImage = conn.createBlob();
 			blobImage.setBytes(1, image);
-
-			if (deviceID.size() != 0) {
-				for (int i = 0; i < deviceID.size(); i++) {
-					dataTable.addRecord(new Data(
-							deviceID.get(i),
-							blobImage,
-							personName
-					));
-				}
-				response.put("response", "success");
-				dataTable.disconnect();
-			} else {
-				response.put("response", "fail");
-			}
-
+			dataTable.addRecord(new Data(doorbellID, blobImage, personName));
+			response.put("response", "success");
+			dataTable.disconnect();
 		} catch (SQLException e) {
 			response.put("response", "fail");
 		}
@@ -176,15 +230,9 @@ public class UserProtocol extends Protocol {
 	}
 
 	public void faces() {
-		String username = user.getUsername();
-		accountTable.connect();
-		ArrayList<String> doorbells = accountTable.getDeviceID(username);
-		accountTable.disconnect();
+		String doorbellID = request.getString("doorbellID");
 		dataTable.connect();
-		ArrayList<Data> allImages = new ArrayList<>();
-		for (String doorbell : doorbells) {
-			allImages.addAll(dataTable.getAllImages(doorbell));
-		}
+		ArrayList<Data> allImages = new ArrayList<>(dataTable.getAllImages(doorbellID));
 		dataTable.disconnect();
 		ArrayList<JSONObject> jsonImages = new ArrayList<>();
 		if (allImages.size() != 0) {

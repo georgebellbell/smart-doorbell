@@ -171,6 +171,21 @@ public class AccountTable extends DatabaseConnection {
 		}
 	}
 
+	public boolean changeEmail(String username, String email) {
+		try {
+			String query = "UPDATE accounts Set Email = ? WHERE Username = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, email);
+			statement.setString(2, username);
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 	/**
 	 * @param oldUsername - username that the user had previously
 	 * @param newUsername - username to be changed to
