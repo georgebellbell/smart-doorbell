@@ -54,7 +54,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	private ArrayList<String> mImages = new ArrayList<>();
 	private ArrayList<Integer> mImageIDs = new ArrayList<>();
 	private ArrayList<String> doorbells = new ArrayList<>();
-
+	private ArrayList<String> doorbellIDs = new ArrayList<>();
 
 	private SharedPreferences preferences;
 	private String currentUser;
@@ -84,13 +84,10 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		selectDoorbellFaces = view.findViewById(R.id.spinnerID);
 		// TODO Get ids for that user
 		getIDs();
-		ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item,doorbells);
-		selectDoorbellFaces.setAdapter(adapter);
-		selectDoorbellFaces.setOnItemSelectedListener(this);
 
 		dialog = new Dialog(getContext());
 		// TODO pass in selected id
-		loadImages(selectDoorbellFaces.getSelectedItem().toString());
+		//loadImages(selectDoorbellFaces.getSelectedItem().toString());
 
 		ivAddFace.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -183,6 +180,9 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	 * Adds image URLS and image names to ArrayLists to be added to view holders
 	 */
 	private void initImageBitmaps(JSONArray images) throws JSONException {
+		mImageIDs = new ArrayList<>();
+		mNames = new ArrayList<>();
+		mImageIDs = new ArrayList<>();
 		Log.d(TAG, "initImageBitmaps: preparing bitmaps");
 		JSONObject currentImage;
 		for (int i = 0; i < images.length() ; i++) {
@@ -328,7 +328,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 		Log.d(TAG, "onItemSelected: "+parent.getId());
 		if (parent.getId()==R.id.spinnerID){
-			String currentID = doorbells.get(position);
+			String currentID = doorbellIDs.get(position);
 			Toast.makeText(getContext(), currentID, Toast.LENGTH_SHORT).show();
 			loadingPopUp();
 			// TODO pass in currentID
@@ -341,6 +341,12 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 
 	}
 
+	public void populateSpinner() {
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item,doorbells);
+		selectDoorbellFaces.setAdapter(adapter);
+		selectDoorbellFaces.setOnItemSelectedListener(this);
+	}
+
 	public void getIDs(){
 		Client client = new Client(getActivity()) {
 			@Override
@@ -350,8 +356,9 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 						JSONArray jsonArray = response.getJSONArray("doorbells");
 						for (int i = 0; i < jsonArray.length() ; i++) {
 							doorbells.add(jsonArray.getJSONObject(i).getString("name"));
+							doorbellIDs.add(jsonArray.getJSONObject(i).getString("id"));
 						}
-
+						populateSpinner();
 						break;
 					case "fail":
 						Toast.makeText(getContext(), "NO DOORBELL ASSIGNED, PLEASE CONTACT ADMIN", Toast.LENGTH_SHORT).show();
@@ -364,7 +371,6 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		JSONObject request = new JSONObject();
 		try {
 			request.put("request","getdoorbells");
-			request.put("username", preferences.getString("currentUser",null));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
