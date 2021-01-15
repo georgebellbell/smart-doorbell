@@ -180,7 +180,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	 * Adds image URLS and image names to ArrayLists to be added to view holders
 	 */
 	private void initImageBitmaps(JSONArray images) throws JSONException {
-		mImageIDs = new ArrayList<>();
+		mImages = new ArrayList<>();
 		mNames = new ArrayList<>();
 		mImageIDs = new ArrayList<>();
 		Log.d(TAG, "initImageBitmaps: preparing bitmaps");
