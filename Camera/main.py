@@ -5,6 +5,8 @@ import socket
 import base64
 import os
 import Crop
+from multiprocessing import Process
+import SocketListener
 
 # Get file path
 cwd = os.getcwd() + "/"
@@ -58,49 +60,59 @@ def getImage(path):
 	return imageData
 
 
-# Main loop
-while True:
-	if button1.is_pressed:
-		led1.on()
-		# Delay before capture after pressing them button
-		sleep(0.5)
+def main():
+	print(os.getpid())
+	# Main loop
+	while True:
+		if button1.is_pressed:
+			led1.on()
+			# Delay before capture after pressing them button
+			sleep(0.5)
 
-		# Take a photo
-		try:
-			capture(photoPath)
-			print("Captured photo")
-		except Exception as e:
-			print("Failed to capture photo")
-
-		# Crop the faces from the image
-		faces = Crop.main(photoPath)
-
-		if faces == 0:
-			print("ERROR - No faces found")
-			led1.off()
-		else:
-			print(str(faces) + " Face(s) found")
-
-			# Send faces to the server
+			# Take a photo
 			try:
-				for n in range(faces):
-					sendImage(fileLocation + str(n) + ".jpg")
-					print("Image " + str(n) + " sent to server")
-
-				# Flash led to show picture has finished being sent
-				led1.off()
-				sleep(1)
-				led1.on()
-				# Delay before being able to be ring the doorbell again
-				sleep(2)  # 20
-
+				capture(photoPath)
+				print("Captured photo")
 			except Exception as e:
-				print("Failed to send image to server")
+				print("Failed to capture photo")
 
-			finally:
+			# Crop the faces from the image
+			faces = Crop.main(photoPath)
+
+			if faces == 0:
+				print("ERROR - No faces found")
 				led1.off()
+			else:
+				print(str(faces) + " Face(s) found")
 
-	# Close the program if button 2 is pressed
-	if button2.is_pressed:
-		print("Exit")
-		exit()
+				# Send faces to the server
+				try:
+					for n in range(faces):
+						sendImage(fileLocation + str(n) + ".jpg")
+						print("Image " + str(n) + " sent to server")
+
+					# Flash led to show picture has finished being sent
+					led1.off()
+					sleep(1)
+					led1.on()
+					# Delay before being able to be ring the doorbell again
+					sleep(2)  # 20
+
+				except Exception as e:
+					print("Failed to send image to server")
+
+				finally:
+					led1.off()
+
+		# Close the program if button 2 is pressed
+		if button2.is_pressed:
+			print("Exit")
+			exit()
+
+
+if __name__ == "__main__":
+	p1 = Process(target=SocketListener.runServer, args=(host, port))
+	p1.start()
+
+	p2 = Process(target=main)
+	p2.start()
