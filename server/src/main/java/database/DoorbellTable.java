@@ -130,4 +130,26 @@ public class DoorbellTable extends DatabaseConnection {
 		}
 		return jsonArray;
 	}
+
+	public JSONArray getDoorbells(String username) {
+		JSONArray jsonArray = new JSONArray();
+		try {
+			String query = "SELECT d2.Pi_id, d.DoorbellName FROM doorbell d, doorbelluser d2 WHERE d2.Pi_id = d.Pi_id" +
+					" AND d2.Username = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, username);
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				String id = resultSet.getString("Pi_id");
+				String name = resultSet.getString("DoorbellName");
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("id", id);
+				jsonObject.put("name", name);
+				jsonArray.put(jsonObject);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jsonArray;
+	}
 }
