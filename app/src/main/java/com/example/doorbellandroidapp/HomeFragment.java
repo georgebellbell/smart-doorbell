@@ -87,7 +87,7 @@ public class HomeFragment extends Fragment {
 		// JSON Request object
 		JSONObject request = new JSONObject();
 		try {
-			request.put("request","openDoor");
+			request.put("request","opendoor");
 			request.put("message", messageToDoor);
 
 		} catch (JSONException e) {
