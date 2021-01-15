@@ -20,7 +20,7 @@ public class AdminProtocol extends Protocol {
 		requestResponse.put("login", new ResponseHandler(this::login, "username", "password"));
 		requestResponse.put("user", new ResponseHandler(this::userInfo, "username"));
 		requestResponse.put("deleteuser", new ResponseHandler(this::deleteUser, "username"));
-		requestResponse.put("update", new ResponseHandler(this::update, "username", "newusername", "newemail"));
+		requestResponse.put("update", new ResponseHandler(this::update, "username", "newusername", "newemail", "devices"));
 		requestResponse.put("searchdoorbell", new ResponseHandler(this::searchDoorbell, "id"));
 		requestResponse.put("deletedoorbell", new ResponseHandler(this::deleteDoorbell, "id"));
 		requestResponse.put("updatedoorbell", new ResponseHandler(this::updateDoorbell,"id", "name"));
@@ -176,6 +176,17 @@ public class AdminProtocol extends Protocol {
 		String oldUsername = request.getString("username");
 		String newUsername = request.getString("newusername");
 		String newEmail = request.getString("newemail");
+		JSONArray devices = request.getJSONArray("devices");
+		doorbellTable.connect();
+		for (int i = 0; i < devices.length(); i++) {
+			String doorbellID = devices.get(i).toString();
+			if (!doorbellTable.doorbellExists(doorbellID)) {
+				doorbellTable.addNewDoorbell(doorbellID);
+			}
+			doorbellTable.setDoorbell(newUsername, doorbellID);
+		}
+		doorbellTable.disconnect();
+
 		accountTable.connect();
 		if (accountTable.changeDetails(oldUsername, newUsername, newEmail)){
 			response.put("response", "success");
@@ -249,7 +260,7 @@ public class AdminProtocol extends Protocol {
 			response.put("email", user.getEmail());
 			response.put("role", user.getRole());
 			response.put("time", user.getCreated_at());
-			response.put("devices", deviceIDs.toString());
+			response.put("devices", deviceIDs);
 		} else {
 			response.put("response", "fail");
 			response.put("message", "User could not be found");

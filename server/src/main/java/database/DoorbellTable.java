@@ -125,6 +125,7 @@ public class DoorbellTable extends DatabaseConnection {
 				jsonObject.put("count", count);
 				jsonArray.put(jsonObject);
 			}
+			statement.close();
 		} catch (Exception e) {
 				e.printStackTrace();
 		}
@@ -147,6 +148,7 @@ public class DoorbellTable extends DatabaseConnection {
 				jsonObject.put("name", name);
 				jsonArray.put(jsonObject);
 			}
+			statement.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -164,27 +166,38 @@ public class DoorbellTable extends DatabaseConnection {
 			statement.close();
 			return true;
 		} catch (SQLException e){
-			e.printStackTrace();
-			try {
-				String query = "INSERT INTO doorbell (Pi_id, DoorbellName)"
-						+ " VALUES (?, ?)";
-				statement = conn.prepareStatement(query);
-				statement.setString(1, username);
-				statement.setString(2, "Not set");
-				statement.execute();
-				statement.close();
-				return true;
-			} catch (SQLException sqlException) {
-				sqlException.printStackTrace();
-				return false;
-			}
+			return false;
 		}
 	}
 
-	public static void main(String[] args) {
-		DoorbellTable doorbellTable = new DoorbellTable();
-		doorbellTable.connect();
-		System.out.println(doorbellTable.setDoorbell("Dom", "00000004"));
-		doorbellTable.disconnect();
+	public boolean doorbellExists(String doorbellID) {
+		boolean exists = false;
+		try {
+			String query = "SELECT Pi_id FROM doorbell WHERE Pi_id = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, doorbellID);
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next())
+				exists = true;
+			statement.close();
+		} catch (SQLException e){
+			e.printStackTrace();
+		};
+		return exists;
+	}
+
+	public boolean addNewDoorbell(String doorbellID) {
+		try {
+			String query = "INSERT INTO doorbell (Pi_id, DoorbellName)"
+					+ " VALUES (?, ?)";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, doorbellID);
+			statement.setString(2, "Name not set");
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (SQLException e){
+			return false;
+		}
 	}
 }
