@@ -21,9 +21,11 @@ led2.on()
 
 button2 = Button(3)
 
-# Socket
-host = "192.168.1.123"
-port = 4444
+# Socket Client
+host, port = "192.168.1.123", 4444
+
+# Socket Server
+LHost, LPort = "localhost", 4445
 
 # Read the Raspberry Pi's unique ID from a file (ID assigned at factory)
 with open(fileLocation + "PiID.txt", "r") as file:
@@ -111,7 +113,7 @@ def main():
 
 
 if __name__ == "__main__":
-	p1 = Process(target=SocketListener.runServer, args=(host, port))
+	p1 = Process(target=SocketListener.runServer, args=(LHost, LPort))
 	p1.start()
 
 	p2 = Process(target=main)
