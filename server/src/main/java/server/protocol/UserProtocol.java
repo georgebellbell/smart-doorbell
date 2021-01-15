@@ -29,6 +29,7 @@ public class UserProtocol extends Protocol {
 		requestResponse.put("addface", new ResponseHandler(this::addFace, "personname", "image"));
 		requestResponse.put("lastface", new ResponseHandler(this::lastFace));
 		requestResponse.put("logout", new ResponseHandler(this::logout));
+		requestResponse.put("opendoor", new ResponseHandler(this::openDoor, "message"));
 
 		noValidTokenRequests = new ArrayList<String>(){{
 			add("login");
@@ -46,6 +47,16 @@ public class UserProtocol extends Protocol {
 		JSONObject requestObject = new JSONObject(request);
 		// All Android requests must include token
 		return (requestObject.get("token") != null);
+	}
+
+	public void openDoor() {
+		String message = request.getString("message");
+		if (message.equals("open")) {
+			response.put("response", "open");
+		}
+		else {
+			response.put("response", "close");
+		}
 	}
 
 	public void logout() {
