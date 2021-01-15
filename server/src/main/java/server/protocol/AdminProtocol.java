@@ -177,9 +177,22 @@ public class AdminProtocol extends Protocol {
 		String newUsername = request.getString("newusername");
 		String newEmail = request.getString("newemail");
 		JSONArray devices = request.getJSONArray("devices");
+
+		// Update account details
+		accountTable.connect();
+		boolean updateAccount = accountTable.changeDetails(oldUsername, newUsername, newEmail);
+		accountTable.disconnect();
+		if (!updateAccount) {
+			response.put("response", "fail");
+			response.put("message", "Account username is already taken");
+			return;
+		}
+
+		// Update doorbells
 		doorbellTable.connect();
+		doorbellTable.deleteUserDoorbells(newUsername);
 		for (int i = 0; i < devices.length(); i++) {
-			String doorbellID = devices.get(i).toString();
+			String doorbellID = devices.getString(i);
 			if (!doorbellTable.doorbellExists(doorbellID)) {
 				doorbellTable.addNewDoorbell(doorbellID);
 			}
@@ -187,16 +200,8 @@ public class AdminProtocol extends Protocol {
 		}
 		doorbellTable.disconnect();
 
-		accountTable.connect();
-		if (accountTable.changeDetails(oldUsername, newUsername, newEmail)){
-			response.put("response", "success");
-			response.put("message", "Account successfully updated");
-		}
-		else {
-			response.put("response", "fail");
-			response.put("message", "Account username is already taken");
-		}
-		accountTable.disconnect();
+		response.put("response", "success");
+		response.put("message", "Account successfully updated");
 	}
 
 	public void faces(String id) {

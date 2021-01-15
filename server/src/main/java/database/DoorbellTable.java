@@ -160,8 +160,8 @@ public class DoorbellTable extends DatabaseConnection {
 			String query = "INSERT INTO doorbelluser (Pi_id, Username)"
 					+ " VALUES (?, ?)";
 			statement = conn.prepareStatement(query);
-			statement.setString(1, username);
-			statement.setString(2, deviceID);
+			statement.setString(1, deviceID);
+			statement.setString(2, username);
 			statement.execute();
 			statement.close();
 			return true;
@@ -200,4 +200,19 @@ public class DoorbellTable extends DatabaseConnection {
 			return false;
 		}
 	}
+
+	public boolean deleteUserDoorbells(String username) {
+		try {
+			String query = "DELETE FROM doorbelluser WHERE Username=?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, username);
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 }
