@@ -34,6 +34,8 @@ class main:
 
 		# Create socket
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		# Poll server in separate process
+		Process(target=self.socketPoll()).start()
 
 	def main(self):
 		print(os.getpid())
@@ -92,8 +94,7 @@ class main:
 		imageData = self.getImage(n)
 		output = '{"request":"image","id":"' + self.PiId + '","data":"' + imageData + '"}\r\n'
 
-		p = Process(target=self.socketSend, args=output)
-		p.start()
+		Process(target=self.socketSend, args=(output,)).start()
 
 		return
 
@@ -112,10 +113,30 @@ class main:
 		print("Received", repr(data))
 		return data
 
+	def socketPoll(self):
+		# Poll server forever
+		# Check to see if there has been a request to open the door
+		while True:
+			try:
+				self.socket.settimeout(10)
+				self.socket.connect((self.host, self.port))
+				self.socket.settimeout(None)
+				self.socket.sendall(bytes('doorbell\r\n', 'utf-8'))
+				self.socket.sendall(bytes('{"request":"poll"}\r\n', 'utf-8'))
+				data = self.socket.recv(1024)
+
+				# handle response from server
+				print(repr(data))
+
+			except Exception as e:
+				print(e)
+			sleep(5)
+
 
 if __name__ == "__main__":
 	# p1 = Process(target=SocketListener.runServer, args=(LHost, LPort))
 	# p1.start()
+
 	doorbell = main()
 	doorbell.main()
 
