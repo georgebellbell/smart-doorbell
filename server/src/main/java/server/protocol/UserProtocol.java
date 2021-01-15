@@ -32,6 +32,10 @@ public class UserProtocol extends Protocol {
 		requestResponse.put("logout", new ResponseHandler(this::logout));
 		requestResponse.put("opendoor", new ResponseHandler(this::openDoor, "message"));
 		requestResponse.put("getdoorbells", new ResponseHandler(this::getDoorbells));
+		requestResponse.put("connectdoorbell", new ResponseHandler(this::connectDoorbell));
+		requestResponse.put("changepassword", new ResponseHandler(this::changePassword, "password"));
+		requestResponse.put("changeemail", new ResponseHandler(this::changeEmail, "email"));
+		requestResponse.put("deleteaccount", new ResponseHandler(this::deleteAccount));
 
 		noValidTokenRequests = new ArrayList<String>(){{
 			add("login");
@@ -49,6 +53,45 @@ public class UserProtocol extends Protocol {
 		JSONObject requestObject = new JSONObject(request);
 		// All Android requests must include token
 		return (requestObject.get("token") != null);
+	}
+
+	public void connectDoorbell() {
+		String username = user.getUsername();
+		doorbellTable.connect();
+		doorbellTable.disconnect();
+	}
+
+	public void deleteAccount() {
+		String username = user.getUsername();
+		accountTable.connect();
+		if (accountTable.deleteRecord(username))
+			response.put("response", "success");
+		else
+			response.put("response", "fail");
+	}
+
+	public void changePassword() {
+		String username = user.getUsername();
+		String password = request.getString("password");
+		accountTable.connect();
+		boolean passwordChanged = accountTable.changePassword(username, password);
+		accountTable.disconnect();
+		if (passwordChanged)
+			response.put("response", "success");
+		else
+			response.put("response", "fail");
+	}
+
+	public void changeEmail() {
+		String username = user.getUsername();
+		String email = request.getString("password");
+		accountTable.connect();
+		boolean passwordChanged = accountTable.changeEmail(username, email);
+		accountTable.disconnect();
+		if (passwordChanged)
+			response.put("response", "success");
+		else
+			response.put("response", "fail");
 	}
 
 	public void getDoorbells() {

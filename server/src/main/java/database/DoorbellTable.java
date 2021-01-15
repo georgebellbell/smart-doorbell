@@ -152,4 +152,39 @@ public class DoorbellTable extends DatabaseConnection {
 		}
 		return jsonArray;
 	}
+
+	public boolean setDoorbell(String username, String deviceID) {
+		try {
+			String query = "INSERT INTO doorbelluser (Pi_id, Username)"
+					+ " VALUES (?, ?)";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, username);
+			statement.setString(2, deviceID);
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (SQLException e){
+			e.printStackTrace();
+			try {
+				String query = "INSERT INTO doorbell (Pi_id, DoorbellName)"
+						+ " VALUES (?, ?)";
+				statement = conn.prepareStatement(query);
+				statement.setString(1, username);
+				statement.setString(2, "Not set");
+				statement.execute();
+				statement.close();
+				return true;
+			} catch (SQLException sqlException) {
+				sqlException.printStackTrace();
+				return false;
+			}
+		}
+	}
+
+	public static void main(String[] args) {
+		DoorbellTable doorbellTable = new DoorbellTable();
+		doorbellTable.connect();
+		System.out.println(doorbellTable.setDoorbell("Dom", "00000004"));
+		doorbellTable.disconnect();
+	}
 }
