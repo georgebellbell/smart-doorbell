@@ -48,14 +48,14 @@ public class HomeFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				tvDoorInformation.setText("You opened the door!");
-				contactDoor(true);
+				contactDoor("open");
 			}
 		});
 		btnLeaveClosed.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				tvDoorInformation.setText("You chose not to open the door");
-				contactDoor(false);
+				contactDoor("close");
 			}
 		});
 		return view;
@@ -70,8 +70,33 @@ public class HomeFragment extends Fragment {
 		tvLastFace = view.findViewById(R.id.tvLastFace);
 	}
 
-	private void contactDoor(boolean response){
-		Toast.makeText(getContext(), "Woah, your doorbell message in on route", Toast.LENGTH_SHORT).show();
+	private void contactDoor(String messageToDoor){
+		Client client = new Client(getActivity()) {
+			@Override
+			public void handleResponse(JSONObject response) throws JSONException {
+				switch (response.getString("response")) {
+					case "success":
+						Toast.makeText(getContext(), "Woah, your doorbell message in on route", Toast.LENGTH_SHORT).show();
+						break;
+					case "fail":
+						Toast.makeText(getContext(), "FATAL ERROR", Toast.LENGTH_SHORT).show();
+						break;
+				}
+			}
+		};
+		// JSON Request object
+		JSONObject request = new JSONObject();
+		try {
+			request.put("request","openDoor");
+			request.put("message", messageToDoor);
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		// Set request and start connection
+		client.setRequest(request);
+		client.start();
+
 		// TODO Send response to doorbell
 	}
 
