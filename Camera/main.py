@@ -74,6 +74,8 @@ class main:
 						sleep(2)  # 20
 
 					except Exception as e:
+						import traceback
+						traceback.print_exc()
 						print("Failed to send image to server")
 
 					finally:
@@ -86,8 +88,8 @@ class main:
 		camera.close()
 
 	# Send the photo to the socket server
-	def sendImage(self):
-		imageData = self.getImage()
+	def sendImage(self, n):
+		imageData = self.getImage(n)
 		output = '{"request":"image","id":"' + self.PiId + '","data":"' + imageData + '"}\r\n'
 
 		p = Process(target=self.socketSend, args=output)
