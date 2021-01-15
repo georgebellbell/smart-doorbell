@@ -47,19 +47,31 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.651" />
 
+    <Spinner
+        android:id="@+id/spinnerAddID"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etEditImageName"
+        app:layout_constraintVertical_bias="0.211" />
+
     <Button
         android:id="@+id/btnAddNewFace"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Face"
         android:background="#67656A"
+        android:text="Add Face"
         android:textColor="#F2EFF4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintHorizontal_bias="0.202"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9" />
+        app:layout_constraintVertical_bias="0.962" />
 
     <Button
         android:id="@+id/btnCancelAddNewFace"
@@ -68,10 +80,10 @@
         android:text="Cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.85"
+        app:layout_constraintHorizontal_bias="0.854"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9" />
+        app:layout_constraintVertical_bias="0.962" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

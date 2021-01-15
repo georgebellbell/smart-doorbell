@@ -28,9 +28,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,24 +43,27 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class FacesFragment extends Fragment {
+public class FacesFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 	private static final String TAG = "FacesFragment";
 
 	//vars
 	private ArrayList<String> mNames = new ArrayList<>();
 	private ArrayList<String> mImages = new ArrayList<>();
 	private ArrayList<Integer> mImageIDs = new ArrayList<>();
+	private ArrayList<String> doorbells = new ArrayList<>();
+	private ArrayList<String> doorbellIDs = new ArrayList<>();
 
 	private SharedPreferences preferences;
 	private String currentUser;
 	private TextView tvFaces;
 	private ImageView ivAddFace, ivNewFace;
+	private Spinner selectDoorbellFaces, chooseDoorbell;
 
 	private boolean pictureTaken;
 	private Bitmap newFaceBitmap;
-
 
 	private View view;
 
@@ -75,8 +81,26 @@ public class FacesFragment extends Fragment {
 		tvFaces = view.findViewById(R.id.tvFaces);
 		tvFaces.setText(currentUser+"'s Faces");
 
+		selectDoorbellFaces = view.findViewById(R.id.spinnerID);
+		// TODO Get ids for that user
+		getIDs();
 
 		dialog = new Dialog(getContext());
+		// TODO pass in selected id
+		//loadImages(selectDoorbellFaces.getSelectedItem().toString());
+
+		ivAddFace.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				showPopup();
+			}
+		});
+
+		Log.d(TAG, "onCreateView: loop exited");
+		return view;
+	}
+
+	void loadingPopUp(){
 		progressDialog = new ProgressDialog(getContext());
 		progressDialog.setMax(100);
 		progressDialog.setMessage("Please wait...");
@@ -102,17 +126,6 @@ public class FacesFragment extends Fragment {
 			}
 		}).start();
 
-		loadImages();
-
-		ivAddFace.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				showPopup();
-			}
-		});
-
-		Log.d(TAG, "onCreateView: loop exited");
-		return view;
 	}
 
 	/**
@@ -132,7 +145,7 @@ public class FacesFragment extends Fragment {
 	/**
 	 * calls server requesting images from database
 	 */
-	void loadImages(){
+	void loadImages(String doorbell){
 		// Client to handle login response from server
 		Client client = new Client(getActivity()) {
 			@Override
@@ -152,8 +165,8 @@ public class FacesFragment extends Fragment {
 		JSONObject request = new JSONObject();
 		try {
 			request.put("request","faces");
-			//request.put("username", username);
-			request.put("username", preferences.getString("currentUser",null));
+			request.put("doorbellID", doorbell);
+
 
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -167,6 +180,9 @@ public class FacesFragment extends Fragment {
 	 * Adds image URLS and image names to ArrayLists to be added to view holders
 	 */
 	private void initImageBitmaps(JSONArray images) throws JSONException {
+		mImages = new ArrayList<>();
+		mNames = new ArrayList<>();
+		mImageIDs = new ArrayList<>();
 		Log.d(TAG, "initImageBitmaps: preparing bitmaps");
 		JSONObject currentImage;
 		for (int i = 0; i < images.length() ; i++) {
@@ -206,6 +222,12 @@ public class FacesFragment extends Fragment {
 		btnAddNewFace = dialog.findViewById(R.id.btnAddNewFace);
 		btnCancelAddNewFace = dialog.findViewById(R.id.btnCancelAddNewFace);
 
+
+		chooseDoorbell = dialog.findViewById(R.id.spinnerAddID);
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, doorbells);
+		chooseDoorbell.setAdapter(adapter);
+		chooseDoorbell.setOnItemSelectedListener(this);
+
 		etEditImageName.setHint("New Face");
 		ivAddPicture.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -235,8 +257,7 @@ public class FacesFragment extends Fragment {
 					}
 					else{
 						Toast.makeText(getContext(), "New Face Added", Toast.LENGTH_SHORT).show();
-						addFace(newFaceBitmap,newFaceName);
-						// TODO Add new face to database for that user and refresh faces page
+						addFace(newFaceBitmap,newFaceName, chooseDoorbell.getSelectedItem().toString());
 					}
 				}
 			}
@@ -261,7 +282,7 @@ public class FacesFragment extends Fragment {
 		}
 	}
 
-	public void addFace(Bitmap newFaceBitmap, String newFaceName){
+	public void addFace(Bitmap newFaceBitmap, String newFaceName, String doorbellID){
 		String newFace = bitmapToString(newFaceBitmap);
 		// Client to handle login response from server
 		Client client = new Client(getActivity()) {
@@ -301,5 +322,61 @@ public class FacesFragment extends Fragment {
 		bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
 		byte[] byteArray = byteArrayOutputStream .toByteArray();
 		return Base64.encodeToString(byteArray,Base64.DEFAULT);
+	}
+
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		Log.d(TAG, "onItemSelected: "+parent.getId());
+		if (parent.getId()==R.id.spinnerID){
+			String currentID = doorbellIDs.get(position);
+			Toast.makeText(getContext(), currentID, Toast.LENGTH_SHORT).show();
+			loadingPopUp();
+			// TODO pass in currentID
+			loadImages(currentID);
+		}
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> parent) {
+
+	}
+
+	public void populateSpinner() {
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item,doorbells);
+		selectDoorbellFaces.setAdapter(adapter);
+		selectDoorbellFaces.setOnItemSelectedListener(this);
+	}
+
+	public void getIDs(){
+		Client client = new Client(getActivity()) {
+			@Override
+			public void handleResponse(JSONObject response) throws JSONException {
+				switch (response.getString("response")) {
+					case "success":
+						JSONArray jsonArray = response.getJSONArray("doorbells");
+						for (int i = 0; i < jsonArray.length() ; i++) {
+							doorbells.add(jsonArray.getJSONObject(i).getString("name"));
+							doorbellIDs.add(jsonArray.getJSONObject(i).getString("id"));
+						}
+						populateSpinner();
+						break;
+					case "fail":
+						Toast.makeText(getContext(), "NO DOORBELL ASSIGNED, PLEASE CONTACT ADMIN", Toast.LENGTH_SHORT).show();
+						break;
+				}
+			}
+		};
+
+		// JSON Request object
+		JSONObject request = new JSONObject();
+		try {
+			request.put("request","getdoorbells");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		// Set request and start connection
+		client.setRequest(request);
+		client.start();
+
 	}
 }
