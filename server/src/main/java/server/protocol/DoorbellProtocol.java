@@ -3,7 +3,7 @@ package server.protocol;
 import database.Data;
 import facialrecognition.FaceSimilarity;
 import org.springframework.security.crypto.codec.Base64;
-import server.NotificationMessenger;
+import communication.NotificationMessenger;
 import server.ResponseHandler;
 
 import java.sql.Blob;

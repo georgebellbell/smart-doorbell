@@ -1,4 +1,4 @@
-package server;
+package communication;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -20,7 +20,7 @@ public class NotificationMessenger {
 	private ArrayList<String> tokens = new ArrayList<>();
 	UserTokenTable userTokenTable = new UserTokenTable();
 
-	public void sendNotification() throws IOException {
+	public void sendNotification() {
 		for (String token : tokens) {
 			Message message = Message.builder()
 					.setNotification(com.google.firebase.messaging.Notification.builder()
