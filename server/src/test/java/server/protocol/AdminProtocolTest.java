@@ -110,4 +110,13 @@ class AdminProtocolTest {
 		JSONObject response = new JSONObject(protocol.processInput());
 		assertEquals("fail", response.getString("response"));
 	}
+
+	@Test
+	void testRequestWithoutLogin() {
+		JSONObject request = new JSONObject();
+		request.put("request","analysis");
+		protocol.setRequest(request.toString());
+		JSONObject response = new JSONObject(protocol.processInput());
+		assertEquals("invalid", response.getString("response"));
+	}
 }
