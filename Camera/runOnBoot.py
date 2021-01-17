@@ -43,7 +43,7 @@ class runOnBoot:
 					if str(self.arguments[1]).lower() == "true":
 						print("arg - true")
 						add = True
-					elif str(self.arguments[1]).lower == "false":
+					elif str(self.arguments[1]).lower() == "false":
 						print("arg - false")
 						add = False
 					else:
