@@ -8,6 +8,20 @@
     tools:context=".SettingsFragment">
 
 
+    <ImageView
+        android:id="@+id/ivInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.929"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.052"
+        android:src="@drawable/ic_info" />
+
     <TextView
         android:id="@+id/tvSettings"
         android:layout_width="wrap_content"
@@ -21,29 +35,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.069" />
 
-    <TextView
-        android:id="@+id/tvSetTheme"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Set App Theme"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/swMode"
-        app:layout_constraintHorizontal_bias="0.218"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.272" />
 
-    <Switch
-        android:id="@+id/swMode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Light"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.852"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.274" />
+
 
     <TextView
         android:id="@+id/tvConnectTODoorbell"

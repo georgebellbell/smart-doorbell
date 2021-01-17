@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:background="#D3D3D3"
+    android:layout_gravity="center"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="35dp"
+        android:padding="15dp"
+        android:textStyle="bold"
+        android:text="Quick Solutions"/>
+    <TextView
+        android:id="@+id/tvClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="X"
+        android:layout_alignParentRight="true"
+        android:padding="15dp"/>
+    <TextView
+        android:id="@+id/tvInfoTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:padding="15dp"
+        android:textStyle="italic"
+        android:layout_below="@+id/tvTitle"
+        android:text="How to use the faces page"/>
+    <TextView
+        android:id="@+id/tvInfoLine1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvInfoTitle"
+        android:textSize="20sp"
+        android:padding="15dp"
+        android:text="Here is where you manage the faces for all your doorbells!"/>
+    <TextView
+        android:id="@+id/tvInfoLine2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvInfoLine1"
+        android:textSize="20sp"
+        android:padding="15dp"
+        android:text="You can navigate through the doorbells linked to your account to see what faces you have where"/>
+    <TextView
+        android:id="@+id/tvInfoLine3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvInfoLine2"
+        android:textSize="20sp"
+        android:padding="15dp"
+        android:text="You can edit and delete existing faces and add new ones!"/>
+
+</RelativeLayout>

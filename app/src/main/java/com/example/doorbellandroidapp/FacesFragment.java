@@ -7,11 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.media.Image;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -19,8 +16,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Base64;
@@ -43,7 +38,6 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class FacesFragment extends Fragment implements AdapterView.OnItemSelectedListener {
@@ -59,7 +53,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	private SharedPreferences preferences;
 	private String currentUser;
 	private TextView tvFaces;
-	private ImageView ivAddFace, ivNewFace;
+	private ImageView ivAddFace, ivNewFace, ivInfo;
 	private Spinner selectDoorbellFaces, chooseDoorbell;
 
 	private boolean pictureTaken;
@@ -77,6 +71,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 
 		preferences= PreferenceManager.getDefaultSharedPreferences(getContext());
 		currentUser= preferences.getString("currentUser",null);
+		ivInfo = view.findViewById(R.id.ivInfo);
 		ivAddFace = view.findViewById(R.id.ivAddFace);
 		tvFaces = view.findViewById(R.id.tvFaces);
 		tvFaces.setText(currentUser+"'s Faces");
@@ -93,6 +88,13 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 			@Override
 			public void onClick(View v) {
 				showPopup();
+			}
+		});
+
+		ivInfo.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				InformationDialog.showInformation(getContext(),"faces");
 			}
 		});
 
@@ -212,7 +214,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		final EditText etEditImageName;
 		final ImageView ivAddPicture;
 		Button btnAddNewFace, btnCancelAddNewFace;
-		dialog.setContentView(R.layout.addfacepopup);
+		dialog.setContentView(R.layout.popup_add_face);
 
 
 		etEditImageName = (EditText) dialog.findViewById(R.id.etEditImageName);

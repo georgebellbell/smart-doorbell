@@ -8,6 +8,16 @@
     tools:context=".HomeFragment"
     android:layout_centerHorizontal="true">
 
+    <ImageView
+        android:id="@+id/ivInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="15dp"
+       android:layout_alignParentRight="true"
+        android:padding="10dp"
+        android:src="@drawable/ic_info" />
 
     <ImageView
         android:id="@+id/ivLastFace"
@@ -16,6 +26,7 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/tvLastFace"
         tools:src="@tools:sample/avatars" />
+
 
     <TextView
         android:id="@+id/tvLastFace"
@@ -27,6 +38,7 @@
         android:text="Here's who was last at the door..."
         android:textSize="17sp"
         android:gravity="center_horizontal" />
+
 
     <Button
         android:id="@+id/btnOpenDoor"
@@ -71,6 +83,7 @@
         android:layout_below="@+id/tvLastFaceTime"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="132dp" />
+
 
 
 </RelativeLayout>

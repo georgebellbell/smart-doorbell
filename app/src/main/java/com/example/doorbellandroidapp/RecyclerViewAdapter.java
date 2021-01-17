@@ -127,7 +127,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 		final EditText etEditImageName;
 		ImageView ivPopupImage, ivDeleteImage;
 		Button btnSaveAndClose;
-		dialog.setContentView(R.layout.facepopup);
+		dialog.setContentView(R.layout.popup_face);
 
 		btnSaveAndClose = (Button) dialog.findViewById(R.id.btnAddNewFace);
 		txtClose = (TextView) dialog.findViewById(R.id.txtClose);

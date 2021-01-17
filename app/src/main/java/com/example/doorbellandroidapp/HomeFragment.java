@@ -24,7 +24,7 @@ import org.json.JSONObject;
 
 
 public class HomeFragment extends Fragment {
-	private ImageView ivLastFace;
+	private ImageView ivLastFace, ivInfo;
 	private Button btnOpenDoor, btnLeaveClosed;
 	private TextView tvDoorInformation, tvLastFaceTime, tvLastFace;
 
@@ -58,6 +58,12 @@ public class HomeFragment extends Fragment {
 				contactDoor("close");
 			}
 		});
+		ivInfo.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				InformationDialog.showInformation(getContext(),"home");
+			}
+		});
 		return view;
 	}
 
@@ -68,6 +74,7 @@ public class HomeFragment extends Fragment {
 		tvDoorInformation = view.findViewById(R.id.tvDoorInformation);
 		tvLastFaceTime = view.findViewById(R.id.tvLastFaceTime);
 		tvLastFace = view.findViewById(R.id.tvLastFace);
+		ivInfo = view.findViewById(R.id.ivInfo);
 	}
 
 	private void contactDoor(String messageToDoor){

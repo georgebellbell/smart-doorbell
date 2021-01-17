@@ -7,6 +7,14 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <ImageView
+        android:id="@+id/ivInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:padding="10dp"
+        android:src="@drawable/ic_info" />
+
     <TextView
         android:id="@+id/tvFaces"
         android:layout_width="wrap_content"
@@ -19,15 +27,16 @@
         android:id="@+id/ivAddFace"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:layout_marginLeft="300dp"
+        android:layout_below="@id/tvFaces"
+        android:layout_toRightOf="@+id/spinnerID"
         android:padding="3dp"
         android:src="@drawable/ic_add_face">
     </ImageView>
 
     <Spinner
         android:id="@+id/spinnerID"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="250dp"
+        android:layout_height="70dp"
         android:background="@android:drawable/btn_dropdown"
         android:spinnerMode="dropdown"
         android:layout_below="@id/tvFaces"
