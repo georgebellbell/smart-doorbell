@@ -40,10 +40,10 @@ class runOnBoot:
 			# Check for the end of the file
 			if line == "exit 0\n":
 				if len(self.arguments) == 2:
-					if str(self.arguments[1]).lower() == "true":
+					if str(self.arguments[1]).lower().equals("true"):
 						print("arg - true")
 						add = True
-					elif str(self.arguments[1]).lower == "false":
+					elif str(self.arguments[1]).lower.equals("false"):
 						print("arg - false")
 						add = False
 					else:
