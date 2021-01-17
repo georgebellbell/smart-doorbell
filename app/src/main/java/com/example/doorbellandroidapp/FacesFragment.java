@@ -2,7 +2,6 @@ package com.example.doorbellandroidapp;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -18,8 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.util.Base64;
 import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +35,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 
@@ -61,7 +59,6 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 
 	private View view;
 
-	private ProgressDialog progressDialog;
 	Dialog dialog;
 
 	@Override
@@ -94,7 +91,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		ivInfo.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				InformationDialog.showInformation(getContext(),"faces");
+				InformationPopups.showInformation(getContext(),"faces");
 			}
 		});
 
@@ -102,47 +99,82 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		return view;
 	}
 
-	void loadingPopUp(){
-		progressDialog = new ProgressDialog(getContext());
-		progressDialog.setMax(100);
-		progressDialog.setMessage("Please wait...");
-		progressDialog.setTitle("Loading Faces");
-		progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		progressDialog.show();
+	// RETRIEVING IDs FOR USER
 
-		new Thread(new Runnable() {
+	/**
+	 * calls server and retrieves all IDs linked to that user
+	 */
+	public void getIDs(){
+		Client client = new Client(getActivity()) {
 			@Override
-			public void run() {
-				while (progressDialog.getProgress() <= progressDialog.getMax()){
-					try {
-						Thread.sleep(30);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					progressDialog.incrementProgressBy(1);
-					if (progressDialog.getProgress()==progressDialog.getMax()){
-						progressDialog.dismiss();
-					}
-
+			public void handleResponse(JSONObject response) throws JSONException {
+				switch (response.getString("response")) {
+					case "success":
+						JSONArray jsonArray = response.getJSONArray("doorbells");
+						for (int i = 0; i < jsonArray.length() ; i++) {
+							doorbells.add(jsonArray.getJSONObject(i).getString("name"));
+							doorbellIDs.add(jsonArray.getJSONObject(i).getString("id"));
+						}
+						populateSpinner();
+						break;
+					case "fail":
+						Toast.makeText(getContext(), "NO DOORBELL ASSIGNED, PLEASE CONTACT ADMIN", Toast.LENGTH_SHORT).show();
+						break;
 				}
 			}
-		}).start();
+		};
+
+		// JSON Request object
+		JSONObject request = new JSONObject();
+		try {
+			request.put("request","getdoorbells");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		// Set request and start connection
+		client.setRequest(request);
+		client.start();
 
 	}
 
 	/**
-	 * populates the mNames and mImages with names of pictures and  pictures
-	 * @param jsonArray jsonArray of faces
+	 * Adds the retrieved IDs to a dropdown menu the user can navigate between
 	 */
-	void populateImages(final JSONArray jsonArray) {
-		try {
-			initImageBitmaps(jsonArray);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		Log.d(TAG, "handleResponse: images got");
-		initRecyclerView(view);
+	public void populateSpinner() {
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item,doorbells);
+		selectDoorbellFaces.setAdapter(adapter);
+		selectDoorbellFaces.setOnItemSelectedListener(this);
 	}
+
+	/**
+	 * Gives functionality to spinner, loads the images for the selected item in spinner
+	 * @param parent object being observed, in this case the spinner
+	 * @param view current app view
+	 * @param position current item in spinner selected
+	 * @param id identifier for spinner
+	 */
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+		if (parent.getId()==R.id.spinnerID){
+			String currentID = doorbellIDs.get(position);
+			Toast.makeText(getContext(), currentID, Toast.LENGTH_SHORT).show();
+			InformationPopups informationPopups = new InformationPopups();
+			informationPopups.loadingPopUp(getContext());
+			loadImages(currentID);
+		}
+	}
+
+	/**
+	 * Required method for when nothing is selected
+	 * @param parent object being observed, in this case the spinner
+	 */
+	@Override
+	public void onNothingSelected(AdapterView<?> parent) {
+
+	}
+
+	// LOADING ALL IMAGES FOR SPECIFIC ID
 
 	/**
 	 * calls server requesting images from database
@@ -179,6 +211,20 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	}
 
 	/**
+	 * populates the mNames and mImages with names of pictures and  pictures
+	 * @param jsonArray jsonArray of faces
+	 */
+	void populateImages(final JSONArray jsonArray) {
+		try {
+			initImageBitmaps(jsonArray);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		Log.d(TAG, "handleResponse: images got");
+		initRecyclerView(view);
+	}
+
+	/**
 	 * Adds image URLS and image names to ArrayLists to be added to view holders
 	 */
 	private void initImageBitmaps(JSONArray images) throws JSONException {
@@ -209,61 +255,53 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 	}
 
-	public void showPopup() {
+	// ADD FACE POPUP
+
+	/**
+	 * Creates popup in FacesFragment for adding a new face to a given doorbell
+	 */
+	public void showPopup () {
+
+		dialog.setContentView(R.layout.popup_add_face);
+
 		pictureTaken = false;
 		final EditText etEditImageName;
 		final ImageView ivAddPicture;
 		Button btnAddNewFace, btnCancelAddNewFace;
-		dialog.setContentView(R.layout.popup_add_face);
-
 
 		etEditImageName = (EditText) dialog.findViewById(R.id.etEditImageName);
-		ivAddPicture = dialog.findViewById(R.id.ivAddPicture);
+		etEditImageName.setHint("New Face");
+
 		ivNewFace = dialog.findViewById(R.id.ivNewFace);
-		pictureTaken = false;
+
+		// Uses phone camera to take picture for new face
+		ivAddPicture = dialog.findViewById(R.id.ivAddPicture);
+		ivAddPicture.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				takePicture();
+
+			}
+		});
+
+		// Adds new face to the doorbell for that user, validating to see if required details are given
 		btnAddNewFace = dialog.findViewById(R.id.btnAddNewFace);
-		btnCancelAddNewFace = dialog.findViewById(R.id.btnCancelAddNewFace);
+		btnAddNewFace.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				String newFaceName = etEditImageName.getText().toString();
+				validateAddition(newFaceName);
+			}
+		});
 
-
+		// Populates spinner in popup with available doorbells to add new faces to
 		chooseDoorbell = dialog.findViewById(R.id.spinnerAddID);
 		ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, doorbells);
 		chooseDoorbell.setAdapter(adapter);
 		chooseDoorbell.setOnItemSelectedListener(this);
 
-		etEditImageName.setHint("New Face");
-		ivAddPicture.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Toast.makeText(getContext(), "Taking Picture", Toast.LENGTH_SHORT).show();
-				//Requests for camera runtime permission
-				if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED ){
-					ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.CAMERA},100);
-				}
-				else{
-					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-					startActivityForResult(intent,100);
-				}
-			}
-		});
-		btnAddNewFace.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				String newFaceName = etEditImageName.getText().toString();
-				if (newFaceName.equals("") || newFaceName==null){
-					Toast.makeText(getContext(), "Put a name to the face!", Toast.LENGTH_SHORT).show();
-				}
-				else{
-					if (!pictureTaken){
-						Toast.makeText(getContext(), "Make sure to take a picture for the face!", Toast.LENGTH_SHORT).show();
-						
-					}
-					else{
-						Toast.makeText(getContext(), "New Face Added", Toast.LENGTH_SHORT).show();
-						addFace(newFaceBitmap,newFaceName, doorbellIDs.get(chooseDoorbell.getSelectedItemPosition()));
-					}
-				}
-			}
-		});
+		// Closes popup
+		btnCancelAddNewFace = dialog.findViewById(R.id.btnCancelAddNewFace);
 		btnCancelAddNewFace.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -274,26 +312,73 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		dialog.show();
 	}
 
+	/**
+	 * Requests permission to use camera and if given, take photo
+	 */
+	public void takePicture () {
+		//Requests for camera runtime permission
+		if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, 100);
+		} else {
+			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			startActivityForResult(intent, 100);
+		}
+	}
+
+	/**
+	 * In response to taking picture, retrieve image bitmap and set it to popup
+	 * @param requestCode code used to send request
+	 * @param resultCode The integer result code returned by the child activitu through its setResult().
+	 * @param data data from activity, in this case the picture
+	 */
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+	public void onActivityResult ( int requestCode, int resultCode, @Nullable Intent data){
 		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode==100){
+		if (requestCode == 100) {
 			newFaceBitmap = (Bitmap) data.getExtras().get("data");
 			ivNewFace.setImageBitmap(newFaceBitmap);
 			pictureTaken = true;
 		}
 	}
 
-	public void addFace(Bitmap newFaceBitmap, String newFaceName, String doorbellID){
-		String newFace = bitmapToString(newFaceBitmap);
+	/**
+	 * Checks that new picture has been taken and that an appropriate name has been assigned to it
+	 * @param newFaceName name of new face being added
+	 */
+	public void validateAddition (String newFaceName){
+
+		if (newFaceName.equals("") || newFaceName == null) {
+			Toast.makeText(getContext(), "Put a name to the face!", Toast.LENGTH_SHORT).show();
+		}
+		else if (newFaceName.length()>10) {
+			Toast.makeText(getContext(), "Name is too long", Toast.LENGTH_SHORT).show();
+		}
+		else  {
+			if (!pictureTaken) {
+				Toast.makeText(getContext(), "Make sure to take a picture for the face!", Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(getContext(), "New Face Added", Toast.LENGTH_SHORT).show();
+				addFace(newFaceBitmap, newFaceName, doorbellIDs.get(chooseDoorbell.getSelectedItemPosition()));
+			}
+		}
+	}
+
+	/**
+	 * Contacts server and adds the new face to the specified doorbell
+	 * @param newFaceBitmap bitmap for image taken using camera
+	 * @param newFaceName name of new face
+	 * @param doorbellID doorbell the face is being added to
+	 */
+	public void addFace (Bitmap newFaceBitmap, String newFaceName, String doorbellID){
+		String newFace = Helper.bitmapToString(newFaceBitmap);
 		// Client to handle login response from server
 		Client client = new Client(getActivity()) {
 			@Override
 			public void handleResponse(JSONObject response) throws JSONException {
 				switch (response.getString("response")) {
 					case "success":
-						SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(getContext());
-						preferences.edit().putString("currentTask","Face Added").apply();
+						SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+						preferences.edit().putString("currentTask", "Face Added").apply();
 						getActivity().finish();
 						getActivity().startActivity(getActivity().getIntent());
 						break;
@@ -307,11 +392,10 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		// JSON Request object
 		JSONObject request = new JSONObject();
 		try {
-			request.put("request","addface");
-			request.put("username", preferences.getString("currentUser",null));
+			request.put("request", "addface");
+			request.put("username", preferences.getString("currentUser", null));
 			request.put("personname", newFaceName);
-			// TODO make not hardcoded
-			request.put("doorbellID",doorbellID);
+			request.put("doorbellID", doorbellID);
 			request.put("image", newFace);
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -321,66 +405,5 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		client.start();
 
 	}
-	public String bitmapToString(Bitmap bitmap){
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-		byte[] byteArray = byteArrayOutputStream .toByteArray();
-		return Base64.encodeToString(byteArray,Base64.DEFAULT);
-	}
 
-	@Override
-	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-		Log.d(TAG, "onItemSelected: "+parent.getId());
-		if (parent.getId()==R.id.spinnerID){
-			String currentID = doorbellIDs.get(position);
-			Toast.makeText(getContext(), currentID, Toast.LENGTH_SHORT).show();
-			loadingPopUp();
-			// TODO pass in currentID
-			loadImages(currentID);
-		}
-	}
-
-	@Override
-	public void onNothingSelected(AdapterView<?> parent) {
-
-	}
-
-	public void populateSpinner() {
-		ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item,doorbells);
-		selectDoorbellFaces.setAdapter(adapter);
-		selectDoorbellFaces.setOnItemSelectedListener(this);
-	}
-
-	public void getIDs(){
-		Client client = new Client(getActivity()) {
-			@Override
-			public void handleResponse(JSONObject response) throws JSONException {
-				switch (response.getString("response")) {
-					case "success":
-						JSONArray jsonArray = response.getJSONArray("doorbells");
-						for (int i = 0; i < jsonArray.length() ; i++) {
-							doorbells.add(jsonArray.getJSONObject(i).getString("name"));
-							doorbellIDs.add(jsonArray.getJSONObject(i).getString("id"));
-						}
-						populateSpinner();
-						break;
-					case "fail":
-						Toast.makeText(getContext(), "NO DOORBELL ASSIGNED, PLEASE CONTACT ADMIN", Toast.LENGTH_SHORT).show();
-						break;
-				}
-			}
-		};
-
-		// JSON Request object
-		JSONObject request = new JSONObject();
-		try {
-			request.put("request","getdoorbells");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		// Set request and start connection
-		client.setRequest(request);
-		client.start();
-
-	}
 }
