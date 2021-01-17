@@ -3,7 +3,7 @@ package server.protocol;
 import authentication.PasswordManager;
 import database.Data;
 import database.User;
-import email.Email;
+import communication.Email;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import server.ResponseHandler;

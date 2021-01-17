@@ -8,7 +8,35 @@ import java.net.*;
 import java.io.*;
 
 public class Server {
-	private final int PORT = 4444;
+	private static final int PORT = 4444;
+
+	/**
+	 * Connects to firebase
+	 * @return if connection was successful
+	 */
+	public boolean connectFirebase() {
+		boolean connection = false;
+		URL firebaseKey = getClass().getClassLoader().getResource("key.json");
+
+		try {
+			if (firebaseKey != null) {
+				FileInputStream serviceAccount =
+						new FileInputStream(firebaseKey.getPath());
+
+				FirebaseOptions options = new FirebaseOptions.Builder()
+						.setCredentials(GoogleCredentials.fromStream(serviceAccount))
+						.build();
+
+				FirebaseApp.initializeApp(options);
+
+				connection = true;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return connection;
+	}
 
 	/**
 	 * Handle incoming client connections
@@ -17,15 +45,13 @@ public class Server {
 		try {
 			ServerSocket serverSocket = new ServerSocket(PORT);
 
-			FileInputStream serviceAccount =
-					new FileInputStream("key.json");
+			// Connect to firebase
+			boolean firebaseConnection = connectFirebase();
+			if (!firebaseConnection) {
+				System.out.println("Failed to connect to Firebase, push notifications will be unable to send");
+			}
 
-			FirebaseOptions options = new FirebaseOptions.Builder()
-					.setCredentials(GoogleCredentials.fromStream(serviceAccount))
-					.build();
-
-			FirebaseApp.initializeApp(options);
-
+			// Handle incoming connections
 			while (true) {
 				// Accept new client connection
 				Socket incomingClientSocket = serverSocket.accept();
@@ -38,8 +64,6 @@ public class Server {
 
 
 		} catch (IOException e) {
-			System.out.println("Exception caught when trying to listen on port "
-					+ PORT + " or listening for a connection");
 			System.out.println(e.getMessage());
 		}
 	}

@@ -2,7 +2,7 @@ package authentication;
 
 import database.TwoFactorTable;
 import database.User;
-import email.Email;
+import communication.Email;
 
 import java.security.SecureRandom;
 import java.util.regex.Matcher;
