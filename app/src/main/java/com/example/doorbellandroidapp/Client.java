@@ -1,6 +1,7 @@
 package com.example.doorbellandroidapp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -53,6 +54,34 @@ public abstract class Client extends Thread {
      */
     public abstract void handleResponse(JSONObject response) throws JSONException;
 
+
+    /**
+     * Checks if session is valid from response and sends user back to login if it was invalid
+     * @param response - Response received from server
+     * @return if session was valid
+     */
+    private boolean checkSession(final JSONObject response) {
+        boolean valid = true;
+        try {
+            if (response.getString("response").equals("invalid")) {
+                valid = false;
+                final String error = response.getString("message");
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                    Toast.makeText(activity, error,
+                            Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(activity, LoginActivity.class);
+                    activity.startActivity(intent);
+                    activity.finish();
+                    }
+                });
+            }
+        } catch (JSONException ignored) {
+        }
+        return valid;
+    }
+
     public void run() {
         try {
             // Create connection
@@ -70,6 +99,11 @@ public abstract class Client extends Thread {
             String serverResponse;
             if ((serverResponse = bufferedReader.readLine()) != null) {
                 final JSONObject response = new JSONObject(serverResponse);
+
+                if (!checkSession(response)) {
+                    return;
+                }
+
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
