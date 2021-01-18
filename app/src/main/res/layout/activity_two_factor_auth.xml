@@ -33,7 +33,7 @@
         android:id="@+id/tvCheckEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="58dp"
+        android:layout_marginTop="30dp"
         android:layout_marginBottom="20dp"
         android:text="@string/TwoFANotif"
         android:layout_below="@id/tv2FA"
@@ -71,13 +71,6 @@
         android:padding="15dp"
          />
 
-    <TextView
-        android:id="@+id/tv2FAAgain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Resend Verification Email?"
-        android:layout_below="@id/tv2FAResponse"
-        android:layout_marginTop="50dp"/>
 
     <Button
         android:id="@+id/btnReturn"
@@ -85,6 +78,18 @@
         android:layout_height="wrap_content"
         android:text="GO BACK"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="25"/>
+        android:layout_marginBottom="25dp"
+        android:padding="15dp"/>
+    <TextView
+        android:id="@+id/tv2FAAgain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Resend Verification Email?"
+        android:layout_toRightOf="@+id/btnReturn"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="25dp"
+        android:layout_marginLeft="45dp"
+        android:padding="15dp"/>
+
 
 </RelativeLayout>

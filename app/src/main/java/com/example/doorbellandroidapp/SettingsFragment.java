@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,8 +22,9 @@ import java.util.regex.Pattern;
 
 public class SettingsFragment extends Fragment {
 
-	EditText etDoorbellConnect, pwdChangePassword, etChangeEmail;
+	EditText etDoorbellConnect, etDoorbellConnectName, pwdChangePassword, etChangeEmail;
 	Button btnDoorbellConnect, btnChangePassword, btnChangeEmail, btnDeleteAccount;
+	ImageView ivInfo, ivAddDoorbellInfo;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -30,11 +32,27 @@ public class SettingsFragment extends Fragment {
 		// Inflate the layout for this fragment
 		View view = inflater.inflate(R.layout.fragment_settings, container, false);
 		assign(view);
+
+		ivInfo.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				InformationPopups.showInformation(getContext(),"settings");
+			}
+		});
+
+		ivAddDoorbellInfo.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				InformationPopups.showInformation(getContext(),"doorbell");
+			}
+		});
+
 		btnDoorbellConnect.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				String doorbellID = etDoorbellConnect.getText().toString();
-				addDoorbell(doorbellID);
+				String doorbellName = etDoorbellConnectName.getText().toString();
+				addDoorbell(doorbellID, doorbellName);
 			}
 		});
 
@@ -64,7 +82,7 @@ public class SettingsFragment extends Fragment {
 
 	}
 
-	public void addDoorbell(String doorbellID){
+	public void addDoorbell(String doorbellID, String doorbellName){
 		// Client to handle sign up response from server
 		Client client = new Client(getActivity()) {
 			@Override
@@ -85,6 +103,7 @@ public class SettingsFragment extends Fragment {
 		try {
 			request.put("request","connectdoorbell");
 			request.put("doorbellID", doorbellID);
+			request.put("doorbellname",doorbellName);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -185,12 +204,15 @@ public class SettingsFragment extends Fragment {
 
 	public void assign(View view){
 		etDoorbellConnect = view.findViewById(R.id.etDoorbellConnect);
+		etDoorbellConnectName = view.findViewById(R.id.etDoorbellConnectName);
 		etChangeEmail = view.findViewById(R.id.etChangeEmail);
 		pwdChangePassword = view.findViewById(R.id.pwdChangePassword);
 		btnDoorbellConnect = view.findViewById(R.id.btnDoorbellConnect);
 		btnChangePassword = view.findViewById(R.id.btnChangePassword);
 		btnChangeEmail = view.findViewById(R.id.btnChangeEmail);
 		btnDeleteAccount = view.findViewById(R.id.btnDeleteAccount);
+		ivAddDoorbellInfo = view.findViewById(R.id.ivAddDoorbellInfo);
+		ivInfo = view.findViewById(R.id.ivInfo);
 	}
 
 	/**

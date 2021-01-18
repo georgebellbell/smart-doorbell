@@ -32,6 +32,8 @@ public class InformationPopups {
 			case "settings":
 				dialog.setContentView(R.layout.popup_info_settings);
 				break;
+			case "doorbell":
+				dialog.setContentView(R.layout.popup_info_add_doorbell);
 		}
 
 		// closes popup
