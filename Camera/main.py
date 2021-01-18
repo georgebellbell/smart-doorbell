@@ -33,7 +33,6 @@ class main:
 			print("Unique Device ID: " + self.PiId)
 
 	def main(self):
-		print(os.getpid())
 		# Main loop
 		while True:
 			if self.button1.is_pressed:
@@ -111,7 +110,6 @@ class main:
 		return data
 
 	def socketPoll(self):
-		print(os.getpid())
 		# Poll server forever
 		# Check to see if there has been a request to open the door
 		while True:
@@ -138,6 +136,9 @@ if __name__ == "__main__":
 
 	doorbell = main()
 	# Poll server in separate process
-	Process(target=doorbell.socketPoll()).start()
-	Process(target=doorbell.main()).start()
+	p1 = Process(target=doorbell.main)
+	p2 = Process(target=doorbell.socketPoll)
+	p1.start()
+	p2.start()
+	
 
