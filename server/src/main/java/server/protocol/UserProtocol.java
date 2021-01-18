@@ -63,8 +63,9 @@ public class UserProtocol extends Protocol {
 
 	public void deleteAccount() {
 		String username = user.getUsername();
-		accountTable.connect();
-		if (accountTable.deleteRecord(username))
+		boolean accountDeleted = accountTable.deleteRecord(username);
+		accountTable.disconnect();
+		if (accountDeleted)
 			response.put("response", "success");
 		else
 			response.put("response", "fail");
