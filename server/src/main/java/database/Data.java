@@ -15,7 +15,7 @@ public class Data {
 
 	// Double constructor for when retrieving data from database and when adding to the database
 	public Data(String deviceID, Blob image, String personName) {
-		this(-1, deviceID, image, personName, "");
+		this(-1, deviceID, image, personName, null);
 	}
 
 	public Data(Integer imageID, String deviceID, Blob image, String personName, String created_at) {
