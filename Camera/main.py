@@ -32,8 +32,6 @@ class main:
 			self.PiId = file.readline()
 			print("Unique Device ID: " + self.PiId)
 
-		# Create socket
-		self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		# Poll server in separate process
 		Process(target=self.socketPoll()).start()
 
@@ -106,11 +104,12 @@ class main:
 		return imageData
 
 	def socketSend(self, output):
-		self.socket.connect((self.host, self.port))
-		self.socket.sendall(bytes('doorbell\r\n', 'utf-8'))
-		self.socket.sendall(bytes(output, 'utf-8'))
-		data = self.socket.recv(1024)
-		self.socket.close()
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.connect((self.host, self.port))
+		s.sendall(bytes('doorbell\r\n', 'utf-8'))
+		s.sendall(bytes(output, 'utf-8'))
+		data = s.recv(1024)
+		s.close()
 		print("Received", repr(data))
 		return data
 
@@ -119,13 +118,14 @@ class main:
 		# Check to see if there has been a request to open the door
 		while True:
 			try:
-				self.socket.settimeout(10)
-				self.socket.connect((self.host, self.port))
-				self.socket.settimeout(None)
-				self.socket.sendall(bytes('doorbell\r\n', 'utf-8'))
-				self.socket.sendall(bytes('{"request":"poll", "id":"' + self.PiId + '"}\r\n', 'utf-8'))
-				data = self.socket.recv(1024)
-				self.socket.close()
+				s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+				s.settimeout(10)
+				s.connect((self.host, self.port))
+				s.settimeout(None)
+				s.sendall(bytes('doorbell\r\n', 'utf-8'))
+				s.sendall(bytes('{"request":"poll", "id":"' + self.PiId + '"}\r\n', 'utf-8'))
+				data = s.recv(1024)
+				s.close()
 				# handle response from server
 				print(repr(data))
 
