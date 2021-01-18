@@ -6,26 +6,32 @@ import java.sql.*;
 
 public class DatabaseConnection {
 	// SSH connection info
-	JSch jsch = new JSch();
-	Connection conn;
-	Session session;
-	private final String HOST = "linux.cs.ncl.ac.uk";
-	private final String RHOST = "cs-db.ncl.ac.uk";
-	private final int PORT = 3306;
-	private final String USER = "b9015566";
-	private final String PASSWORD = "yourmum";
-	int assigned_port = -1;
+	private static final String HOST = "linux.cs.ncl.ac.uk";
+	private static final String R_HOST = "cs-db.ncl.ac.uk";
+	private static final int PORT = 3306;
+	private static final String USER = "username";
+	private static final String PASSWORD = "password";
+
+	// Session variables
+	static JSch jsch = new JSch();
+	static Connection conn;
+	static Session session;
+	static int assignedPort = -1;
+	static boolean connected;
 
 	// Database connection info
-	private final String DBUSERNAME = "t2033t17";
-	private final String DBPASSWORD = "KnewBut+(Fin";
-	private final String DBURL = "jdbc:mysql://localhost:3306/t2033t17";
-	private final String DRIVERNAME = "com.mysql.cj.jdbc.Driver";
+	private static final String DB_USERNAME = "t2033t17";
+	private static final String DB_PASSWORD = "KnewBut+(Fin";
+	private static final String DB_URL = "jdbc:mysql://localhost:3306/t2033t17";
+	private static final String DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
 
 	/**
 	 * Connect via SSH tunnel forwarding local port to remote host and port
 	 */
-	public void establishSSH() {
+	public static void establishSession() {
+		if (connected) {
+			return;
+		}
 		try {
 			// Not verify the public key of the HOST
 			java.util.Properties config = new java.util.Properties();
@@ -38,7 +44,14 @@ public class DatabaseConnection {
 
 			// Connect to SSH
 			session.connect();
-			assigned_port = session.setPortForwardingL(PORT, RHOST, PORT);
+			assignedPort = session.setPortForwardingL(PORT, R_HOST, PORT);
+
+			// Database connection
+			Class.forName(DRIVER_NAME).newInstance();
+			conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+
+			connected = true;
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -48,28 +61,29 @@ public class DatabaseConnection {
 	 * Connect to the database via SSH
 	 * @return if connection established
 	 */
+	@Deprecated
 	public boolean connect() {
-		establishSSH();
-		try {
-			Class.forName(DRIVERNAME).newInstance();
-			conn = DriverManager.getConnection(DBURL, DBUSERNAME, DBPASSWORD);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
 		return true;
 	}
+
 	/**
 	 * @return if connection closed
 	 */
+	@Deprecated
 	public boolean disconnect() {
+		return true;
+	}
+
+	/**
+	 * Disconnects the current SSH session
+	 */
+	public static void disconnectSession() {
 		try {
+			connected = false;
 			conn.close();
 			session.disconnect();
-			return true;
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
-			return false;
 		}
 	}
 
