@@ -32,7 +32,7 @@ public class UserProtocol extends Protocol {
 		requestResponse.put("logout", new ResponseHandler(this::logout));
 		requestResponse.put("opendoor", new ResponseHandler(this::openDoor, "message"));
 		requestResponse.put("getdoorbells", new ResponseHandler(this::getDoorbells));
-		requestResponse.put("connectdoorbell", new ResponseHandler(this::connectDoorbell));
+		requestResponse.put("connectdoorbell", new ResponseHandler(this::connectDoorbell, "doorbellID", "doorbellname"));
 		requestResponse.put("changepassword", new ResponseHandler(this::changePassword, "password"));
 		requestResponse.put("changeemail", new ResponseHandler(this::changeEmail, "email"));
 		requestResponse.put("deleteaccount", new ResponseHandler(this::deleteAccount));
@@ -57,14 +57,29 @@ public class UserProtocol extends Protocol {
 
 	public void connectDoorbell() {
 		String username = user.getUsername();
+		String doorbellID = request.getString("doorbellID");
+		String doorbellName = request.getString("doorbellname");
 		doorbellTable.connect();
+		if (doorbellTable.isUserAssignedDoorbell(username, doorbellID)) {
+			response.put("response", "fail");
+			response.put("message", "Doorbell already assigned");
+			return;
+		}
+		if (!doorbellTable.doorbellExists(doorbellID)) {
+			doorbellTable.addNewDoorbell(doorbellID);
+		}
+		doorbellTable.setDoorbell(username, doorbellID);
+		doorbellTable.updateDoorbell(doorbellID, doorbellName);
+		response.put("response", "success");
 		doorbellTable.disconnect();
 	}
 
 	public void deleteAccount() {
 		String username = user.getUsername();
 		accountTable.connect();
-		if (accountTable.deleteRecord(username))
+		boolean accountDeleted = accountTable.deleteRecord(username);
+		accountTable.disconnect();
+		if (accountDeleted)
 			response.put("response", "success");
 		else
 			response.put("response", "fail");
@@ -84,7 +99,7 @@ public class UserProtocol extends Protocol {
 
 	public void changeEmail() {
 		String username = user.getUsername();
-		String email = request.getString("password");
+		String email = request.getString("email");
 		accountTable.connect();
 		boolean passwordChanged = accountTable.changeEmail(username, email);
 		accountTable.disconnect();
@@ -190,7 +205,6 @@ public class UserProtocol extends Protocol {
 			response.put("doorbellname", doorbellName);
 
 		} catch (SQLException e) {
-			e.printStackTrace();
 			response.put("response", "fail");
 			response.put("message", "failed to retrieve recent image");
 		}
@@ -218,7 +232,7 @@ public class UserProtocol extends Protocol {
 		int id = request.getInt("id");
 		String name = request.getString("name");
 		if (dataTable.changeName(id, name))
-			response.put("response", "sucess");
+			response.put("response", "success");
 		dataTable.disconnect();
 	}
 	public void deleteFace() {
