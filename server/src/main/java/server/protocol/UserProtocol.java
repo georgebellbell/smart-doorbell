@@ -59,7 +59,6 @@ public class UserProtocol extends Protocol {
 		String username = user.getUsername();
 		String doorbellID = request.getString("doorbellID");
 		String doorbellName = request.getString("doorbellname");
-		doorbellTable.connect();
 		if (doorbellTable.isUserAssignedDoorbell(username, doorbellID)) {
 			response.put("response", "fail");
 			response.put("message", "Doorbell already assigned");
@@ -71,14 +70,11 @@ public class UserProtocol extends Protocol {
 		doorbellTable.setDoorbell(username, doorbellID);
 		doorbellTable.updateDoorbell(doorbellID, doorbellName);
 		response.put("response", "success");
-		doorbellTable.disconnect();
 	}
 
 	public void deleteAccount() {
 		String username = user.getUsername();
-		accountTable.connect();
 		boolean accountDeleted = accountTable.deleteRecord(username);
-		accountTable.disconnect();
 		if (accountDeleted)
 			response.put("response", "success");
 		else
@@ -88,9 +84,7 @@ public class UserProtocol extends Protocol {
 	public void changePassword() {
 		String username = user.getUsername();
 		String password = request.getString("password");
-		accountTable.connect();
 		boolean passwordChanged = accountTable.changePassword(username, password);
-		accountTable.disconnect();
 		if (passwordChanged)
 			response.put("response", "success");
 		else
@@ -100,9 +94,7 @@ public class UserProtocol extends Protocol {
 	public void changeEmail() {
 		String username = user.getUsername();
 		String email = request.getString("email");
-		accountTable.connect();
 		boolean passwordChanged = accountTable.changeEmail(username, email);
-		accountTable.disconnect();
 		if (passwordChanged)
 			response.put("response", "success");
 		else
@@ -111,9 +103,7 @@ public class UserProtocol extends Protocol {
 
 	public void getDoorbells() {
 		String username = user.getUsername();
-		doorbellTable.connect();
 		JSONArray doorbells = doorbellTable.getDoorbells(username);
-		doorbellTable.disconnect();
 		if (doorbells.length() != 0) {
 			response.put("response", "success");
 			response.put("doorbells", doorbells);
@@ -135,10 +125,8 @@ public class UserProtocol extends Protocol {
 
 	public void logout() {
 		String token = request.getString("token");
-		userTokenTable.connect();
 		if (userTokenTable.deleteByToken(token))
 			response.put("response", "success");
-		userTokenTable.disconnect();
 	}
 
 	/**
@@ -149,9 +137,7 @@ public class UserProtocol extends Protocol {
 		String requestName = request.getString("request");
 		String token = request.getString("token");
 		if (!noValidTokenRequests.contains(requestName)) {
-			userTokenTable.connect();
 			user = userTokenTable.getUserByToken(token);
-			userTokenTable.disconnect();
 			if (user == null) {
 				response.put("response", "invalid");
 				response.put("message", "Session has expired");
@@ -167,10 +153,8 @@ public class UserProtocol extends Protocol {
 	 * @param token - Token of user
 	 */
 	private void saveToken(String username, String token) {
-		userTokenTable.connect();
 		userTokenTable.deleteByToken(token);
 		userTokenTable.addToken(token, username);
-		userTokenTable.disconnect();
 	}
 
 	@Override
@@ -184,12 +168,8 @@ public class UserProtocol extends Protocol {
 	public void lastFace(){
 		String username = user.getUsername();
 		JSONObject image = new JSONObject();
-		dataTable.connect();
 		Data recentImage = dataTable.getRecentImage(username);
-		dataTable.disconnect();
-		doorbellTable.connect();
 		String doorbellName = doorbellTable.getDoorbellName(recentImage.getDeviceID());
-		doorbellTable.disconnect();
 		Blob blob = recentImage.getImage();
 		byte[] imageBytes = null;
 		String encodedImage = null;
@@ -215,39 +195,31 @@ public class UserProtocol extends Protocol {
 			String doorbellID = request.getString("doorbellID");
 			String personName = request.getString("personname");
 			byte[] image = Base64.decode(request.getString("image").getBytes());
-			dataTable.connect();
 			Connection conn = dataTable.getConn();
 			Blob blobImage = conn.createBlob();
 			blobImage.setBytes(1, image);
 			dataTable.addRecord(new Data(doorbellID, blobImage, personName));
 			response.put("response", "success");
-			dataTable.disconnect();
 		} catch (SQLException e) {
 			response.put("response", "fail");
 		}
 	}
 
 	public void renameFace() {
-		dataTable.connect();
 		int id = request.getInt("id");
 		String name = request.getString("name");
 		if (dataTable.changeName(id, name))
 			response.put("response", "success");
-		dataTable.disconnect();
 	}
 	public void deleteFace() {
-		dataTable.connect();
 		int id = request.getInt("id");
 		if (dataTable.deleteRecordById(id))
 			response.put("response", "success");
-		dataTable.disconnect();
 	}
 
 	public void faces() {
 		String doorbellID = request.getString("doorbellID");
-		dataTable.connect();
 		ArrayList<Data> allImages = new ArrayList<>(dataTable.getAllImages(doorbellID));
-		dataTable.disconnect();
 		ArrayList<JSONObject> jsonImages = new ArrayList<>();
 		if (allImages.size() != 0) {
 			for (Data data: allImages) {
@@ -281,10 +253,8 @@ public class UserProtocol extends Protocol {
 		String password = request.getString("password");
 
 		// Connect to database
-		accountTable.connect();
 		boolean validLogin = accountTable.getLogin(username, password, "user");
 		User currentUser = accountTable.getRecord(username);
-		accountTable.disconnect();
 
 		if (validLogin) {
 			// Successful login response
@@ -314,7 +284,6 @@ public class UserProtocol extends Protocol {
 		String password = request.getString("password");
 		String token = request.getString("token");
 		User user = new User(username, email, password, "user");
-		accountTable.connect();
 		if (accountTable.addRecord(user)) {
 			response.put("response", "success");
 			response.put("message", "Account created");
@@ -326,7 +295,6 @@ public class UserProtocol extends Protocol {
 			response.put("response", "fail");
 			response.put("message", "Failed to create account");
 		}
-		accountTable.disconnect();
 	}
 
 	public void twoFactor() {
@@ -335,9 +303,7 @@ public class UserProtocol extends Protocol {
 		String token = request.getString("token");
 
 		// Get user trying to enter 2FA code
-		accountTable.connect();
 		User user = accountTable.getRecord(username);
-		accountTable.disconnect();
 
 		if (user != null) {
 			TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(user);
@@ -371,9 +337,7 @@ public class UserProtocol extends Protocol {
 		String username = request.getString("username");
 
 		// Get user requesting 2FA email
-		accountTable.connect();
 		User user = accountTable.getRecord(username);
-		accountTable.disconnect();
 
 		if (user != null) {
 			// Generate code and send email
