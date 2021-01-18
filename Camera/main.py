@@ -32,9 +32,6 @@ class main:
 			self.PiId = file.readline()
 			print("Unique Device ID: " + self.PiId)
 
-		# Poll server in separate process
-		Process(target=self.socketPoll()).start()
-
 	def main(self):
 		print(os.getpid())
 		# Main loop
@@ -114,6 +111,7 @@ class main:
 		return data
 
 	def socketPoll(self):
+		print(os.getpid())
 		# Poll server forever
 		# Check to see if there has been a request to open the door
 		while True:
@@ -139,5 +137,7 @@ if __name__ == "__main__":
 	# p1.start()
 
 	doorbell = main()
-	doorbell.main()
+	# Poll server in separate process
+	Process(target=doorbell.socketPoll()).start()
+	Process(target=doorbell.main()).start()
 
