@@ -1,9 +1,6 @@
 package server.protocol;
 
-import database.AccountTable;
-import database.Doorbell;
-import database.DoorbellTable;
-import database.User;
+import database.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
@@ -15,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AdminProtocolTest {
 	private AdminProtocol protocol;
+	private static AccountTable accountTable = new AccountTable();
+	private static DoorbellTable doorbellTable = new DoorbellTable();
 	private static AdminProtocol loginProtocol;
 	private static User testUser;
 	private static User testAdmin;
@@ -24,6 +23,9 @@ class AdminProtocolTest {
 
 	@BeforeAll
 	static void init() {
+		// Create connection
+		DatabaseConnection.establishSession();
+
 		// Create test accounts
 		testUser = new User("testuser", "quicksolutions.doorbell@gmail.com", "password", "user");
 		testAdmin = new User("testadmin", "quicksolutions.doorbell@gmail.com", "password", "admin");
@@ -50,11 +52,15 @@ class AdminProtocolTest {
 
 	@AfterAll
 	static void cleanUp() {
+		// Remove test data
 		removeUser(testUser);
 		removeUser(testAdmin);
 		removeDoorbell(testDoorbell);
 		removeDoorbell(deleteDoorbell);
 		removeDoorbell(updateDoorbell);
+
+		// End session
+		DatabaseConnection.disconnectSession();
 	}
 
 	@BeforeEach
@@ -63,31 +69,19 @@ class AdminProtocolTest {
 	}
 
 	static void saveUser(User user) {
-		AccountTable accountTable = new AccountTable();
-		accountTable.connect();
 		accountTable.addRecord(user);
-		accountTable.disconnect();
 	}
 
 	static void removeUser(User user) {
-		AccountTable accountTable = new AccountTable();
-		accountTable.connect();
 		accountTable.deleteRecord(user.getUsername());
-		accountTable.disconnect();
 	}
 
 	static void saveDoorbell(Doorbell doorbell) {
-		DoorbellTable doorbellTable = new DoorbellTable();
-		doorbellTable.connect();
 		doorbellTable.addNewDoorbell(doorbell);
-		doorbellTable.disconnect();
 	}
 
 	static void removeDoorbell(Doorbell doorbell) {
-		DoorbellTable doorbellTable = new DoorbellTable();
-		doorbellTable.connect();
 		doorbellTable.deleteDoorbell(doorbell);
-		doorbellTable.disconnect();
 	}
 
 	@Test
