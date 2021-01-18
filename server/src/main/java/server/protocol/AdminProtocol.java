@@ -29,6 +29,18 @@ public class AdminProtocol extends Protocol {
 		requestResponse.put("analysis", new ResponseHandler(this::performAnalysis));
 	}
 
+	@Override
+	public String processInput() {
+		if (!request.getString("request").equals("login") && user == null) {
+			// Admin must be logged in to perform non-login requests
+			response.put("response", "invalid");
+			response.put("message", "Must be logged in to perform this action");
+			return response.toString();
+		}
+
+		return super.processInput();
+	}
+
 	public void performAnalysis() {
 		accountTable.connect();
 		int users = accountTable.getTotalUsers("user");

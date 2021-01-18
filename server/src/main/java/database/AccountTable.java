@@ -86,6 +86,10 @@ public class AccountTable extends DatabaseConnection {
 		return deviceIDs;
 	}
 
+	public boolean deleteRecord(User user) {
+		return deleteRecord(user.getUsername());
+	}
+
 	/**
 	 * @param username of record to delete
 	 * @return if record deleted
