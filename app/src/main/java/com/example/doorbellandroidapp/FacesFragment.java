@@ -1,7 +1,9 @@
 package com.example.doorbellandroidapp;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -58,15 +60,18 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	private Bitmap newFaceBitmap;
 
 	private View view;
+	private Activity mActivity;
+	private Context mContext;
+
 
 	Dialog dialog;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		view =  inflater.inflate(R.layout.fragment_faces, container, false);
-		Log.d(TAG, "onCreate: started");
-
-		preferences= PreferenceManager.getDefaultSharedPreferences(getContext());
+		mActivity = getActivity();
+		mContext = getContext();
+		preferences= PreferenceManager.getDefaultSharedPreferences(mContext);
 		currentUser= preferences.getString("currentUser",null);
 		ivInfo = view.findViewById(R.id.ivInfo);
 		ivAddFace = view.findViewById(R.id.ivAddFace);
@@ -74,12 +79,10 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		tvFaces.setText(currentUser+"'s Faces");
 
 		selectDoorbellFaces = view.findViewById(R.id.spinnerID);
-		// TODO Get ids for that user
+
 		getIDs();
 
-		dialog = new Dialog(getContext());
-		// TODO pass in selected id
-		//loadImages(selectDoorbellFaces.getSelectedItem().toString());
+		dialog = new Dialog(mContext);
 
 		ivAddFace.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -91,7 +94,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		ivInfo.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				InformationPopups.showInformation(getContext(),"faces");
+				InformationPopups.showInformation(mContext,"faces");
 			}
 		});
 
@@ -105,7 +108,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	 * calls server and retrieves all IDs linked to that user
 	 */
 	public void getIDs(){
-		Client client = new Client(getActivity()) {
+		Client client = new Client(mActivity) {
 			@Override
 			public void handleResponse(JSONObject response) throws JSONException {
 				switch (response.getString("response")) {
@@ -118,7 +121,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 						populateSpinner();
 						break;
 					case "fail":
-						Toast.makeText(getContext(), "NO DOORBELL ASSIGNED, PLEASE CONTACT ADMIN", Toast.LENGTH_SHORT).show();
+						Toast.makeText(mContext, "NO DOORBELL ASSIGNED, PLEASE CONTACT ADMIN", Toast.LENGTH_SHORT).show();
 						break;
 				}
 			}
@@ -141,7 +144,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	 * Adds the retrieved IDs to a dropdown menu the user can navigate between
 	 */
 	public void populateSpinner() {
-		ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item,doorbells);
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_dropdown_item,doorbells);
 		selectDoorbellFaces.setAdapter(adapter);
 		selectDoorbellFaces.setOnItemSelectedListener(this);
 	}
@@ -154,20 +157,24 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	 * @param id identifier for spinner
 	 */
 	@Override
-	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+	public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
 
 		if (parent.getId()==R.id.spinnerID){
+
 			String currentID = doorbellIDs.get(position);
-			Toast.makeText(getContext(), currentID, Toast.LENGTH_SHORT).show();
+			Toast.makeText(mContext, currentID, Toast.LENGTH_SHORT).show();
 			InformationPopups informationPopups = new InformationPopups();
-			informationPopups.loadingPopUp(getContext());
-			loadImages(currentID);
+			informationPopups.loadingPopUp(mContext);
+
+			loadImages(doorbellIDs.get(position));
+
+
 		}
 	}
 
 	/**
 	 * Required method for when nothing is selected
-	 * @param parent object being observed, in this case the spinner
+	 * @param parent object being observed, in this case the spinner is empty
 	 */
 	@Override
 	public void onNothingSelected(AdapterView<?> parent) {
@@ -181,7 +188,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	 */
 	void loadImages(String doorbell){
 		// Client to handle login response from server
-		Client client = new Client(getActivity()) {
+		Client client = new Client(mActivity) {
 			@Override
 			public void handleResponse(JSONObject response) throws JSONException {
 				switch (response.getString("response")) {
@@ -189,7 +196,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 						populateImages(response.getJSONArray("images"));
 						break;
 					case "fail":
-						Toast.makeText(getContext(), "FAILURE TO GET IMAGES", Toast.LENGTH_SHORT).show();
+						Toast.makeText(mContext, "FAILURE TO GET IMAGES", Toast.LENGTH_SHORT).show();
 						break;
 				}
 			}
@@ -250,9 +257,9 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	private void initRecyclerView(View view){
 		Log.d(TAG, "initRecyclerView: init recyclerview.");
 		RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
-		RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), getActivity(), mNames, mImages, mImageIDs);
+		RecyclerViewAdapter adapter = new RecyclerViewAdapter(mContext, mActivity, mNames, mImages, mImageIDs);
 		recyclerView.setAdapter(adapter);
-		recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+		recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 	}
 
 	// ADD FACE POPUP
@@ -296,7 +303,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 
 		// Populates spinner in popup with available doorbells to add new faces to
 		chooseDoorbell = dialog.findViewById(R.id.spinnerAddID);
-		ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, doorbells);
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_dropdown_item, doorbells);
 		chooseDoorbell.setAdapter(adapter);
 		chooseDoorbell.setOnItemSelectedListener(this);
 
@@ -317,8 +324,8 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	 */
 	public void takePicture () {
 		//Requests for camera runtime permission
-		if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-			ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, 100);
+		if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.CAMERA}, 100);
 		} else {
 			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 			startActivityForResult(intent, 100);
@@ -348,16 +355,16 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	public void validateAddition (String newFaceName){
 
 		if (newFaceName.isEmpty() || newFaceName == null || newFaceName.equals(" ")) {
-			Toast.makeText(getContext(), "Put a name to the face!", Toast.LENGTH_SHORT).show();
+			Toast.makeText(mContext, "Put a name to the face!", Toast.LENGTH_SHORT).show();
 		}
 		else if (newFaceName.length()>10) {
-			Toast.makeText(getContext(), "Name is too long", Toast.LENGTH_SHORT).show();
+			Toast.makeText(mContext, "Name is too long", Toast.LENGTH_SHORT).show();
 		}
 		else  {
 			if (!pictureTaken) {
-				Toast.makeText(getContext(), "Make sure to take a picture for the face!", Toast.LENGTH_SHORT).show();
+				Toast.makeText(mContext, "Make sure to take a picture for the face!", Toast.LENGTH_SHORT).show();
 			} else {
-				Toast.makeText(getContext(), "New Face Added", Toast.LENGTH_SHORT).show();
+				Toast.makeText(mContext, "New Face Added", Toast.LENGTH_SHORT).show();
 				addFace(newFaceBitmap, newFaceName, doorbellIDs.get(chooseDoorbell.getSelectedItemPosition()));
 			}
 		}
@@ -372,18 +379,15 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	public void addFace (Bitmap newFaceBitmap, String newFaceName, String doorbellID){
 		String newFace = Helper.bitmapToString(newFaceBitmap);
 		// Client to handle login response from server
-		Client client = new Client(getActivity()) {
+		Client client = new Client(mActivity) {
 			@Override
 			public void handleResponse(JSONObject response) throws JSONException {
 				switch (response.getString("response")) {
 					case "success":
-						SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-						preferences.edit().putString("currentTask", "Face Added").apply();
-						getActivity().finish();
-						getActivity().startActivity(getActivity().getIntent());
+						Helper.refresh(mActivity,"Faces");
 						break;
 					case "fail":
-						Toast.makeText(getContext(), "NO DOORBELL ASSIGNED, PLEASE CONTACT ADMIN", Toast.LENGTH_SHORT).show();
+						Toast.makeText(mContext, "NO DOORBELL ASSIGNED, PLEASE CONTACT ADMIN", Toast.LENGTH_SHORT).show();
 						break;
 				}
 			}

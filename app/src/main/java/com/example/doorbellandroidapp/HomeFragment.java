@@ -29,8 +29,6 @@ public class HomeFragment extends Fragment {
 	private SharedPreferences preferences;
 	private String currentUser;
 
-
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
@@ -39,9 +37,12 @@ public class HomeFragment extends Fragment {
 		preferences= PreferenceManager.getDefaultSharedPreferences(getContext());
 		currentUser= preferences.getString("currentUser",null);
 
+		InformationPopups informationPopups = new InformationPopups();
+		informationPopups.loadingPopUp(getContext());
+
 		loadImage();
 
-		// TODO Get most recent picture from raspberry pi and set it to ivLastFace
+
 		btnOpenDoor.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -65,6 +66,10 @@ public class HomeFragment extends Fragment {
 		return view;
 	}
 
+	/**
+	 * assigns variables to objects in layout
+	 * @param view current fragment being viewed
+	 */
 	public void assign(View view){
 		ivLastFace = view.findViewById(R.id.ivLastFace);
 		btnOpenDoor = view.findViewById(R.id.btnOpenDoor);
@@ -75,6 +80,10 @@ public class HomeFragment extends Fragment {
 		ivInfo = view.findViewById(R.id.ivInfo);
 	}
 
+	/**
+	 * contacts server with user decision to either open door, or leave it closed
+	 * @param messageToDoor either "open" or "close"
+	 */
 	private void contactDoor(String messageToDoor){
 		Client client = new Client(getActivity()) {
 			@Override
@@ -101,10 +110,11 @@ public class HomeFragment extends Fragment {
 		// Set request and start connection
 		client.setRequest(request);
 		client.start();
-
-		// TODO Send response to doorbell
 	}
 
+	/**
+	 * retrieves the most recent face in the database
+	 */
 	void loadImage(){
 		// Client to handle login response from server
 		Client client = new Client(getActivity()) {

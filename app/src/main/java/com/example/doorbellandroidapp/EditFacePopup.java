@@ -120,12 +120,11 @@ public class EditFacePopup {
 			public void handleResponse(JSONObject response) throws JSONException {
 				switch (response.getString("response")) {
 					case "success":
-						mActivity.finish();
-						mActivity.startActivity(mActivity.getIntent());
-						// TODO take user back to faces page rather than the main page
+						Toast.makeText(mContext, "Name changed", Toast.LENGTH_SHORT).show();
+						Helper.refresh(mActivity,"Faces");
 						break;
 					case "fail":
-						// TODO display toast message
+						Toast.makeText(mContext, "Failed to change name", Toast.LENGTH_SHORT).show();
 						break;
 				}
 			}
@@ -157,11 +156,7 @@ public class EditFacePopup {
 			public void handleResponse(JSONObject response) throws JSONException {
 				switch (response.getString("response")) {
 					case "success":
-						SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-						preferences.edit().putString("currentTask", "Face Deleted").apply();
-						mActivity.finish();
-						mActivity.startActivity(mActivity.getIntent());
-						// TODO take user back to faces page rather than the main page
+						Helper.refresh(mActivity, "Faces");
 						break;
 					case "fail":
 						Toast.makeText(mContext, "FAILED TO DELETE FACE", Toast.LENGTH_SHORT).show();

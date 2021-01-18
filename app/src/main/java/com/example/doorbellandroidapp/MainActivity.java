@@ -38,12 +38,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	private FragmentManager fm;
 
 	private SharedPreferences preferences;
-	private String currentUser;
+	private String currentUser, currentTask;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
 		preferences= PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 		currentUser= preferences.getString("currentUser",null);
+		currentTask = preferences.getString("currentTask",null);
 		if (currentUser==null){
 			Intent intent = new Intent(MainActivity.this, LoginActivity.class);
 			startActivity(intent);
@@ -52,13 +54,56 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		generateNavigationBar();
+
+		selectFragment(savedInstanceState);
+	}
+
+	/**
+	 * depending on previous actions in phone, will load different parts of app
+	 * @param savedInstanceState data for phone
+	 */
+	public void selectFragment(Bundle savedInstanceState){
+		fm = getSupportFragmentManager();
+		if (savedInstanceState == null) {
+			FragmentTransaction t = fm.beginTransaction();
+			if (currentTask==null){
+				navigationView.setCheckedItem(R.id.nav_home);
+				fragment = new HomeFragment();
+			}
+			else{
+				if (currentTask.equals("Faces"))
+				{
+					navigationView.setCheckedItem(R.id.nav_faces);
+					preferences.edit().putString("currentTask",null).apply();
+					fragment = new FacesFragment();
+				}
+				else if (currentTask.equals("Settings"))
+				{
+					navigationView.setCheckedItem(R.id.nav_settings);
+					preferences.edit().putString("currentTask",null).apply();
+					fragment = new SettingsFragment();
+				}
+			}
+
+			t.replace(R.id.content_frame, fragment);
+			t.commit();
+		} else {
+			fragment = (Fragment) fm.findFragmentById(R.id.content_frame);
+		}
+
+	}
+
+	/**
+	 * initialises the navigation bar for moving around the app
+	 */
+	public void generateNavigationBar(){
 		ActionBar toolbar = getSupportActionBar();
 
 		drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		coordLay = (CoordinatorLayout) findViewById(R.id.coordLay);
 		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
 				this, drawer, R.string.app_name, R.string.app_name);
-		//drawer.setDrawerListener(toggle);
 		drawer.addDrawerListener(toggle);
 		toggle.syncState();
 
@@ -68,32 +113,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		// display home button for actionbar
 		toolbar.setDisplayHomeAsUpEnabled(true);
 
-		// navigation view select home menu by default
-		//navigationView.getMenu().getItem(0).setChecked(true);
-
-
-		fm = getSupportFragmentManager();
-		if (savedInstanceState == null) {
-			FragmentTransaction t = fm.beginTransaction();
-			String currentTask = preferences.getString("currentTask",null);
-			if (currentTask!=null)
-			{
-				navigationView.setCheckedItem(R.id.nav_faces);
-				preferences.edit().putString("currentTask",null).apply();
-				fragment = new FacesFragment();
-			}
-			else{
-				navigationView.setCheckedItem(R.id.nav_home);
-				fragment = new HomeFragment();
-			}
-			t.replace(R.id.content_frame, fragment);
-			t.commit();
-		} else {
-			fragment = (Fragment) fm.findFragmentById(R.id.content_frame);
-		}
-
 	}
 
+	/**
+	 * uses swipe to open menu from side
+	 * @param item the side menu for navigating
+	 * @return whether menu has been intereacted with
+	 */
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		if (item.getItemId() == android.R.id.home) {
@@ -106,13 +132,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		return super.onOptionsItemSelected(item);
 	}
 
+	/**
+	 * Gives functionality to different elements of menu - moving around and logging out
+	 * @param menuItem menu for navigating app
+	 * @return false, closing menu after navigating to selected area
+	 */
 	@Override
 	public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
 		// Handle navigation view item clicks here.
 		int id = menuItem.getItemId();
 		FragmentTransaction t = fm.beginTransaction();
-		Intent intent;
 
 		switch (id){
 			case R.id.nav_home:
@@ -143,9 +173,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				break;
 
 			case R.id.nav_logout:
-				logout();
-
-
+				Helper.logout(this);
 		}
 
 		// close drawer after clicking the menu item
@@ -153,38 +181,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		drawer.closeDrawer(GravityCompat.START);
 		return false;
 	}
-
-
-	void logout(){
-		// Client to handle login response from server
-		Client client = new Client(this) {
-			@Override
-			public void handleResponse(JSONObject response) throws JSONException {
-				switch (response.getString("response")) {
-					case "success":
-						preferences.edit().clear().apply();
-						Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-						startActivity(intent);
-						break;
-					case "fail":
-						Toast.makeText(MainActivity.this, "FATAL LOGOUT ERROR", Toast.LENGTH_SHORT).show();
-						break;
-				}
-			}
-		};
-
-		// JSON Request object
-		JSONObject request = new JSONObject();
-		try {
-			request.put("request","logout");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		// Set request and start connection
-		client.setRequest(request);
-		client.start();
-	}
-
-
-
 }
