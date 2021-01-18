@@ -60,6 +60,11 @@ public class UserProtocol extends Protocol {
 		String doorbellID = request.getString("doorbellID");
 		String doorbellName = request.getString("doorbellname");
 		doorbellTable.connect();
+		if (doorbellTable.isUserAssignedDoorbell(username, doorbellID)) {
+			response.put("response", "fail");
+			response.put("message", "Doorbell already assigned");
+			return;
+		}
 		if (!doorbellTable.doorbellExists(doorbellID)) {
 			doorbellTable.addNewDoorbell(doorbellID);
 		}

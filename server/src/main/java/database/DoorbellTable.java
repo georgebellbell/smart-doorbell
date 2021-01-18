@@ -215,4 +215,20 @@ public class DoorbellTable extends DatabaseConnection {
 		}
 	}
 
+	public boolean isUserAssignedDoorbell(String username, String doorbellID) {
+		try {
+			String query = "SELECT * FROM doorbelluser WHERE Pi_id = ? AND Username = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, doorbellID);
+			statement.setString(2, username);
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next())
+				return true;
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 }
