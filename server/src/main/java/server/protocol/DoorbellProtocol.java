@@ -41,8 +41,9 @@ public class DoorbellProtocol extends Protocol{
 			else {
 				NotificationMessenger notificationMessenger = new NotificationMessenger();
 				notificationMessenger.setDoorbellGroup(doorbellID);
-				notificationMessenger.setMessage(faceRecognised + " is at the door", "Open app to find out more!");
+				notificationMessenger.setMessage(data.getPersonName() + " is at the door", "Open app to find out more!");
 				notificationMessenger.sendNotification();
+				dataTable.updateData(data.getImageID());
 				response.put("response", "success");
 				response.put("message", faceRecognised + " is at the door");
 			}

@@ -176,12 +176,12 @@ public class DataTable extends DatabaseConnection {
 		return recentImage;
 	}
 
-	public boolean updateData(String imageID) {
+	public boolean updateData(Integer imageID) {
 		try {
 			String query = "UPDATE data Set Last_used = ? WHERE Id = ?";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-			statement.setString(2, imageID);
+			statement.setInt(2, imageID);
 			statement.execute();
 			statement.close();
 		} catch (Exception e) {
