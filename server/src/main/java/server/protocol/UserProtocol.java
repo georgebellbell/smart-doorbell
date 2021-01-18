@@ -32,7 +32,7 @@ public class UserProtocol extends Protocol {
 		requestResponse.put("logout", new ResponseHandler(this::logout));
 		requestResponse.put("opendoor", new ResponseHandler(this::openDoor, "message"));
 		requestResponse.put("getdoorbells", new ResponseHandler(this::getDoorbells));
-		requestResponse.put("connectdoorbell", new ResponseHandler(this::connectDoorbell, "doorbellID"));
+		requestResponse.put("connectdoorbell", new ResponseHandler(this::connectDoorbell, "doorbellID", "doorbellname"));
 		requestResponse.put("changepassword", new ResponseHandler(this::changePassword, "password"));
 		requestResponse.put("changeemail", new ResponseHandler(this::changeEmail, "email"));
 		requestResponse.put("deleteaccount", new ResponseHandler(this::deleteAccount));
@@ -58,11 +58,13 @@ public class UserProtocol extends Protocol {
 	public void connectDoorbell() {
 		String username = user.getUsername();
 		String doorbellID = request.getString("doorbellID");
+		String doorbellName = request.getString("doorbellname");
 		doorbellTable.connect();
 		if (!doorbellTable.doorbellExists(doorbellID)) {
 			doorbellTable.addNewDoorbell(doorbellID);
 		}
 		doorbellTable.setDoorbell(username, doorbellID);
+		doorbellTable.updateDoorbell(doorbellID, doorbellName);
 		response.put("response", "success");
 		doorbellTable.disconnect();
 	}
