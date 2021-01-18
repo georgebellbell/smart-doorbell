@@ -8,6 +8,8 @@ import server.ResponseHandler;
 
 import java.sql.Blob;
 import java.sql.Connection;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class DoorbellProtocol extends Protocol{
 	FaceSimilarity faceSimilarity = new FaceSimilarity();
@@ -20,13 +22,14 @@ public class DoorbellProtocol extends Protocol{
 		try {
 			byte[] image = Base64.decode(request.getString("data").getBytes());
 			String faceRecognised = faceSimilarity.compareFaces(image,doorbellID);
-			if (faceRecognised == null) {
+			Data data = dataTable.getRecord(Integer.parseInt(faceRecognised));
+			if (data == null) {
 				dataTable.connect();
 				Connection conn = dataTable.getConn();
 				byte[] Image = Base64.decode(request.getString("data").getBytes());
 				Blob blobImage = conn.createBlob();
 				blobImage.setBytes(1, Image);
-				dataTable.addRecord(new Data(doorbellID, blobImage, "Unknown"));
+				dataTable.addRecord(new Data(doorbellID, blobImage, "Unknown", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
 				dataTable.disconnect();
 				NotificationMessenger notificationMessenger = new NotificationMessenger();
 				notificationMessenger.setDoorbellGroup(doorbellID);

@@ -3,6 +3,8 @@ package database;
 import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -15,7 +17,7 @@ public class DataTable extends DatabaseConnection {
 	 */
 	public boolean addRecord(Data data) {
 		try {
-			String query = "INSERT INTO data (Device_id, Image, Person, Created_at)"
+			String query = "INSERT INTO data (Device_id, Image, Person, Last_used)"
 					+ " VALUES (?, ?, ?, ?)";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, data.getDeviceID());
@@ -38,7 +40,7 @@ public class DataTable extends DatabaseConnection {
 	public Data getRecord(int id) {
 		Data data = null;
 		try {
-			String query = "SELECT Id, Device_id, Image, Person, Created_at FROM data WHERE Id=?";
+			String query = "SELECT Id, Device_id, Image, Person, Last_used FROM data WHERE Id=?";
 			statement = conn.prepareStatement(query);
 			statement.setInt(1, id);
 			ResultSet resultSet = statement.executeQuery();
@@ -48,7 +50,7 @@ public class DataTable extends DatabaseConnection {
 						resultSet.getString("Device_id"),
 						resultSet.getBlob("Image"),
 						resultSet.getString("Person"),
-						resultSet.getString("Created_at")
+						resultSet.getString("Last_used")
 				);
 			}
 			statement.close();
@@ -83,7 +85,7 @@ public class DataTable extends DatabaseConnection {
 	public ArrayList<Data> getAllImages(String deviceId) {
 		ArrayList<Data> allImages = new ArrayList<>();
 		try {
-			String query = "SELECT Id, Device_id, Image, Person, Created_at FROM data WHERE Device_id=?";
+			String query = "SELECT Id, Device_id, Image, Person, Last_used FROM data WHERE Device_id=?";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, deviceId);
 			ResultSet resultSet = statement.executeQuery();
@@ -93,7 +95,7 @@ public class DataTable extends DatabaseConnection {
 						resultSet.getString("Device_id"),
 						resultSet.getBlob("Image"),
 						resultSet.getString("Person"),
-						resultSet.getString("Created_at")
+						resultSet.getString("Last_used")
 				);
 				allImages.add(data);
 			}
@@ -149,8 +151,8 @@ public class DataTable extends DatabaseConnection {
 	public Data getRecentImage(String username) {
 		Data recentImage = null;
 		try {
-			String query = "SELECT * FROM data WHERE Created_at = " +
-					"(SELECT Max(Created_at) FROM data WHERE Device_id IN" +
+			String query = "SELECT * FROM data WHERE Last_used = " +
+					"(SELECT Max(Last_used) FROM data WHERE Device_id IN" +
 					" (SELECT Pi_id FROM doorbelluser d2 WHERE Username = ?))" +
 					" AND Device_id IN (SELECT Pi_id FROM doorbelluser d2 WHERE Username = ?)" +
 					" LIMIT 1";
@@ -164,7 +166,7 @@ public class DataTable extends DatabaseConnection {
 						resultSet.getString("Device_id"),
 						resultSet.getBlob("Image"),
 						resultSet.getString("Person"),
-						resultSet.getString("Created_at")
+						resultSet.getString("Last_used")
 				);
 			}
 			statement.close();
@@ -172,5 +174,20 @@ public class DataTable extends DatabaseConnection {
 			e.printStackTrace();
 		}
 		return recentImage;
+	}
+
+	public boolean updateData(String imageID) {
+		try {
+			String query = "UPDATE data Set Last_used = ? WHERE Id = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+			statement.setString(2, imageID);
+			statement.execute();
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 }

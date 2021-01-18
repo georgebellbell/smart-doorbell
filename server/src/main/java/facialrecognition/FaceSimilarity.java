@@ -58,7 +58,6 @@ public class FaceSimilarity {
 		dataTable.disconnect();
 
 		try {
-			double startTime = System.currentTimeMillis();
 			for (Data allImage : allImages) {
 				byte[] imageFromDB = allImage.getImage().getBytes(1, (int) allImage.getImage().length());
 				name = allImage.getPersonName();
@@ -66,7 +65,7 @@ public class FaceSimilarity {
 				final FImage imageToCompare = ImageUtilities.createFImage(ImageIO.read(byteArrayInputStream));
 
 				engine.setQuery(image1, "doorbell");
-				engine.setTest(imageToCompare, name);
+				engine.setTest(imageToCompare, allImage.getImageID().toString());
 				engine.performTest();
 			}
 			//checks through faces in both images for best matching pair

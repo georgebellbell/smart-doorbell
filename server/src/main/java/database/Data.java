@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class Data {
 	// Object properties
-	private int imageID;
+	private Integer imageID;
 	private Blob image;
 	private String deviceID;
 	private String personName;
@@ -15,9 +15,10 @@ public class Data {
 
 	// Double constructor for when retrieving data from database and when adding to the database
 	public Data(String deviceID, Blob image, String personName) {
-		this(-1, deviceID, image, personName, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+		this(-1, deviceID, image, personName, "");
 	}
-	public Data(int imageID, String deviceID, Blob image, String personName, String created_at) {
+
+	public Data(Integer imageID, String deviceID, Blob image, String personName, String created_at) {
 		this.imageID = imageID;
 		this.deviceID = deviceID;
 		this.image = image;
@@ -25,7 +26,11 @@ public class Data {
 		this.createdAt = created_at;
 	}
 
-	public int getImageID() { return imageID; }
+	public Data(String deviceID, Blob image, String personName, String used) {
+		this(-1, deviceID, image, personName, used);
+	}
+
+	public Integer getImageID() { return imageID; }
 	public void setImageID(int imageID) { this.imageID = imageID; }
 	public Blob getImage() { return image; }
 	public void setImage(Blob image) { this.image = image; }
