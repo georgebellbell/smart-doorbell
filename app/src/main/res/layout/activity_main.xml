@@ -24,6 +24,9 @@
             android:layout_gravity="start|left"
             app:headerLayout="@layout/navigation_header"
             app:menu="@menu/navigation_view_menu" />
+
+
     </androidx.drawerlayout.widget.DrawerLayout>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
