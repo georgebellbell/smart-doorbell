@@ -5,8 +5,7 @@ import socket
 import base64
 import os
 import Crop
-#from multiprocessing import Process
-from threading import Thread
+from multiprocessing import Process
 import SocketListener
 
 
@@ -34,7 +33,7 @@ class main:
 			print("Unique Device ID: " + self.PiId)
 
 		# Poll server in separate process
-		Thread(target=self.socketPoll).start()
+		Process(target=self.socketPoll).start()
 
 	def main(self):
 		# Main loop
