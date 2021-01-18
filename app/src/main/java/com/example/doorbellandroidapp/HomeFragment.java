@@ -3,10 +3,8 @@ package com.example.doorbellandroidapp;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.os.Bundle;
 
-import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 
 import android.preference.PreferenceManager;
@@ -61,7 +59,7 @@ public class HomeFragment extends Fragment {
 		ivInfo.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				InformationDialog.showInformation(getContext(),"home");
+				InformationPopups.showInformation(getContext(),"home");
 			}
 		});
 		return view;

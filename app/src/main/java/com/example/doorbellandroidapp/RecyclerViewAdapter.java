@@ -93,14 +93,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "onClick: clicked on: " + mImageNames.get(position));
-
-				showPopup(holder, decodedByte);
+				EditFacePopup editFacePopup = new EditFacePopup(mContext,mActivity);
+				editFacePopup.showPopup(holder, decodedByte);
 
 				Toast.makeText(mContext, mImageNames.get(position), Toast.LENGTH_SHORT).show();
 			}
 		});
 	}
 
+	/**
+	 * @return Number of images being retrieved
+	 */
 	@Override
 	public int getItemCount() {
 		return mImageNames.size();
@@ -114,6 +117,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 		ImageView ivEdit;
 		Integer imageID;
 
+		/**
+		 * Assigns variables of class ViewHolder to given objects in layout file
+		 * @param itemView current item
+		 */
 		public ViewHolder(@NonNull View itemView) {
 			super(itemView);
 			image = itemView.findViewById(R.id.ivPopupImage);
@@ -122,111 +129,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 			ivEdit = itemView.findViewById(R.id.ivEdit);
 		}
 	}
-	public void showPopup(final ViewHolder holder, Bitmap img) {
-		TextView txtClose;
-		final EditText etEditImageName;
-		ImageView ivPopupImage, ivDeleteImage;
-		Button btnSaveAndClose;
-		dialog.setContentView(R.layout.popup_face);
 
-		btnSaveAndClose = (Button) dialog.findViewById(R.id.btnAddNewFace);
-		txtClose = (TextView) dialog.findViewById(R.id.txtClose);
-		ivPopupImage = (ImageView) dialog.findViewById(R.id.ivPopupImage);
-		ivDeleteImage = (ImageView) dialog.findViewById(R.id.ivPopUpDelete);
-		etEditImageName = (EditText) dialog.findViewById(R.id.etEditImageName);
 
-		etEditImageName.setHint(holder.imageName.getText().toString());
-		ivPopupImage.setImageBitmap(img);
-
-		txtClose.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				dialog.dismiss();
-			}
-		});
-		btnSaveAndClose.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				holder.imageName.setText(etEditImageName.getText().toString());
-				changeName(holder.imageID, etEditImageName.getText().toString());
-				dialog.dismiss();
-			}
-		});
-		ivDeleteImage.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Toast.makeText(mContext, "face deleted", Toast.LENGTH_SHORT).show();
-				deleteFace(holder.imageID);
-				dialog.dismiss();
-			}
-		});
-		dialog.show();
-	}
-
-	void deleteFace(Integer ID){
-		// Client to handle response from server
-		Client client = new Client(mActivity) {
-			@Override
-			public void handleResponse(JSONObject response) throws JSONException {
-				switch (response.getString("response")) {
-					case "success":
-						SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(mContext);
-						preferences.edit().putString("currentTask","Face Deleted").apply();
-						mActivity.finish();
-						mActivity.startActivity(mActivity.getIntent());
-						// TODO take user back to faces page rather than the main page
-						break;
-					case "fail":
-						Toast.makeText(mContext, "FAILED TO DELETE FACE", Toast.LENGTH_SHORT).show();
-						break;
-				}
-			}
-		};
-
-		// JSON Request object
-		JSONObject request = new JSONObject();
-		try {
-			request.put("request","deleteface");
-			request.put("id", ID);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		// Set request and start connection
-		client.setRequest(request);
-		client.start();
-	}
-
-	void changeName(Integer ID, String name){
-		// Client to handle response from server
-		Client client = new Client(mActivity) {
-			@Override
-			public void handleResponse(JSONObject response) throws JSONException {
-				switch (response.getString("response")) {
-					case "success":
-						mActivity.finish();
-						mActivity.startActivity(mActivity.getIntent());
-						// TODO take user back to faces page rather than the main page
-						break;
-					case "fail":
-						// TODO display toast message
-						break;
-				}
-			}
-		};
-
-		// JSON Request object
-		JSONObject request = new JSONObject();
-		try {
-			request.put("request","renameface");
-			request.put("id", ID);
-			request.put("name", name);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		// Set request and start connection
-		client.setRequest(request);
-		client.start();
-	}
 }
