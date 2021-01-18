@@ -110,6 +110,7 @@ class main:
 		self.socket.sendall(bytes('doorbell\r\n', 'utf-8'))
 		self.socket.sendall(bytes(output, 'utf-8'))
 		data = self.socket.recv(1024)
+		self.socket.close()
 		print("Received", repr(data))
 		return data
 
@@ -124,7 +125,7 @@ class main:
 				self.socket.sendall(bytes('doorbell\r\n', 'utf-8'))
 				self.socket.sendall(bytes('{"request":"poll", "id":"' + self.PiId + '"}\r\n', 'utf-8'))
 				data = self.socket.recv(1024)
-
+				self.socket.close()
 				# handle response from server
 				print(repr(data))
 
