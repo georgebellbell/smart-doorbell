@@ -347,7 +347,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	 */
 	public void validateAddition (String newFaceName){
 
-		if (newFaceName.equals("") || newFaceName == null) {
+		if (newFaceName.isEmpty() || newFaceName == null || newFaceName.equals(" ")) {
 			Toast.makeText(getContext(), "Put a name to the face!", Toast.LENGTH_SHORT).show();
 		}
 		else if (newFaceName.length()>10) {

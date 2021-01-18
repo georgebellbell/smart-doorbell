@@ -96,7 +96,7 @@ public class EditFacePopup {
 	 * @return boolean
 	 */
 	boolean validateNameChange(String newName){
-		if (newName.equals("") || newName.equals(" ")){
+		if (newName.isEmpty() || newName.equals(" ")){
 			Toast.makeText(mContext, "Please give valid name", Toast.LENGTH_SHORT).show();
 			return false;
 		}
