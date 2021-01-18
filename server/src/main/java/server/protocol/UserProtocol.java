@@ -227,7 +227,7 @@ public class UserProtocol extends Protocol {
 		int id = request.getInt("id");
 		String name = request.getString("name");
 		if (dataTable.changeName(id, name))
-			response.put("response", "sucess");
+			response.put("response", "success");
 		dataTable.disconnect();
 	}
 	public void deleteFace() {
