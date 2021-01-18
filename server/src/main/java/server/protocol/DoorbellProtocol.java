@@ -23,13 +23,11 @@ public class DoorbellProtocol extends Protocol{
 			byte[] image = Base64.decode(request.getString("data").getBytes());
 			String faceRecognised = faceSimilarity.compareFaces(image,doorbellID);
 			if (faceRecognised == null) {
-				dataTable.connect();
 				Connection conn = dataTable.getConn();
 				byte[] Image = Base64.decode(request.getString("data").getBytes());
 				Blob blobImage = conn.createBlob();
 				blobImage.setBytes(1, Image);
 				dataTable.addRecord(new Data(doorbellID, blobImage, "Unknown", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
-				dataTable.disconnect();
 				NotificationMessenger notificationMessenger = new NotificationMessenger();
 				notificationMessenger.setDoorbellGroup(doorbellID);
 				notificationMessenger.setMessage("Unrecognised person is at the door", "Open app to find out more!");
