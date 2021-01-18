@@ -17,6 +17,8 @@ class AdminProtocolTest {
 	private static AdminProtocol loginProtocol;
 	private static User testUser;
 	private static User testAdmin;
+	private static User testDeleteAccount;
+	private static User testUpdateAccount;
 	private static Doorbell testDoorbell;
 	private static Doorbell deleteDoorbell;
 	private static Doorbell updateDoorbell;
@@ -27,18 +29,26 @@ class AdminProtocolTest {
 		DatabaseConnection.establishSession();
 
 		// Create test accounts
-		testUser = new User("testuser", "quicksolutions.doorbell@gmail.com", "password", "user");
-		testAdmin = new User("testadmin", "quicksolutions.doorbell@gmail.com", "password", "admin");
-		saveUser(testUser);
-		saveUser(testAdmin);
+		testUser = new User("testuser",
+				"quicksolutions.doorbell@gmail.com", "password", "user");
+		testAdmin = new User("testadmin",
+				"quicksolutions.doorbell@gmail.com", "password", "admin");
+		testDeleteAccount = new User("usertodelete",
+				"quicksolutions.doorbell@gmail.com", "password", "user");
+		testUpdateAccount = new User("usertoupdate",
+				"quicksolutions.doorbell@gmail.com", "password", "user");
+		accountTable.addRecord(testUser);
+		accountTable.addRecord(testAdmin);
+		accountTable.addRecord(testDeleteAccount);
+		accountTable.addRecord(testUpdateAccount);
 
 		// Create test doorbells
 		testDoorbell = new Doorbell("QS-0000-0000", "Test Doorbell");
 		deleteDoorbell = new Doorbell("QS-0000-0001", "Delete Doorbell");
 		updateDoorbell = new Doorbell("QS-0000-0002", "Update Doorbell");
-		saveDoorbell(testDoorbell);
-		saveDoorbell(deleteDoorbell);
-		saveDoorbell(updateDoorbell);
+		doorbellTable.addNewDoorbell(testDoorbell);
+		doorbellTable.addNewDoorbell(deleteDoorbell);
+		doorbellTable.addNewDoorbell(updateDoorbell);
 
 		// Create protocol that is logged in as admin
 		loginProtocol = new AdminProtocol();
@@ -53,11 +63,13 @@ class AdminProtocolTest {
 	@AfterAll
 	static void cleanUp() {
 		// Remove test data
-		removeUser(testUser);
-		removeUser(testAdmin);
-		removeDoorbell(testDoorbell);
-		removeDoorbell(deleteDoorbell);
-		removeDoorbell(updateDoorbell);
+		accountTable.deleteRecord(testUser);
+		accountTable.deleteRecord(testAdmin);
+		accountTable.deleteRecord(testDeleteAccount);
+		accountTable.deleteRecord(testUpdateAccount);
+		doorbellTable.deleteDoorbell(testDoorbell);
+		doorbellTable.deleteDoorbell(deleteDoorbell);
+		doorbellTable.deleteDoorbell(updateDoorbell);
 
 		// End session
 		DatabaseConnection.disconnectSession();
@@ -66,22 +78,6 @@ class AdminProtocolTest {
 	@BeforeEach
 	void setup() {
 		protocol = new AdminProtocol();
-	}
-
-	static void saveUser(User user) {
-		accountTable.addRecord(user);
-	}
-
-	static void removeUser(User user) {
-		accountTable.deleteRecord(user.getUsername());
-	}
-
-	static void saveDoorbell(Doorbell doorbell) {
-		doorbellTable.addNewDoorbell(doorbell);
-	}
-
-	static void removeDoorbell(Doorbell doorbell) {
-		doorbellTable.deleteDoorbell(doorbell);
 	}
 
 	@Test
@@ -205,9 +201,9 @@ class AdminProtocolTest {
 	void testUpdateUser() {
 		JSONObject request = new JSONObject();
 		request.put("request","update");
-		request.put("username", testUser.getUsername());
-		request.put("newusername", testUser.getUsername());
-		request.put("newemail", testUser.getEmail());
+		request.put("username", testUpdateAccount.getUsername());
+		request.put("newusername", "New username");
+		request.put("newemail", "newemail@newemail.com");
 		request.put("devices", new JSONArray());
 		loginProtocol.setRequest(request.toString());
 		JSONObject response = new JSONObject(loginProtocol.processInput());
@@ -233,12 +229,9 @@ class AdminProtocolTest {
 
 	@Test
 	void testDeleteUser() {
-		User userToDelete = new User("usertodelete", "delete@delete.com",
-				"password", "user");
-		saveUser(userToDelete);
 		JSONObject request = new JSONObject();
 		request.put("request","deleteuser");
-		request.put("username", userToDelete.getUsername());
+		request.put("username", testDeleteAccount.getUsername());
 		loginProtocol.setRequest(request.toString());
 		JSONObject response = new JSONObject(loginProtocol.processInput());
 		assertEquals("success", response.getString("response"));
