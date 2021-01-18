@@ -32,7 +32,7 @@ public class UserProtocol extends Protocol {
 		requestResponse.put("logout", new ResponseHandler(this::logout));
 		requestResponse.put("opendoor", new ResponseHandler(this::openDoor, "message"));
 		requestResponse.put("getdoorbells", new ResponseHandler(this::getDoorbells));
-		requestResponse.put("connectdoorbell", new ResponseHandler(this::connectDoorbell));
+		//requestResponse.put("connectdoorbell", new ResponseHandler(this::connectDoorbell));
 		requestResponse.put("changepassword", new ResponseHandler(this::changePassword, "password"));
 		requestResponse.put("changeemail", new ResponseHandler(this::changeEmail, "email"));
 		requestResponse.put("deleteaccount", new ResponseHandler(this::deleteAccount));
@@ -54,13 +54,13 @@ public class UserProtocol extends Protocol {
 		// All Android requests must include token
 		return (requestObject.get("token") != null);
 	}
-
+/*
 	public void connectDoorbell() {
 		String username = user.getUsername();
 		doorbellTable.connect();
 		doorbellTable.disconnect();
 	}
-
+*/
 	public void deleteAccount() {
 		String username = user.getUsername();
 		boolean accountDeleted = accountTable.deleteRecord(username);

@@ -4,6 +4,7 @@ import authentication.TwoFactorAuthentication;
 import database.*;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.codec.Base64;
 import server.ResponseHandler;
 
@@ -22,6 +23,7 @@ public class Protocol {
 	UserTokenTable userTokenTable = new UserTokenTable();
 	DataTable dataTable = new DataTable();
 	DoorbellTable doorbellTable = new DoorbellTable();
+	PollingTable pollingTable = new PollingTable();
 	HashMap<String, ResponseHandler> requestResponse = new HashMap<>();
 
 	/**

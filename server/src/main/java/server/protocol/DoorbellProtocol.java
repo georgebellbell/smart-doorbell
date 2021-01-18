@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 public class DoorbellProtocol extends Protocol{
 	FaceSimilarity faceSimilarity = new FaceSimilarity();
-	PollingTable pollTable = new PollingTable();
 
 	public DoorbellProtocol() {
 		requestResponse.put("image", new ResponseHandler(this::image, "id", "data"));
@@ -57,10 +56,10 @@ public class DoorbellProtocol extends Protocol{
 
 	public void poll() {
 		String doorbellID = request.getString("id");
-		pollTable.connect();
-		ArrayList<String> polls = pollTable.getPolls(doorbellID);
-		pollTable.deletePolls(doorbellID);
-		pollTable.disconnect();
+		pollingTable.connect();
+		ArrayList<String> polls = pollingTable.getPolls(doorbellID);
+		pollingTable.deletePolls(doorbellID);
+		pollingTable.disconnect();
 
 		if (polls.size() == 0) {
 			response.put("response","fail");

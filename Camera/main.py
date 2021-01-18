@@ -5,7 +5,8 @@ import socket
 import base64
 import os
 import Crop
-from multiprocessing import Process
+#from multiprocessing import Process
+from threading import Thread
 import SocketListener
 
 
@@ -33,7 +34,7 @@ class main:
 			print("Unique Device ID: " + self.PiId)
 
 		# Poll server in separate process
-		Process(target=doorbell.socketPoll).start()
+		Thread(target=self.socketPoll).start()
 
 	def main(self):
 		# Main loop
@@ -91,7 +92,8 @@ class main:
 		imageData = self.getImage(n)
 		output = '{"request":"image","id":"' + self.PiId + '","data":"' + imageData + '"}\r\n'
 
-		Process(target=self.socketSend, args=(output,)).start()
+		self.socketSend(output)
+		#Process(target=self.socketSend, args=(output,)).start()
 
 		return
 
