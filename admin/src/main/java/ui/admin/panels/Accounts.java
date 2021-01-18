@@ -1,6 +1,6 @@
 package ui.admin.panels;
 
-import connection.Client;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.swing.*;
@@ -15,13 +15,20 @@ public class Accounts extends AdminPanel {
 	private JPanel userInfoPanel;
 	private JTextField usernameField;
 	private JTextField emailField;
-	private JTextField devicesField;
 	private JButton accountSaveChangesButton;
 	private JTextField createdField;
 	private JButton accountDeleteButton;
 	private JTextField roleField;
 	private JButton accountResetPasswordButton;
 	private JPanel root;
+	private JList<String> deviceList;
+	private JButton removeDoorbellButton;
+	private JTextField newDeviceField;
+	private JButton addDoorbellButton;
+	private JPanel devicesPanel;
+	private JLabel devicesLabel;
+	private DefaultListModel<String> listModel;
+	private JSONArray currentDevices;
 
 	private String displayedUser;
 
@@ -46,7 +53,7 @@ public class Accounts extends AdminPanel {
 		accountSaveChangesButton.addActionListener(actionEvent -> {
 			String newUsername = usernameField.getText();
 			String newEmail = emailField.getText();
-			Thread t = new Thread(() -> updateUser(newUsername, newEmail));
+			Thread t = new Thread(() -> updateUser(newUsername, newEmail, currentDevices));
 			t.start();
 		});
 
@@ -58,6 +65,44 @@ public class Accounts extends AdminPanel {
 		accountResetPasswordButton.addActionListener(actionEvent -> {
 			Thread t = new Thread(() -> resetUserPassword(displayedUser));
 			t.start();
+		});
+
+		addDoorbellButton.addActionListener(actionEvent -> {
+			String newDevice = newDeviceField.getText();
+			if (newDevice.equals("")) {
+				return;
+			}
+			listModel.addElement(newDevice);
+			currentDevices.put(newDevice);
+			newDeviceField.setText("");
+		});
+
+		newDeviceField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					addDoorbellButton.doClick();
+				}
+			}
+		});
+
+		removeDoorbellButton.addActionListener(actionEvent -> {
+			int index = deviceList.getSelectedIndex();
+			removeDoorbellButton.setVisible(false);
+			if (index == -1) {
+				return;
+			}
+			currentDevices.remove(index);
+			listModel.removeElementAt(index);
+		});
+
+		deviceList.addListSelectionListener(listenerEvent -> {
+			String selected = deviceList.getSelectedValue();
+			if (selected == null) {
+				return;
+			}
+			removeDoorbellButton.setVisible(true);
+			removeDoorbellButton.setText(String.format("Remove '%s'", selected));
 		});
 	}
 
@@ -84,7 +129,7 @@ public class Accounts extends AdminPanel {
 					response.getString("email"),
 					response.getString("role"),
 					response.getString("time"),
-					response.getString("devices"));
+					response.getJSONArray("devices"));
 		} else {
 			JOptionPane.showMessageDialog(this,
 					response.getString("message"), "Account not found", JOptionPane.ERROR_MESSAGE);
@@ -99,13 +144,27 @@ public class Accounts extends AdminPanel {
 	 * @param time - Creation time of user
 	 * @param devices - Doorbell devices of user
 	 */
-	private void populateUserInformation(String username, String email, String role, String time, String devices) {
+	private void populateUserInformation(String username, String email, String role, String time, JSONArray devices) {
 		displayedUser = username;
+		currentDevices = devices;
 		usernameField.setText(username);
 		emailField.setText(email);
 		roleField.setText(role);
 		createdField.setText(time);
-		devicesField.setText(devices);
+		boolean displayDevices;
+		if (role.equals("admin")) {
+			displayDevices = false;
+		} else {
+			displayDevices = true;
+			listModel.clear();
+			for (int i = 0; i < devices.length(); i++) {
+				listModel.addElement(devices.getString(i));
+			}
+		}
+
+		devicesPanel.setVisible(displayDevices);
+		devicesLabel.setVisible(displayDevices);
+		removeDoorbellButton.setVisible(false);
 		userInfoPanel.setVisible(true);
 	}
 
@@ -113,11 +172,11 @@ public class Accounts extends AdminPanel {
 	 * Clears fields in account panel
 	 */
 	private void clearUserInformation() {
-		populateUserInformation("", "", "", "", "");
+		populateUserInformation("", "", "", "", new JSONArray());
 		userInfoPanel.setVisible(false);
 	}
 
-	private void updateUser(String newUsername, String newEmail) {
+	private void updateUser(String newUsername, String newEmail, JSONArray newDevices) {
 		// Make sure request is not already in progress
 		if (connection.isRequestInProgress()) {
 			return;
@@ -129,6 +188,7 @@ public class Accounts extends AdminPanel {
 		request.put("username", displayedUser);
 		request.put("newusername", newUsername);
 		request.put("newemail", newEmail);
+		request.put("devices", newDevices);
 
 		// Run request
 		JSONObject response = connection.run(request);
@@ -189,5 +249,10 @@ public class Accounts extends AdminPanel {
 			JOptionPane.showMessageDialog(this,
 					response.getString("message"), "Account", JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	private void createUIComponents() {
+		listModel = new DefaultListModel<>();
+		deviceList = new JList<>(listModel);
 	}
 }

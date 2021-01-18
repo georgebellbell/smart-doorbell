@@ -3,6 +3,8 @@ package server.protocol;
 import authentication.TwoFactorAuthentication;
 import database.Data;
 import database.User;
+import database.UserTokenTable;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.security.crypto.codec.Base64;
 import server.ResponseHandler;
@@ -13,45 +15,199 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class UserProtocol extends Protocol {
+	private User user;
+
+	ArrayList<String> noValidTokenRequests;
+
 	public UserProtocol() {
 		requestResponse.put("login", new ResponseHandler(this::login, "username", "password"));
 		requestResponse.put("signup", new ResponseHandler(this::signUp, "username", "email", "password"));
 		requestResponse.put("twofactor", new ResponseHandler(this::twoFactor, "username", "code"));
 		requestResponse.put("resendtwofactor", new ResponseHandler(this::resendTwoFactor, "username"));
-		requestResponse.put("faces", new ResponseHandler(this::faces, "username"));
+		requestResponse.put("faces", new ResponseHandler(this::faces, "doorbellID"));
 		requestResponse.put("deleteface", new ResponseHandler(this::deleteFace, "id"));
 		requestResponse.put("renameface", new ResponseHandler(this::renameFace, "id", "name"));
-		requestResponse.put("addface", new ResponseHandler(this::addFace, "username", "personname", "image"));
+		requestResponse.put("addface", new ResponseHandler(this::addFace, "personname", "image", "doorbellID"));
+		requestResponse.put("lastface", new ResponseHandler(this::lastFace));
+		requestResponse.put("logout", new ResponseHandler(this::logout));
+		requestResponse.put("opendoor", new ResponseHandler(this::openDoor, "message"));
+		requestResponse.put("getdoorbells", new ResponseHandler(this::getDoorbells));
+		requestResponse.put("connectdoorbell", new ResponseHandler(this::connectDoorbell));
+		requestResponse.put("changepassword", new ResponseHandler(this::changePassword, "password"));
+		requestResponse.put("changeemail", new ResponseHandler(this::changeEmail, "email"));
+		requestResponse.put("deleteaccount", new ResponseHandler(this::deleteAccount));
+
+		noValidTokenRequests = new ArrayList<String>(){{
+			add("login");
+			add("signup");
+			add("twofactor");
+			add("resendtwofactor");
+		}};
+	}
+
+	@Override
+	public boolean isRequestValid(String request) {
+		if (!super.isRequestValid(request)) {
+			return false;
+		}
+		JSONObject requestObject = new JSONObject(request);
+		// All Android requests must include token
+		return (requestObject.get("token") != null);
+	}
+
+	public void connectDoorbell() {
+		String username = user.getUsername();
+		doorbellTable.connect();
+		doorbellTable.disconnect();
+	}
+
+	public void deleteAccount() {
+		String username = user.getUsername();
+		accountTable.connect();
+		if (accountTable.deleteRecord(username))
+			response.put("response", "success");
+		else
+			response.put("response", "fail");
+	}
+
+	public void changePassword() {
+		String username = user.getUsername();
+		String password = request.getString("password");
+		accountTable.connect();
+		boolean passwordChanged = accountTable.changePassword(username, password);
+		accountTable.disconnect();
+		if (passwordChanged)
+			response.put("response", "success");
+		else
+			response.put("response", "fail");
+	}
+
+	public void changeEmail() {
+		String username = user.getUsername();
+		String email = request.getString("password");
+		accountTable.connect();
+		boolean passwordChanged = accountTable.changeEmail(username, email);
+		accountTable.disconnect();
+		if (passwordChanged)
+			response.put("response", "success");
+		else
+			response.put("response", "fail");
+	}
+
+	public void getDoorbells() {
+		String username = user.getUsername();
+		doorbellTable.connect();
+		JSONArray doorbells = doorbellTable.getDoorbells(username);
+		doorbellTable.disconnect();
+		if (doorbells.length() != 0) {
+			response.put("response", "success");
+			response.put("doorbells", doorbells);
+		} else {
+			response.put("response", "fail");
+			response.put("message", "You have 0 doorbells assigned");
+		}
+	}
+
+	public void openDoor() {
+		String message = request.getString("message");
+		if (message.equals("open")) {
+			response.put("response", "open");
+		}
+		else {
+			response.put("response", "close");
+		}
+	}
+
+	public void logout() {
+		String token = request.getString("token");
+		userTokenTable.connect();
+		if (userTokenTable.deleteByToken(token))
+			response.put("response", "success");
+		userTokenTable.disconnect();
+	}
+
+	/**
+	 * Checks if user's token is valid
+	 * @return if user's token is valid
+	 */
+	private boolean checkToken() {
+		String requestName = request.getString("request");
+		String token = request.getString("token");
+		if (!noValidTokenRequests.contains(requestName)) {
+			userTokenTable.connect();
+			user = userTokenTable.getUserByToken(token);
+			userTokenTable.disconnect();
+			if (user == null) {
+				response.put("response", "invalid");
+				response.put("message", "Session has expired");
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Saves username and token to database
+	 * @param username - Username of token
+	 * @param token - Token of user
+	 */
+	private void saveToken(String username, String token) {
+		userTokenTable.connect();
+		userTokenTable.deleteByToken(token);
+		userTokenTable.addToken(token, username);
+		userTokenTable.disconnect();
+	}
+
+	@Override
+	public String processInput() {
+		if (!checkToken()) {
+			return response.toString();
+		}
+		return super.processInput();
+	}
+
+	public void lastFace(){
+		String username = user.getUsername();
+		JSONObject image = new JSONObject();
+		dataTable.connect();
+		Data recentImage = dataTable.getRecentImage(username);
+		dataTable.disconnect();
+		doorbellTable.connect();
+		String doorbellName = doorbellTable.getDoorbellName(recentImage.getDeviceID());
+		doorbellTable.disconnect();
+		Blob blob = recentImage.getImage();
+		byte[] imageBytes = null;
+		String encodedImage = null;
+		try {
+			imageBytes = blob.getBytes(1, (int) blob.length());
+			encodedImage = java.util.Base64.getEncoder().encodeToString(imageBytes);
+			image.put("image", encodedImage);
+
+			response.put("response", "success");
+			response.put("image", image);
+			response.put("time", recentImage.getCreatedAt());
+			response.put("person", recentImage.getPersonName());
+			response.put("doorbellname", doorbellName);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			response.put("response", "fail");
+			response.put("message", "failed to retrieve recent image");
+		}
 	}
 
 	public void addFace() {
 		try {
-			String username = request.getString("username");
+			String doorbellID = request.getString("doorbellID");
 			String personName = request.getString("personname");
 			byte[] image = Base64.decode(request.getString("image").getBytes());
-			accountTable.connect();
-			ArrayList<String> deviceID = accountTable.getDeviceID(username);
-			accountTable.disconnect();
-
 			dataTable.connect();
 			Connection conn = dataTable.getConn();
 			Blob blobImage = conn.createBlob();
 			blobImage.setBytes(1, image);
-
-			if (deviceID.size() != 0) {
-				for (int i = 0; i < deviceID.size(); i++) {
-					dataTable.addRecord(new Data(
-							deviceID.get(i),
-							blobImage,
-							personName
-					));
-				}
-				response.put("response", "success");
-				dataTable.disconnect();
-			} else {
-				response.put("response", "fail");
-			}
-
+			dataTable.addRecord(new Data(doorbellID, blobImage, personName));
+			response.put("response", "success");
+			dataTable.disconnect();
 		} catch (SQLException e) {
 			response.put("response", "fail");
 		}
@@ -74,15 +230,9 @@ public class UserProtocol extends Protocol {
 	}
 
 	public void faces() {
-		String username = request.getString("username");
-		accountTable.connect();
-		ArrayList<String> doorbells = accountTable.getDeviceID(username);
-		accountTable.disconnect();
+		String doorbellID = request.getString("doorbellID");
 		dataTable.connect();
-		ArrayList<Data> allImages = new ArrayList<>();
-		for (String doorbell : doorbells) {
-			allImages.addAll(dataTable.getAllImages(doorbell));
-		}
+		ArrayList<Data> allImages = new ArrayList<>(dataTable.getAllImages(doorbellID));
 		dataTable.disconnect();
 		ArrayList<JSONObject> jsonImages = new ArrayList<>();
 		if (allImages.size() != 0) {
@@ -148,11 +298,15 @@ public class UserProtocol extends Protocol {
 		String username = request.getString("username");
 		String email = request.getString("email");
 		String password = request.getString("password");
+		String token = request.getString("token");
 		User user = new User(username, email, password, "user");
 		accountTable.connect();
 		if (accountTable.addRecord(user)) {
 			response.put("response", "success");
 			response.put("message", "Account created");
+
+			// Add user's token
+			saveToken(username, token);
 		}
 		else {
 			response.put("response", "fail");
@@ -164,6 +318,7 @@ public class UserProtocol extends Protocol {
 	public void twoFactor() {
 		String username = request.getString("username");
 		String code = request.getString("code");
+		String token = request.getString("token");
 
 		// Get user trying to enter 2FA code
 		accountTable.connect();
@@ -187,6 +342,9 @@ public class UserProtocol extends Protocol {
 				// Correct 2FA code entered
 				response.put("response", "success");
 				response.put("message", "2FA code is correct");
+
+				// Add user's token
+				saveToken(username, token);
 			} else {
 				// Incorrect 2FA code entered
 				response.put("response", "fail");

@@ -1,4 +1,4 @@
-package email;
+package communication;
 
 import javax.mail.*;
 import javax.mail.internet.AddressException;
