@@ -290,6 +290,4 @@ public class AccountTable extends DatabaseConnection {
 		}
 		return total;
 	}
-
-
 }

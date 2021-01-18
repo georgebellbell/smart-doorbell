@@ -1,12 +1,10 @@
 package database;
 
-import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class DataTable extends DatabaseConnection {
 	PreparedStatement statement;
