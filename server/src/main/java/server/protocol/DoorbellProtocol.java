@@ -22,8 +22,7 @@ public class DoorbellProtocol extends Protocol{
 		try {
 			byte[] image = Base64.decode(request.getString("data").getBytes());
 			String faceRecognised = faceSimilarity.compareFaces(image,doorbellID);
-			Data data = dataTable.getRecord(Integer.parseInt(faceRecognised));
-			if (data == null) {
+			if (faceRecognised == null) {
 				dataTable.connect();
 				Connection conn = dataTable.getConn();
 				byte[] Image = Base64.decode(request.getString("data").getBytes());
@@ -39,16 +38,18 @@ public class DoorbellProtocol extends Protocol{
 				response.put("message", "Unknown user at the door");
 			}
 			else {
+				Data data = dataTable.getRecord(Integer.parseInt(faceRecognised));
 				NotificationMessenger notificationMessenger = new NotificationMessenger();
 				notificationMessenger.setDoorbellGroup(doorbellID);
 				notificationMessenger.setMessage(data.getPersonName() + " is at the door", "Open app to find out more!");
 				notificationMessenger.sendNotification();
 				dataTable.updateData(data.getImageID());
 				response.put("response", "success");
-				response.put("message", faceRecognised + " is at the door");
+				response.put("message", data.getPersonName() + " is at the door");
 			}
 		} catch (Exception e) {
 			System.out.println(e);
+			e.printStackTrace();
 		}
 	}
 }
