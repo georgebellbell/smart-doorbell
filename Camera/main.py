@@ -32,6 +32,9 @@ class main:
 			self.PiId = file.readline()
 			print("Unique Device ID: " + self.PiId)
 
+		# Poll server in separate process
+		Process(target=doorbell.socketPoll).start()
+
 	def main(self):
 		# Main loop
 		while True:
@@ -135,10 +138,6 @@ if __name__ == "__main__":
 	# p1.start()
 
 	doorbell = main()
-	# Poll server in separate process
-	p1 = Process(target=doorbell.main)
-	p2 = Process(target=doorbell.socketPoll)
-	p1.start()
-	p2.start()
+	doorbell.main()
 	
 
