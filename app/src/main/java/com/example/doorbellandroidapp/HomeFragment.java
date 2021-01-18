@@ -3,10 +3,8 @@ package com.example.doorbellandroidapp;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.os.Bundle;
 
-import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 
 import android.preference.PreferenceManager;
@@ -24,7 +22,7 @@ import org.json.JSONObject;
 
 
 public class HomeFragment extends Fragment {
-	private ImageView ivLastFace;
+	private ImageView ivLastFace, ivInfo;
 	private Button btnOpenDoor, btnLeaveClosed;
 	private TextView tvDoorInformation, tvLastFaceTime, tvLastFace;
 
@@ -58,6 +56,12 @@ public class HomeFragment extends Fragment {
 				contactDoor("close");
 			}
 		});
+		ivInfo.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				InformationPopups.showInformation(getContext(),"home");
+			}
+		});
 		return view;
 	}
 
@@ -68,6 +72,7 @@ public class HomeFragment extends Fragment {
 		tvDoorInformation = view.findViewById(R.id.tvDoorInformation);
 		tvLastFaceTime = view.findViewById(R.id.tvLastFaceTime);
 		tvLastFace = view.findViewById(R.id.tvLastFace);
+		ivInfo = view.findViewById(R.id.ivInfo);
 	}
 
 	private void contactDoor(String messageToDoor){
