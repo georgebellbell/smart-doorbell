@@ -62,6 +62,7 @@ public class AdminProtocol extends Protocol {
 		boolean changedPassword = accountTable.changePassword(username, newPassword);
 
 		if (changedPassword) {
+			userTokenTable.deleteToken(username);
 			Email email = new Email();
 			email.addRecipient(emailAddress);
 			email.setSubject("Password reset");
@@ -138,7 +139,6 @@ public class AdminProtocol extends Protocol {
 			response.put("response", "fail");
 			response.put("message", "Doorbell could not be updated");
 		}
-		doorbellTable.disconnect();
 	}
 
 	public void deleteDoorbell() {
@@ -156,7 +156,6 @@ public class AdminProtocol extends Protocol {
 		String id = request.getString("id");
 		String doorbellName = doorbellTable.getDoorbellName(id);
 		ArrayList<String> users = doorbellTable.getUsers(id);
-		doorbellTable.disconnect();
 		faces(id);
 		if (doorbellName != null) {
 			response.put("response", "success");
@@ -175,6 +174,13 @@ public class AdminProtocol extends Protocol {
 		String newEmail = request.getString("newemail");
 		JSONArray devices = request.getJSONArray("devices");
 
+		// Check email
+		if (!Email.isValidEmail(newEmail)) {
+			response.put("response", "fail");
+			response.put("message", "Email is not valid");
+			return;
+		}
+
 		// Update account details
 		boolean updateAccount = accountTable.changeDetails(oldUsername, newUsername, newEmail);
 		if (!updateAccount) {
@@ -192,7 +198,6 @@ public class AdminProtocol extends Protocol {
 			}
 			doorbellTable.setDoorbell(newUsername, doorbellID);
 		}
-		doorbellTable.disconnect();
 
 		response.put("response", "success");
 		response.put("message", "Account successfully updated");
@@ -241,14 +246,12 @@ public class AdminProtocol extends Protocol {
 			response.put("response", "fail");
 			response.put("message", "Account not deleted");
 		}
-		accountTable.disconnect();
 	}
 
 	public void userInfo() {
 		String username = request.getString("username");
 		User user = accountTable.getRecord(username);
 		ArrayList<String> deviceIDs = accountTable.getDeviceID(username);
-		accountTable.disconnect();
 		if (user != null) {
 			response.put("response", "success");
 			response.put("username", user.getUsername());
@@ -284,12 +287,6 @@ public class AdminProtocol extends Protocol {
 
 			// Set current user
 			setUser(currentUser);
-
-			// Create and send 2FA code
-			/*TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(currentUser);
-			twoFactorAuthentication.generateCode();
-			twoFactorAuthentication.sendEmail();*/
-
 		}
 		else {
 			// Failed login response

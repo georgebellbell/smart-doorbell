@@ -51,18 +51,24 @@ public class Client {
 			throw new IllegalStateException("Request is already in progress");
 		}
 
-		// Send request
 		requestInProgress = true;
-		out.println(request.toString());
-
-		// Get response
 		JSONObject response = new JSONObject();
+
 		try {
-			String responseString = in.readLine();
-			if (responseString != null) {
-				response = new JSONObject(responseString);
+			// Send request
+			out.println(request.toString());
+
+			// Get response
+			try {
+				String responseString = in.readLine();
+				if (responseString != null) {
+					response = new JSONObject(responseString);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
+			// Error while communicating
 			e.printStackTrace();
 		}
 

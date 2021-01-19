@@ -1,8 +1,6 @@
 package ui.admin.panels;
 
-import connection.Client;
 import org.json.JSONObject;
-
 import javax.swing.*;
 
 public class Email extends AdminPanel {

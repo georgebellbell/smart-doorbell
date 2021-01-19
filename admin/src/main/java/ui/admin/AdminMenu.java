@@ -31,6 +31,7 @@ public class AdminMenu extends JFrame{
 		add(panel);
 		setTitle("Quick Solutions: Smart Doorbell Admin Tool");
 		setSize(640, 500);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 		sidePanel.setPreferredSize(new Dimension(150, 600));
 

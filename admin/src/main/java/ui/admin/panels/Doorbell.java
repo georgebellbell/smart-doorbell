@@ -1,13 +1,10 @@
 package ui.admin.panels;
 
-import connection.Client;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openimaj.image.DisplayUtilities;
-import org.openimaj.image.FImage;
 import org.openimaj.image.ImageUtilities;
-
-import javax.imageio.ImageIO;
+import org.openimaj.image.MBFImage;
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -138,20 +135,19 @@ public class Doorbell extends AdminPanel {
 			return;
 		}
 
-		ArrayList<FImage> images = new ArrayList<>();
+		ArrayList<MBFImage> images = new ArrayList<>();
 		for (int i=0; i < currentDoorbellFaces.length(); i++) {
 			JSONObject imageObject = currentDoorbellFaces.getJSONObject(i);
 			String image = imageObject.getString("image");
 			byte[] imageBytes =  java.util.Base64.getDecoder().decode(image.getBytes());
 			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(imageBytes);
 			try {
-				final FImage imageToDisplay = ImageUtilities.createFImage(ImageIO.read(byteArrayInputStream));
+				MBFImage imageToDisplay = ImageUtilities.readMBF(byteArrayInputStream);
 				images.add(imageToDisplay);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-
 		DisplayUtilities.display("Faces from Doorbell " + displayedDoorbell, images);
 	}
 

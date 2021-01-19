@@ -38,6 +38,8 @@ public class Login extends JFrame {
 		add(panel);
 		setTitle("Quick Solutions: Smart Doorbell Admin Tool");
 		setSize(450,220);
+		setResizable(false);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 		setErrorMessage("");
 
@@ -105,8 +107,8 @@ public class Login extends JFrame {
 		// Run request
 		JSONObject response = connection.run(request);
 		if (response.getString("response").equals("success")) {
-			new AdminMenu(connection);
 			dispose();
+			new AdminMenu(connection);
 		} else {
 			setErrorMessage(response.getString("message"));
 		}

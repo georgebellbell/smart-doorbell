@@ -54,22 +54,23 @@ public class Connection extends Thread {
 			String request, response;
 			while ((request = in.readLine()) != null) {
 				System.out.println("Request: " + request);
-				try {
+				if (protocol.isRequestValid(request)) {
 					// Handle request
 					protocol.setRequest(request);
 					response = protocol.processInput();
 					out.println(response);
-				} catch (IllegalArgumentException e) {
+				} else {
 					// Invalid request
-					System.out.println("Connection closed: " + e.getMessage());
+					System.out.println("Connection closed: Invalid request");
 					socket.close();
 					break;
 				}
-
 			}
 
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }
