@@ -30,7 +30,7 @@ public class UserProtocol extends Protocol {
 		requestResponse.put("addface", new ResponseHandler(this::addFace, "personname", "image", "doorbellID"));
 		requestResponse.put("lastface", new ResponseHandler(this::lastFace));
 		requestResponse.put("logout", new ResponseHandler(this::logout));
-		requestResponse.put("opendoor", new ResponseHandler(this::openDoor, "message"));
+		requestResponse.put("opendoor", new ResponseHandler(this::openDoor, "message", "doorbellID"));
 		requestResponse.put("getdoorbells", new ResponseHandler(this::getDoorbells));
 		requestResponse.put("connectdoorbell", new ResponseHandler(this::connectDoorbell, "doorbellID", "doorbellname"));
 		requestResponse.put("changepassword", new ResponseHandler(this::changePassword, "password"));
@@ -115,8 +115,11 @@ public class UserProtocol extends Protocol {
 
 	public void openDoor() {
 		String message = request.getString("message");
+		String deviceId = request.getString("doorbellID");
+
 		if (message.equals("open")) {
 			response.put("response", "open");
+			pollingTable.createPoll(deviceId, message);
 		}
 		else {
 			response.put("response", "close");
@@ -183,6 +186,7 @@ public class UserProtocol extends Protocol {
 			response.put("time", recentImage.getCreatedAt());
 			response.put("person", recentImage.getPersonName());
 			response.put("doorbellname", doorbellName);
+			response.put("doorbellID", recentImage.getDeviceID());
 
 		} catch (SQLException e) {
 			response.put("response", "fail");
