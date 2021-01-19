@@ -22,10 +22,12 @@ public class App extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-
 		createNotificationChannels();
 	}
 
+	/**
+	 * creates notification channel for notifications to be sent on
+	 */
 	private void createNotificationChannels(){
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			NotificationChannel channel1 = new NotificationChannel(
@@ -33,14 +35,18 @@ public class App extends Application {
 					"Channel 1",
 					NotificationManager.IMPORTANCE_HIGH
 			);
-			channel1.setDescription("This is channel 1");
-
+			channel1.setDescription("Channel for doorbell");
 			NotificationManager manager = getSystemService(NotificationManager.class);
 			manager.createNotificationChannel(channel1);
-
 		}
 	}
 
+	/**
+	 * creates a notification for app on created channel
+	 * @param context current location of app
+	 * @param title title of notification
+	 * @param text message of notification
+	 */
 	public void createNotification(Context context, String title, String text) {
 		Intent resultIntent = new Intent(context,MainActivity.class);
 		PendingIntent resultPendingIntent = PendingIntent.getActivity(context,1,resultIntent,PendingIntent.FLAG_UPDATE_CURRENT);
@@ -54,9 +60,6 @@ public class App extends Application {
 				.setPriority(NotificationCompat.PRIORITY_HIGH)
 				.setCategory(NotificationCompat.CATEGORY_MESSAGE)
 				.build();
-
-
 		notificationManager.notify(1, notification);
-
 	}
 }

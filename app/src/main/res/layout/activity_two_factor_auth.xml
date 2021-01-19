@@ -71,6 +71,16 @@
         android:padding="15dp"
          />
 
+    <TextView
+        android:id="@+id/tv2FAAgain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Resend Verification Email?"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="25dp"
+        android:padding="10dp"
+        android:layout_toRightOf="@+id/btnReturn"
+        android:layout_marginLeft="50dp"/>
 
     <Button
         android:id="@+id/btnReturn"
@@ -78,18 +88,6 @@
         android:layout_height="wrap_content"
         android:text="GO BACK"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="25dp"
-        android:padding="15dp"/>
-    <TextView
-        android:id="@+id/tv2FAAgain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Resend Verification Email?"
-        android:layout_toRightOf="@+id/btnReturn"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="25dp"
-        android:layout_marginLeft="45dp"
-        android:padding="15dp"/>
-
+        android:layout_marginBottom="25dp"/>
 
 </RelativeLayout>

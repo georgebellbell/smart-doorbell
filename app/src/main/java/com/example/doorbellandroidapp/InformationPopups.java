@@ -72,7 +72,7 @@ public class InformationPopups {
 			public void run() {
 				while (progressDialog.getProgress() <= progressDialog.getMax()){
 					try {
-						Thread.sleep(35);
+						Thread.sleep(40);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
