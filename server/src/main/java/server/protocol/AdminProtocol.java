@@ -176,6 +176,13 @@ public class AdminProtocol extends Protocol {
 		String newEmail = request.getString("newemail");
 		JSONArray devices = request.getJSONArray("devices");
 
+		// Check email
+		if (!Email.isValidEmail(newEmail)) {
+			response.put("response", "fail");
+			response.put("message", "Email is not valid");
+			return;
+		}
+
 		// Update account details
 		boolean updateAccount = accountTable.changeDetails(oldUsername, newUsername, newEmail);
 		if (!updateAccount) {
@@ -285,12 +292,6 @@ public class AdminProtocol extends Protocol {
 
 			// Set current user
 			setUser(currentUser);
-
-			// Create and send 2FA code
-			/*TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(currentUser);
-			twoFactorAuthentication.generateCode();
-			twoFactorAuthentication.sendEmail();*/
-
 		}
 		else {
 			// Failed login response

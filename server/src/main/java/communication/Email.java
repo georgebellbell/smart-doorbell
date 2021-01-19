@@ -64,6 +64,9 @@ public class Email {
 	 * @param email - Email address of recipient
 	 */
 	public void addRecipient(String email) {
+		if (!isValidEmail(email)) {
+			return;
+		}
 		recipients.add(email);
 	}
 
@@ -72,7 +75,12 @@ public class Email {
 	 * @param emails - List of emails of recipients
 	 */
 	public void addRecipients(ArrayList<String> emails) {
-		recipients.addAll(emails);
+		for (String recipient : emails) {
+			if (!isValidEmail(recipient)) {
+				break;
+			}
+			recipients.add(recipient);
+		}
 	}
 
 	public HashSet<String> getRecipients() {
@@ -87,6 +95,17 @@ public class Email {
 			i++;
 		}
 		return addresses;
+	}
+
+	public static boolean isValidEmail(String email) {
+		boolean isValid = false;
+		try {
+			InternetAddress internetAddress = new InternetAddress(email);
+			internetAddress.validate();
+			isValid = true;
+		} catch (AddressException ignored) {
+		}
+		return isValid;
 	}
 
 	/**

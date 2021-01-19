@@ -1,6 +1,7 @@
 package server.protocol;
 
 import authentication.TwoFactorAuthentication;
+import communication.Email;
 import database.Data;
 import database.User;
 import database.UserTokenTable;
@@ -94,8 +95,16 @@ public class UserProtocol extends Protocol {
 	public void changeEmail() {
 		String username = user.getUsername();
 		String email = request.getString("email");
-		boolean passwordChanged = accountTable.changeEmail(username, email);
-		if (passwordChanged)
+
+		// Check email
+		if (!Email.isValidEmail(email)) {
+			response.put("response", "fail");
+			response.put("message", "Email is not valid");
+			return;
+		}
+
+		boolean emailChanged = accountTable.changeEmail(username, email);
+		if (emailChanged)
 			response.put("response", "success");
 		else
 			response.put("response", "fail");
@@ -287,6 +296,15 @@ public class UserProtocol extends Protocol {
 		String email = request.getString("email");
 		String password = request.getString("password");
 		String token = request.getString("token");
+
+		// Check email
+		if (!Email.isValidEmail(email)) {
+			response.put("response", "fail");
+			response.put("message", "Email is not valid");
+			return;
+		}
+
+		// Create account
 		User user = new User(username, email, password, "user");
 		if (accountTable.addRecord(user)) {
 			response.put("response", "success");
@@ -297,7 +315,7 @@ public class UserProtocol extends Protocol {
 		}
 		else {
 			response.put("response", "fail");
-			response.put("message", "Failed to create account");
+			response.put("message", "Username already exists, please try again");
 		}
 	}
 
