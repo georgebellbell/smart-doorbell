@@ -97,6 +97,7 @@ public class InformationPopups {
 		btnConfirmDeletion.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				Helper.logout(activity);
 				deleteAccount(activity);
 			}
 		});
@@ -110,10 +111,8 @@ public class InformationPopups {
 		});
 
 		dialogDelete.show();
-
-
-
 	}
+
 	public static void deleteAccount(final Activity activity){
 		// Client to handle sign up response from server
 		Client client = new Client(activity) {
@@ -122,7 +121,6 @@ public class InformationPopups {
 				switch (response.getString("response")) {
 					case "success":
 						Toast.makeText(activity, "Account Deleted", Toast.LENGTH_SHORT).show();
-						// TODO Implement logout in helper class in tidy and test branch
 						break;
 					case "fail":
 						Toast.makeText(activity, "Account Not Deleted", Toast.LENGTH_SHORT).show();
