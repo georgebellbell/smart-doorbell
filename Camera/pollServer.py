@@ -1,13 +1,19 @@
 import socket
 from time import sleep
 import re
+from gpiozero import *
 
 
 class pollServer:
 
 	def __init__(self, host, port, PiId):
+		# Connection setup
 		self.host, self.port = host, port
+
 		self.PiId = PiId
+
+		# Led pin setup
+		self.led2 = LED(27)
 
 	def socketPoll(self):
 		# Poll server forever
@@ -27,6 +33,9 @@ class pollServer:
 				# print(response)
 				if self.openCheck():
 					print("OPEN DOOR")
+					self.led2.on()
+					sleep(5)
+					self.led2.off()
 
 			except Exception as e:
 				print(e)

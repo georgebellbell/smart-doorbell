@@ -19,10 +19,7 @@ class main:
 		# GPIO pin setup
 		self.led1 = LED(10)
 		self.button1 = Button(15)
-		self.led2 = LED(27)
-		self.led2.on()
-
-		self.button2 = Button(3)
+		# self.button2 = Button(3)
 
 		# Socket Client
 		self.host, self.port = "192.168.1.123", 4444
