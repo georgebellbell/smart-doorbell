@@ -8,6 +8,7 @@ import ui.admin.panels.Email;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 
 public class AdminMenu extends JFrame{
 	private JButton analyticsButton;
@@ -22,15 +23,16 @@ public class AdminMenu extends JFrame{
 	private Doorbell doorbell;
 	private Email email;
 	private Accounts accounts;
+	private JLabel logo;
 
 	private Client connection;
 
 	public AdminMenu(Client connection) {
 		add(panel);
 		setTitle("Quick Solutions: Smart Doorbell Admin Tool");
-		setSize(550, 350);
+		setSize(640, 500);
 		setVisible(true);
-		sidePanel.setSize(new Dimension(200, 0));
+		sidePanel.setPreferredSize(new Dimension(150, 600));
 
 		// Connection
 		this.connection = connection;
@@ -49,6 +51,19 @@ public class AdminMenu extends JFrame{
 		doorbellButton.addActionListener(actionEvent -> setMainPanel("doorbell"));
 		emailButton.addActionListener(actionEvent -> setMainPanel("email"));
 		logoutButton.addActionListener(actionEvent -> dispose());
+
+		// Load logo
+		loadLogo();
+	}
+
+	private void loadLogo() {
+		logo.setText("");
+		URL logoResource = getClass().getClassLoader().getResource("logo.jpg");
+		if (logoResource != null) {
+			ImageIcon image = new ImageIcon(logoResource);
+			logo.setIcon(image);
+			setIconImage(image.getImage());
+		}
 	}
 
 	private void setMainPanel(String panelName) {

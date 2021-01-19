@@ -66,7 +66,7 @@ public class FaceSimilarity {
 				final FImage imageToCompare = ImageUtilities.createFImage(ImageIO.read(byteArrayInputStream));
 
 				engine.setQuery(image1, "doorbell");
-				engine.setTest(imageToCompare, "database");
+				engine.setTest(imageToCompare, name);
 				engine.performTest();
 			}
 			//checks through faces in both images for best matching pair
@@ -75,13 +75,13 @@ public class FaceSimilarity {
 				double bestScore = 40;
 				for (final Entry<String, Double> matches : e.getValue().entrySet()) {
 					if (matches.getValue() < bestScore) {
-						return name;
+						return matches.getKey().replace(":0", "");
 					}
 				}
 			}
 		} catch (SQLException ioException) {
 			ioException.printStackTrace();
 		}
-		return name;
+		return null;
 	}
 }

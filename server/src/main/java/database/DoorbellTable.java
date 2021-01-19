@@ -125,9 +125,94 @@ public class DoorbellTable extends DatabaseConnection {
 				jsonObject.put("count", count);
 				jsonArray.put(jsonObject);
 			}
+			statement.close();
 		} catch (Exception e) {
 				e.printStackTrace();
 		}
 		return jsonArray;
 	}
+
+	public JSONArray getDoorbells(String username) {
+		JSONArray jsonArray = new JSONArray();
+		try {
+			String query = "SELECT d2.Pi_id, d.DoorbellName FROM doorbell d, doorbelluser d2 WHERE d2.Pi_id = d.Pi_id" +
+					" AND d2.Username = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, username);
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				String id = resultSet.getString("Pi_id");
+				String name = resultSet.getString("DoorbellName");
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("id", id);
+				jsonObject.put("name", name);
+				jsonArray.put(jsonObject);
+			}
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jsonArray;
+	}
+
+	public boolean setDoorbell(String username, String deviceID) {
+		try {
+			String query = "INSERT INTO doorbelluser (Pi_id, Username)"
+					+ " VALUES (?, ?)";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, deviceID);
+			statement.setString(2, username);
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (SQLException e){
+			return false;
+		}
+	}
+
+	public boolean doorbellExists(String doorbellID) {
+		boolean exists = false;
+		try {
+			String query = "SELECT Pi_id FROM doorbell WHERE Pi_id = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, doorbellID);
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next())
+				exists = true;
+			statement.close();
+		} catch (SQLException e){
+			e.printStackTrace();
+		};
+		return exists;
+	}
+
+	public boolean addNewDoorbell(String doorbellID) {
+		try {
+			String query = "INSERT INTO doorbell (Pi_id, DoorbellName)"
+					+ " VALUES (?, ?)";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, doorbellID);
+			statement.setString(2, "Name not set");
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (SQLException e){
+			return false;
+		}
+	}
+
+	public boolean deleteUserDoorbells(String username) {
+		try {
+			String query = "DELETE FROM doorbelluser WHERE Username=?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, username);
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 }
