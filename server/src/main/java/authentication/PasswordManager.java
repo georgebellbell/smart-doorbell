@@ -27,10 +27,14 @@ public class PasswordManager {
 	 * @return user password if correct entered password, else null
 	 */
 	public String checkPasswords(String storedPassword, String passwordToCheck) {
-		if (BCrypt.checkpw(passwordToCheck, storedPassword))
-			return storedPassword;
-		else
+		try{
+			if (BCrypt.checkpw(passwordToCheck, storedPassword))
+				return storedPassword;
+			else
+				return null;
+		} catch (Exception e) {
 			return null;
+		}
 	}
 
 	/**
