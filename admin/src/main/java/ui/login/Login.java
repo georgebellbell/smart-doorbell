@@ -38,6 +38,8 @@ public class Login extends JFrame {
 		add(panel);
 		setTitle("Quick Solutions: Smart Doorbell Admin Tool");
 		setSize(450,220);
+		setResizable(false);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 		setErrorMessage("");
 
