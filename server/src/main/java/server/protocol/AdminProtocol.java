@@ -139,7 +139,6 @@ public class AdminProtocol extends Protocol {
 			response.put("response", "fail");
 			response.put("message", "Doorbell could not be updated");
 		}
-		doorbellTable.disconnect();
 	}
 
 	public void deleteDoorbell() {
@@ -157,7 +156,6 @@ public class AdminProtocol extends Protocol {
 		String id = request.getString("id");
 		String doorbellName = doorbellTable.getDoorbellName(id);
 		ArrayList<String> users = doorbellTable.getUsers(id);
-		doorbellTable.disconnect();
 		faces(id);
 		if (doorbellName != null) {
 			response.put("response", "success");
@@ -200,7 +198,6 @@ public class AdminProtocol extends Protocol {
 			}
 			doorbellTable.setDoorbell(newUsername, doorbellID);
 		}
-		doorbellTable.disconnect();
 
 		response.put("response", "success");
 		response.put("message", "Account successfully updated");
@@ -249,14 +246,12 @@ public class AdminProtocol extends Protocol {
 			response.put("response", "fail");
 			response.put("message", "Account not deleted");
 		}
-		accountTable.disconnect();
 	}
 
 	public void userInfo() {
 		String username = request.getString("username");
 		User user = accountTable.getRecord(username);
 		ArrayList<String> deviceIDs = accountTable.getDeviceID(username);
-		accountTable.disconnect();
 		if (user != null) {
 			response.put("response", "success");
 			response.put("username", user.getUsername());
