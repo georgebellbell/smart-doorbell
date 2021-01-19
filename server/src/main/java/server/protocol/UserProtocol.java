@@ -166,14 +166,14 @@ public class UserProtocol extends Protocol {
 	}
 
 	public void lastFace(){
-		String username = user.getUsername();
-		JSONObject image = new JSONObject();
-		Data recentImage = dataTable.getRecentImage(username);
-		String doorbellName = doorbellTable.getDoorbellName(recentImage.getDeviceID());
-		Blob blob = recentImage.getImage();
-		byte[] imageBytes = null;
-		String encodedImage = null;
 		try {
+			String username = user.getUsername();
+			JSONObject image = new JSONObject();
+			Data recentImage = dataTable.getRecentImage(username);
+			Blob blob = recentImage.getImage();
+			byte[] imageBytes = null;
+			String encodedImage = null;
+			String doorbellName = doorbellTable.getDoorbellName(recentImage.getDeviceID());
 			imageBytes = blob.getBytes(1, (int) blob.length());
 			encodedImage = java.util.Base64.getEncoder().encodeToString(imageBytes);
 			image.put("image", encodedImage);
@@ -184,7 +184,7 @@ public class UserProtocol extends Protocol {
 			response.put("person", recentImage.getPersonName());
 			response.put("doorbellname", doorbellName);
 
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			response.put("response", "fail");
 			response.put("message", "failed to retrieve recent image");
 		}
