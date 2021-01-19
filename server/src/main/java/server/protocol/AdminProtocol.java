@@ -62,6 +62,7 @@ public class AdminProtocol extends Protocol {
 		boolean changedPassword = accountTable.changePassword(username, newPassword);
 
 		if (changedPassword) {
+			userTokenTable.deleteToken(username);
 			Email email = new Email();
 			email.addRecipient(emailAddress);
 			email.setSubject("Password reset");
