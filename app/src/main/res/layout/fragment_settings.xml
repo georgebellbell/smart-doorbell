@@ -1,88 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SettingsFragment">
+    tools:context=".SettingsFragment"
+    android:layout_marginLeft = "15dp"
+    android:layout_marginRight="15dp">
 
 
     <ImageView
         android:id="@+id/ivInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="15dp"
         android:layout_alignParentRight="true"
         android:padding="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.929"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.052"
         android:src="@drawable/ic_info" />
+
+
 
     <TextView
         android:id="@+id/tvSettings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:padding="15dp"
         android:text="Settings"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.126"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.069" />
+        android:textSize="36sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tvConnectDoorbell"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Connect to Doorbell"
+        android:textStyle="bold"
+        android:layout_below="@+id/tvSettings"
+         />
+
+    <ImageView
+        android:id="@+id/ivAddDoorbellInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvSettings"
+        android:layout_toRightOf="@+id/tvConnectDoorbell"
+
+        android:padding="10dp"
+        android:src="@drawable/ic_info" />
 
 
+    <EditText
+        android:id="@+id/etDoorbellConnect"
+        android:layout_width="182dp"
+        android:layout_height="41dp"
+        android:ems="10"
+        android:hint="Doorbell ID"
+        android:inputType="textPersonName"
+        android:layout_below="@+id/tvConnectDoorbell"
+         />
+
+    <EditText
+        android:id="@+id/etDoorbellConnectName"
+        android:layout_width="182dp"
+        android:layout_height="41dp"
+        android:ems="10"
+        android:hint="Doorbell Name"
+        android:inputType="textPersonName"
+        android:layout_below="@+id/etDoorbellConnect"
+        />
+
+    <Button
+        android:id="@+id/btnDoorbellConnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connect to Doorbell"
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/etDoorbellConnectName"/>
 
 
     <TextView
-        android:id="@+id/tvConnectTODoorbell"
+        android:id="@+id/tvChangeEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Connect to your doorbell"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.159"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.171" />
+        android:text="Change Email Address"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/btnDoorbellConnect"
+         />
+
+    <EditText
+        android:id="@+id/etChangeEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="New Email"
+        android:inputType="textEmailAddress"
+        android:layout_below="@id/tvChangeEmail"
+         />
+
+    <Button
+        android:id="@+id/btnChangeEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit New Email"
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/etChangeEmail"
+        />
 
     <TextView
-        android:id="@+id/tvPictureQuality"
+        android:id="@+id/tvPasswordChange"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Picture  Quality"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.129"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.382" />
+        android:text="Change Password"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/btnChangeEmail"
+        />
 
-    <TextView
-        android:id="@+id/tvNotifications"
+    <EditText
+        android:id="@+id/pwdChangePassword"
+        android:layout_width="171dp"
+        android:layout_height="52dp"
+        android:ems="10"
+        android:hint="New Password"
+        android:inputType="textPassword"
+        android:layout_below="@+id/tvPasswordChange"
+        />
+
+    <Button
+        android:id="@+id/btnChangePassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Notifications"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.123"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="Submit New Password"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/pwdChangePassword"
+         />
 
-    <TextView
-        android:id="@+id/tvSetQuality"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Medium"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.804"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.382" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/btnDeleteAccount"
+        android:layout_width="124dp"
+        android:layout_height="45dp"
+        android:layout_marginBottom="10dp"
+        android:background="#FF0000"
+        android:text="Delete Account"
+
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>
