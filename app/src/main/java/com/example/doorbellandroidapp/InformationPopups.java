@@ -1,16 +1,23 @@
 package com.example.doorbellandroidapp;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class InformationPopups {
 
 	private static Dialog dialog;
+
+	private static Dialog dialogDelete;
 
 	private ProgressDialog progressDialog;
 
@@ -32,6 +39,8 @@ public class InformationPopups {
 			case "settings":
 				dialog.setContentView(R.layout.popup_info_settings);
 				break;
+			case "doorbell":
+				dialog.setContentView(R.layout.popup_info_add_doorbell);
 		}
 
 		// closes popup
@@ -76,6 +85,63 @@ public class InformationPopups {
 			}
 		}).start();
 
+	}
+
+	public static void deleteConfirmation(final Activity activity, final Context context){
+
+		Button btnConfirmDeletion, btnCancelDeletion;
+		dialogDelete = new Dialog(context);
+		dialogDelete.setContentView(R.layout.popup_confirmation);
+
+		btnConfirmDeletion = dialogDelete.findViewById(R.id.btnConfirmDeletion);
+		btnConfirmDeletion.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				deleteAccount(activity);
+			}
+		});
+
+		btnCancelDeletion = dialogDelete.findViewById(R.id.btnCancelDeletion);
+		btnCancelDeletion.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialogDelete.dismiss();
+			}
+		});
+
+		dialogDelete.show();
+
+
+
+	}
+	public static void deleteAccount(final Activity activity){
+		// Client to handle sign up response from server
+		Client client = new Client(activity) {
+			@Override
+			public void handleResponse(JSONObject response) throws JSONException {
+				switch (response.getString("response")) {
+					case "success":
+						Toast.makeText(activity, "Account Deleted", Toast.LENGTH_SHORT).show();
+						// TODO Implement logout in helper class in tidy and test branch
+						break;
+					case "fail":
+						Toast.makeText(activity, "Account Not Deleted", Toast.LENGTH_SHORT).show();
+						break;
+				}
+			}
+		};
+
+		// JSON Request object
+		JSONObject request = new JSONObject();
+		try {
+			request.put("request","deleteaccount");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		// Set request and start connection
+		client.setRequest(request);
+		client.start();
 	}
 
 }

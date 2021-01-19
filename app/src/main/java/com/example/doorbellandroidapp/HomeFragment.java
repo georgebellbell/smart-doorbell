@@ -29,6 +29,8 @@ public class HomeFragment extends Fragment {
 	private SharedPreferences preferences;
 	private String currentUser;
 
+	private String id;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
@@ -103,6 +105,7 @@ public class HomeFragment extends Fragment {
 		try {
 			request.put("request","opendoor");
 			request.put("message", messageToDoor);
+			request.put("doorbellID", id);
 
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -126,6 +129,7 @@ public class HomeFragment extends Fragment {
 						String time = response.getString("time");
 						String doorbellName = response.getString("doorbellname");
 						String personAtDoor = response.getString("person");
+						id = response.getString("doorbellID");
 						byte[] decodedString = Base64.decode(image.getString("image"),Base64.DEFAULT);
 						final Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString,0, decodedString.length);
 						ivLastFace.setImageBitmap(decodedByte);
@@ -146,7 +150,6 @@ public class HomeFragment extends Fragment {
 		JSONObject request = new JSONObject();
 		try {
 			request.put("request","lastface");
-			request.put("username", currentUser);
 
 		} catch (JSONException e) {
 			e.printStackTrace();
