@@ -82,7 +82,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 
 		getIDs();
 
-		dialog = new Dialog(mContext);
+		dialog = new Dialog(mActivity);
 
 		ivAddFace.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -197,6 +197,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 						break;
 					case "fail":
 						Toast.makeText(mContext, "FAILURE TO GET IMAGES", Toast.LENGTH_SHORT).show();
+						populateImages(new JSONArray());
 						break;
 				}
 			}
@@ -347,6 +348,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 				newFaceBitmap = (Bitmap) data.getExtras().get("data");
 				ivNewFace.setImageBitmap(newFaceBitmap);
 				pictureTaken = true;
+				onStart();
 			}
 		}
 	}

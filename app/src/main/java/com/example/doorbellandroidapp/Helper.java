@@ -39,6 +39,7 @@ public class Helper {
 					case "success":
 						SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
 						preferences.edit().clear().apply();
+						activity.finish();
 						Intent intent = new Intent(activity, LoginActivity.class);
 						activity.startActivity(intent);
 						break;
