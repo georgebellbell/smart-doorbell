@@ -51,6 +51,9 @@ class main:
 				# Crop the faces from the image
 				faces = Crop.main(self.photoPath)
 
+				# Delete original image file
+				os.remove(self.photoPath)
+
 				if faces == 0:
 					print("ERROR - No faces found")
 					self.led1.off()
@@ -62,6 +65,7 @@ class main:
 						for n in range(faces):
 							self.sendImage(n)
 							print("Image " + str(n) + " sent to server")
+							os.remove(self.fileLocation + str(n) + ".jpg")
 
 						# Flash led to show picture has finished being sent
 						self.led1.off()

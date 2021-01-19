@@ -7,7 +7,6 @@ class runOnBoot:
 	def __init__(self):
 		# Get arguments
 		self.arguments = sys.argv
-		print(self.arguments, len(self.arguments))
 
 		# Directory of runOnBoot
 		self.cwd = os.getcwd()
