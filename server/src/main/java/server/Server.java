@@ -3,6 +3,7 @@ package server;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import database.DatabaseConnection;
 
 import java.net.*;
 import java.io.*;
@@ -42,6 +43,7 @@ public class Server {
 	 * Handle incoming client connections
 	 */
 	public void run() {
+		DatabaseConnection.establishSession();
 		try {
 			ServerSocket serverSocket = new ServerSocket(PORT);
 
@@ -66,6 +68,7 @@ public class Server {
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
+		DatabaseConnection.disconnectSession();
 	}
 
 	public static void main(String[] args) {

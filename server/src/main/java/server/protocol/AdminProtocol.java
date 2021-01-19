@@ -29,18 +29,24 @@ public class AdminProtocol extends Protocol {
 		requestResponse.put("analysis", new ResponseHandler(this::performAnalysis));
 	}
 
+	@Override
+	public String processInput() {
+		if (!request.getString("request").equals("login") && user == null) {
+			// Admin must be logged in to perform non-login requests
+			response.put("response", "invalid");
+			response.put("message", "Must be logged in to perform this action");
+			return response.toString();
+		}
+
+		return super.processInput();
+	}
+
 	public void performAnalysis() {
-		accountTable.connect();
 		int users = accountTable.getTotalUsers("user");
 		int admins = accountTable.getTotalUsers("admin");
-		accountTable.disconnect();
-		dataTable.connect();
 		int images = dataTable.getTotalImages();
-		dataTable.disconnect();
-		doorbellTable.connect();
 		int doorbells = doorbellTable.getTotalDoorbells();
 		JSONArray jsonArray = doorbellTable.getDoorbellPieData();
-		doorbellTable.disconnect();
 		response.put("response", "success");
 		response.put("users", users);
 		response.put("admins", admins);
@@ -52,13 +58,10 @@ public class AdminProtocol extends Protocol {
 	public void newPassword() {
 		String username = request.getString("username");
 		String newPassword = passwordManager.generateString();
-		accountTable.connect();
 		String emailAddress = accountTable.getEmailByUsername(username);
 		boolean changedPassword = accountTable.changePassword(username, newPassword);
-		accountTable.disconnect();
 
 		if (changedPassword) {
-			accountTable.disconnect();
 			Email email = new Email();
 			email.addRecipient(emailAddress);
 			email.setSubject("Password reset");
@@ -85,7 +88,6 @@ public class AdminProtocol extends Protocol {
 		String id = request.getString("recipient");
 		Email email = new Email();
 
-		accountTable.connect();
 		// Send by email type, 0 is by username, 1 is by doorbell id, and 2 is all
 		switch (type) {
 			case 0:
@@ -112,7 +114,6 @@ public class AdminProtocol extends Protocol {
 				break;
 		}
 
-		accountTable.disconnect();
 		email.setSubject(subject);
 		email.setContents(content);
 
@@ -129,7 +130,6 @@ public class AdminProtocol extends Protocol {
 	public void updateDoorbell() {
 		String id = request.getString("id");
 		String name = request.getString("name");
-		doorbellTable.connect();
 		if (doorbellTable.updateDoorbell(id, name)) {
 			response.put("response", "success");
 			response.put("message", "Doorbell successfully updated");
@@ -143,7 +143,6 @@ public class AdminProtocol extends Protocol {
 
 	public void deleteDoorbell() {
 		String id = request.getString("id");
-		doorbellTable.connect();
 		if (doorbellTable.deleteDoorbell(id)) {
 			response.put("response", "success");
 			response.put("message", "Doorbell successfully deleted");
@@ -151,12 +150,10 @@ public class AdminProtocol extends Protocol {
 			response.put("response", "fail");
 			response.put("message", "Doorbell could not be deleted");
 		}
-		doorbellTable.disconnect();
 	}
 
 	public void searchDoorbell() {
 		String id = request.getString("id");
-		doorbellTable.connect();
 		String doorbellName = doorbellTable.getDoorbellName(id);
 		ArrayList<String> users = doorbellTable.getUsers(id);
 		doorbellTable.disconnect();
@@ -179,9 +176,7 @@ public class AdminProtocol extends Protocol {
 		JSONArray devices = request.getJSONArray("devices");
 
 		// Update account details
-		accountTable.connect();
 		boolean updateAccount = accountTable.changeDetails(oldUsername, newUsername, newEmail);
-		accountTable.disconnect();
 		if (!updateAccount) {
 			response.put("response", "fail");
 			response.put("message", "Account username is already taken");
@@ -189,7 +184,6 @@ public class AdminProtocol extends Protocol {
 		}
 
 		// Update doorbells
-		doorbellTable.connect();
 		doorbellTable.deleteUserDoorbells(newUsername);
 		for (int i = 0; i < devices.length(); i++) {
 			String doorbellID = devices.getString(i);
@@ -205,9 +199,7 @@ public class AdminProtocol extends Protocol {
 	}
 
 	public void faces(String id) {
-		dataTable.connect();
 		ArrayList<Data> allImages = dataTable.getAllImages(id);
-		dataTable.disconnect();
 		ArrayList<JSONObject> jsonImages = new ArrayList<>();
 		if (allImages != null) {
 			for (Data data: allImages) {
@@ -242,7 +234,6 @@ public class AdminProtocol extends Protocol {
 		}
 
 		// Delete user
-		accountTable.connect();
 		if (accountTable.deleteRecord(username)){
 			response.put("response", "success");
 			response.put("message", "Account successfully deleted");
@@ -255,7 +246,6 @@ public class AdminProtocol extends Protocol {
 
 	public void userInfo() {
 		String username = request.getString("username");
-		accountTable.connect();
 		User user = accountTable.getRecord(username);
 		ArrayList<String> deviceIDs = accountTable.getDeviceID(username);
 		accountTable.disconnect();
@@ -285,10 +275,8 @@ public class AdminProtocol extends Protocol {
 		String password = request.getString("password");
 
 		// Check login details for account which must be an admin
-		accountTable.connect();
 		boolean validLogin = accountTable.getLogin(username, password, "admin");
 		User currentUser = accountTable.getRecord(username);
-		accountTable.disconnect();
 
 		if (validLogin) {
 			// Successful login response
@@ -308,6 +296,5 @@ public class AdminProtocol extends Protocol {
 			response.put("response", "fail");
 			response.put("message", "Incorrect username/password for admin account");
 		}
-
 	}
 }

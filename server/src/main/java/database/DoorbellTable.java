@@ -186,19 +186,31 @@ public class DoorbellTable extends DatabaseConnection {
 		return exists;
 	}
 
+	public boolean addNewDoorbell(Doorbell doorbell) {
+		return addNewDoorbell(doorbell.getId(), doorbell.getName());
+	}
+
 	public boolean addNewDoorbell(String doorbellID) {
+		return addNewDoorbell(doorbellID, "Name not set");
+	}
+
+	public boolean addNewDoorbell(String doorbellID, String name) {
 		try {
 			String query = "INSERT INTO doorbell (Pi_id, DoorbellName)"
 					+ " VALUES (?, ?)";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, doorbellID);
-			statement.setString(2, "Name not set");
+			statement.setString(2, name);
 			statement.execute();
 			statement.close();
 			return true;
 		} catch (SQLException e){
 			return false;
 		}
+	}
+
+	public boolean deleteDoorbell(Doorbell doorbell) {
+		return deleteDoorbell(doorbell.getId());
 	}
 
 	public boolean deleteUserDoorbells(String username) {
@@ -213,6 +225,22 @@ public class DoorbellTable extends DatabaseConnection {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	public boolean isUserAssignedDoorbell(String username, String doorbellID) {
+		try {
+			String query = "SELECT * FROM doorbelluser WHERE Pi_id = ? AND Username = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, doorbellID);
+			statement.setString(2, username);
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next())
+				return true;
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 }
