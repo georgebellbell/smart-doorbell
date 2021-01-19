@@ -61,6 +61,15 @@
         android:layout_toRightOf="@+id/etInputDigits"
         android:layout_marginLeft="15dp"/>
 
+    <TextView
+        android:id="@+id/tv2FAResponse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:textColor="#EF1010"
+        android:layout_below="@id/etInputDigits"
+        android:padding="15dp"
+         />
 
     <Button
         android:id="@+id/btnReturn"

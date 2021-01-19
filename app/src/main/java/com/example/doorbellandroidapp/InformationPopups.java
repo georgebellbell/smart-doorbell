@@ -19,6 +19,8 @@ public class InformationPopups {
 
 	private static Dialog dialogDelete;
 
+	private static Dialog dialogLogout;
+
 	private ProgressDialog progressDialog;
 
 	/**
@@ -111,6 +113,31 @@ public class InformationPopups {
 		});
 
 		dialogDelete.show();
+	}
+
+	public static void logoutConfirmation(final Activity activity){
+
+		Button btnConfirmDeletion, btnCancelDeletion;
+		dialogLogout = new Dialog(activity);
+		dialogLogout.setContentView(R.layout.popup_logout);
+
+		btnConfirmDeletion = dialogLogout.findViewById(R.id.btnConfirmLogout);
+		btnConfirmDeletion.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Helper.logout(activity);
+			}
+		});
+
+		btnCancelDeletion = dialogLogout.findViewById(R.id.btnCancelLogout);
+		btnCancelDeletion.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialogLogout.dismiss();
+			}
+		});
+
+		dialogLogout.show();
 	}
 
 	public static void deleteAccount(final Activity activity){

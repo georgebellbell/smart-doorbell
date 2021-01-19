@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				break;
 
 			case R.id.nav_logout:
-				Helper.logout(this);
+				InformationPopups.logoutConfirmation(this);
 		}
 
 		// close drawer after clicking the menu item
