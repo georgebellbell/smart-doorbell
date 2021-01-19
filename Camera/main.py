@@ -7,6 +7,7 @@ import os
 import Crop
 from multiprocessing import Process
 import SocketListener
+import re
 
 
 class main:
@@ -32,10 +33,10 @@ class main:
 			self.PiId = file.readline()
 			print("Unique Device ID: " + self.PiId)
 
-		# Poll server in separate process
-		Process(target=self.socketPoll).start()
 
 	def main(self):
+		# Poll server in separate process
+		Process(target=self.socketPoll).start()
 		# Main loop
 		while True:
 			if self.button1.is_pressed:
@@ -102,6 +103,42 @@ class main:
 			imageData = str(base64.encodebytes(image.read()))[2:-3]
 
 		return imageData
+		
+	def decodeResponse(self, response):
+		# encode response as a string
+		response = str(response, "utf-8")
+		# Remove unwanted charachters from the response
+		response = re.sub('[{}"\r\n]', '', response)
+		
+		decodedResponse = []
+		# split response by ":"
+		for item in response.split(",", 1):
+			item = item.split(":")
+			decodedResponse.append(item)
+		
+		# remove squre brackets from message contents
+		if "[" in decodedResponse[1][1]:
+			decodedResponse[1][1] = decodedResponse[1][1][1:-1]
+		
+		# split message contents into a list
+		if "," in decodedResponse[1][1]:
+			decodedResponse[1][1] = decodedResponse[1][1].split(",")
+
+		return decodedResponse
+
+	def openCheck(self, response):
+		# Check that response message is not empty
+		if response[1][1] != "none":
+			# check if message contents contains a list
+			if len(response[1][1][0]) == 1:
+				# check if "non list" message contents is "open"
+				if response[1][1].lower() == "open": return True
+			else:
+				# check all items in message contents to see if any say "open"
+				for n in range(len(response[1][1])):
+					if response[1][1][n].lower() == "open": return True
+					
+		return False
 
 	def socketSend(self, output):
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -127,12 +164,15 @@ class main:
 				data = s.recv(1024)
 				s.close()
 				# handle response from server
-				print(repr(data))
-
+				response = self.decodeResponse(data)
+				#print(response)
+				if self.openCheck(response):
+					print("OPEN DOOR")
+									
 			except Exception as e:
 				print(e)
 			sleep(5)
-
+			
 
 if __name__ == "__main__":
 	# p1 = Process(target=SocketListener.runServer, args=(LHost, LPort))
