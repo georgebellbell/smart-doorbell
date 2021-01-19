@@ -2,7 +2,6 @@ package ui.admin.panels;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
