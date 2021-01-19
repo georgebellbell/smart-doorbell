@@ -137,10 +137,9 @@ public class HomeFragment extends Fragment {
 						tvLastFace.setText(personAtDoor + " just used the " + doorbellName +" doorbell");
 						break;
 					case "fail":
-						// TODO display error picture?
-						tvLastFace.setText("Unknown person is using doorbell");
+						tvLastFace.setText("No recent user");
+						ivLastFace.setBackgroundResource(R.drawable.ic_null);
 						Toast.makeText(getContext(), "FAILURE TO GET IMAGES", Toast.LENGTH_SHORT).show();
-
 						break;
 				}
 			}

@@ -61,15 +61,14 @@
         android:layout_toRightOf="@+id/etInputDigits"
         android:layout_marginLeft="15dp"/>
 
-    <TextView
-        android:id="@+id/tv2FAResponse"
+
+    <Button
+        android:id="@+id/btnReturn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:textColor="#EF1010"
-        android:layout_below="@id/etInputDigits"
-        android:padding="15dp"
-         />
+        android:text="GO BACK"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="25dp"/>
 
     <TextView
         android:id="@+id/tv2FAAgain"
@@ -79,15 +78,8 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="25dp"
         android:padding="10dp"
-        android:layout_toRightOf="@+id/btnReturn"
-        android:layout_marginLeft="50dp"/>
+        android:layout_alignParentRight="true"/>
 
-    <Button
-        android:id="@+id/btnReturn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="GO BACK"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="25dp"/>
+
 
 </RelativeLayout>

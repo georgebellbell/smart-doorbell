@@ -342,9 +342,12 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	public void onActivityResult ( int requestCode, int resultCode, @Nullable Intent data){
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == 100) {
-			newFaceBitmap = (Bitmap) data.getExtras().get("data");
-			ivNewFace.setImageBitmap(newFaceBitmap);
-			pictureTaken = true;
+
+			if (data!=null){
+				newFaceBitmap = (Bitmap) data.getExtras().get("data");
+				ivNewFace.setImageBitmap(newFaceBitmap);
+				pictureTaken = true;
+			}
 		}
 	}
 
