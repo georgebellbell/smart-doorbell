@@ -75,7 +75,7 @@ public class SettingsFragment extends Fragment {
 		btnDeleteAccount.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				deleteAccount();
+				InformationPopups.deleteConfirmation(getActivity(),getContext());
 			}
 		});
 		return view;
@@ -173,34 +173,7 @@ public class SettingsFragment extends Fragment {
 		client.start();
 	}
 
-	public void deleteAccount(){
-		// Client to handle sign up response from server
-		Client client = new Client(getActivity()) {
-			@Override
-			public void handleResponse(JSONObject response) throws JSONException {
-				switch (response.getString("response")) {
-					case "success":
-						Toast.makeText(getContext(), "Account Deleted", Toast.LENGTH_SHORT).show();
-						break;
-					case "fail":
-						Toast.makeText(getContext(), "Account Not Deleted", Toast.LENGTH_SHORT).show();
-						break;
-				}
-			}
-		};
 
-		// JSON Request object
-		JSONObject request = new JSONObject();
-		try {
-			request.put("request","deleteaccount");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		// Set request and start connection
-		client.setRequest(request);
-		client.start();
-	}
 
 	public void assign(View view){
 		etDoorbellConnect = view.findViewById(R.id.etDoorbellConnect);
