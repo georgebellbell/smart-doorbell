@@ -1,13 +1,16 @@
 package server.protocol;
 
 import database.Data;
+import database.PollingTable;
 import facialrecognition.FaceSimilarity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.codec.Base64;
 import communication.NotificationMessenger;
 import server.ResponseHandler;
 
 import java.sql.Blob;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -15,6 +18,7 @@ public class DoorbellProtocol extends Protocol{
 	FaceSimilarity faceSimilarity = new FaceSimilarity();
 	public DoorbellProtocol() {
 		requestResponse.put("image", new ResponseHandler(this::image, "id", "data"));
+		requestResponse.put("poll", new ResponseHandler(this::poll, "id"));
 	}
 
 	public void image() {
@@ -48,6 +52,22 @@ public class DoorbellProtocol extends Protocol{
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
+		}
+	}
+
+	public void poll() {
+		String doorbellID = request.getString("id");
+		pollingTable.connect();
+		ArrayList<String> polls = pollingTable.getPolls(doorbellID);
+		pollingTable.deletePolls(doorbellID);
+		pollingTable.disconnect();
+
+		if (polls.size() == 0) {
+			response.put("response","fail");
+			response.put("message", "none");
+		} else {
+			response.put("response", "success");
+			response.put("message", polls);
 		}
 	}
 }
