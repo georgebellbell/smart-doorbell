@@ -59,24 +59,6 @@ public class DataTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param id - id of the data to delete
-	 * @return if record deleted
-	 */
-	public boolean deleteRecordById(int id) {
-		try {
-			String query = "DELETE FROM data WHERE Id=?";
-			statement = conn.prepareStatement(query);
-			statement.setInt(1, id);
-			statement.execute();
-			statement.close();
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	/**
 	 * @param deviceId - the id of the device which contains all saved images
 	 * @return list of all images with as data objects
 	 */
@@ -102,26 +84,6 @@ public class DataTable extends DatabaseConnection {
 			return null;
 		}
 		return allImages;
-	}
-
-	/**
-	 * @param id - id of image stored in the database
-	 * @param name - name to change the person to be displayed in the app
-	 * @return if name has been changed
-	 */
-	public boolean changeName(int id, String name) {
-		try {
-			String query = "UPDATE data Set Person=? WHERE Id=?";
-			statement = conn.prepareStatement(query);
-			statement.setString(1, name);
-			statement.setInt(2, id);
-			statement.execute();
-			statement.close();
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
 	}
 
 	/**
@@ -174,6 +136,10 @@ public class DataTable extends DatabaseConnection {
 		return recentImage;
 	}
 
+	/**
+	 * @param imageID - ID of the image to update in the database
+	 * @return if record updated
+	 */
 	public boolean updateData(Integer imageID) {
 		try {
 			String query = "UPDATE data Set Last_used = ? WHERE Id = ?";
@@ -187,5 +153,43 @@ public class DataTable extends DatabaseConnection {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * @param id - id of image stored in the database
+	 * @param name - name to change the person to be displayed in the app
+	 * @return if name has been changed
+	 */
+	public boolean changeName(int id, String name) {
+		try {
+			String query = "UPDATE data Set Person=? WHERE Id=?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, name);
+			statement.setInt(2, id);
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * @param id - id of the data to delete
+	 * @return if record deleted
+	 */
+	public boolean deleteRecordById(int id) {
+		try {
+			String query = "DELETE FROM data WHERE Id=?";
+			statement = conn.prepareStatement(query);
+			statement.setInt(1, id);
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }
