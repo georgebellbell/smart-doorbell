@@ -205,6 +205,7 @@ class AdminProtocolTest {
 		request.put("newusername", "New username");
 		request.put("newemail", "newemail@newemail.com");
 		request.put("devices", new JSONArray());
+		testUpdateAccount.setUsername("New username");
 		loginProtocol.setRequest(request.toString());
 		JSONObject response = new JSONObject(loginProtocol.processInput());
 		assertEquals("success", response.getString("response"));
@@ -238,7 +239,7 @@ class AdminProtocolTest {
 	}
 
 	@Test
-	void testDeleteCurrentAdminAccount() {
+	void testCannotDeleteCurrentAdminAccount() {
 		JSONObject request = new JSONObject();
 		request.put("request","deleteuser");
 		request.put("username", testAdmin.getUsername());
@@ -290,9 +291,24 @@ class AdminProtocolTest {
 		request.put("request","updatedoorbell");
 		request.put("id", updateDoorbell.getId());
 		request.put("name", "New Doorbell Name");
+		request.put("users", new JSONArray());
 		loginProtocol.setRequest(request.toString());
 		JSONObject response = new JSONObject(loginProtocol.processInput());
 		assertEquals("success", response.getString("response"));
+	}
+
+	@Test
+	void testUpdateDoorbellWithNonExistentUsername() {
+		JSONObject request = new JSONObject();
+		request.put("request","updatedoorbell");
+		request.put("id", updateDoorbell.getId());
+		request.put("name", "New Doorbell Name");
+		JSONArray users = new JSONArray();
+		users.put("non-existing-user");
+		request.put("users", users);
+		loginProtocol.setRequest(request.toString());
+		JSONObject response = new JSONObject(loginProtocol.processInput());
+		assertEquals("fail", response.getString("response"));
 	}
 
 }

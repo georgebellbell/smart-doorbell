@@ -25,6 +25,11 @@ public class Doorbell extends AdminPanel {
 	private JButton deleteDoorbellButton;
 	private JTextField doorbellNameField;
 	private JPanel root;
+	private JList<String> userList;
+	private JButton removeUserButton;
+	private JTextField newUserField;
+	private JButton addUserButton;
+	private DefaultListModel<String> listModel;
 
 
 	private String displayedDoorbell;
@@ -49,12 +54,50 @@ public class Doorbell extends AdminPanel {
 			}
 		});
 
+		addUserButton.addActionListener(actionEvent -> {
+			String newUser = newUserField.getText();
+			if (newUser.equals("")) {
+				return;
+			}
+			listModel.addElement(newUser);
+			currentDoorbellUsers.put(newUser);
+			newUserField.setText("");
+		});
+
+		newUserField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					addUserButton.doClick();
+				}
+			}
+		});
+
+		removeUserButton.addActionListener(actionEvent -> {
+			int index = userList.getSelectedIndex();
+			removeUserButton.setVisible(false);
+			if (index == -1) {
+				return;
+			}
+			currentDoorbellUsers.remove(index);
+			listModel.removeElementAt(index);
+		});
+
+		userList.addListSelectionListener(listenerEvent -> {
+			String selected = userList.getSelectedValue();
+			if (selected == null) {
+				return;
+			}
+			removeUserButton.setVisible(true);
+			removeUserButton.setText(String.format("Remove %s", selected));
+		});
+
 		viewFacesButton.addActionListener(actionEvent -> showDoorbellFaces());
 
 		saveDoorbellChangesButton.addActionListener(actionEvent -> {
 			String id = displayedDoorbell;
 			String name = doorbellNameField.getText();
-			Thread t = new Thread(() -> updateDoorbell(id, name));
+			Thread t = new Thread(() -> updateDoorbell(id, name, currentDoorbellUsers));
 			t.start();
 		});
 
@@ -82,6 +125,11 @@ public class Doorbell extends AdminPanel {
 		doorbellIdField.setText(id);
 		doorbellNameField.setText(name);
 		doorbellFacesField.setText(String.format("(%s faces)", faces.length()));
+		listModel.clear();
+		for (int i = 0; i < users.length(); i++) {
+			listModel.addElement(users.getString(i));
+		}
+		removeUserButton.setVisible(false);
 
 		// Display panel
 		doorbellInfoPanel.setVisible(true);
@@ -156,7 +204,7 @@ public class Doorbell extends AdminPanel {
 	 * @param id - Doorbell ID of doorbell being changed
 	 * @param name - New name of doorbell
 	 */
-	private void updateDoorbell(String id, String name) {
+	private void updateDoorbell(String id, String name, JSONArray users) {
 		// Make sure request is not already in progress
 		if (connection.isRequestInProgress()) {
 			return;
@@ -167,6 +215,7 @@ public class Doorbell extends AdminPanel {
 		request.put("request", "updatedoorbell");
 		request.put("id", id);
 		request.put("name", name);
+		request.put("users", users);
 
 		// Run request
 		JSONObject response = connection.run(request);
@@ -204,5 +253,10 @@ public class Doorbell extends AdminPanel {
 			JOptionPane.showMessageDialog(this,
 					response.getString("message"), "Doorbell", JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	private void createUIComponents() {
+		listModel = new DefaultListModel<>();
+		userList = new JList<>(listModel);
 	}
 }
