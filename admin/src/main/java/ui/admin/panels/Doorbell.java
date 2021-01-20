@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Doorbell extends AdminPanel {
+	private JPanel root;
 	private JPanel doorbellPanel;
 	private JPanel doorbellSearchPanel;
 	private JTextField searchDoorbellField;
@@ -24,13 +25,11 @@ public class Doorbell extends AdminPanel {
 	private JButton saveDoorbellChangesButton;
 	private JButton deleteDoorbellButton;
 	private JTextField doorbellNameField;
-	private JPanel root;
 	private JList<String> userList;
 	private JButton removeUserButton;
 	private JTextField newUserField;
 	private JButton addUserButton;
 	private DefaultListModel<String> listModel;
-
 
 	private String displayedDoorbell;
 	private JSONArray currentDoorbellFaces;
@@ -113,6 +112,7 @@ public class Doorbell extends AdminPanel {
 	 * @param id - Id of doorbell
 	 * @param name - Name of doorbell
 	 * @param faces - Recognised faces from doorbell
+	 * @param users - Users assigned to doorbell
 	 */
 	private void populateDoorbellInformation(String id, String name, JSONArray faces,
 											 JSONArray users) {
@@ -203,6 +203,7 @@ public class Doorbell extends AdminPanel {
 	 * Send request to server to update doorbell's name
 	 * @param id - Doorbell ID of doorbell being changed
 	 * @param name - New name of doorbell
+	 * @param users - Users to be assigned to doorbell
 	 */
 	private void updateDoorbell(String id, String name, JSONArray users) {
 		// Make sure request is not already in progress
