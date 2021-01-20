@@ -53,7 +53,7 @@ public class App extends Application {
 		notificationManager = NotificationManagerCompat.from(context);
 		Notification notification = new NotificationCompat.Builder(context,CHANNEL_1_ID)
 				.setContentIntent(resultPendingIntent)
-				.setSmallIcon(R.drawable.ic_one)
+				.setSmallIcon(R.drawable.ic_notif_logo)
 				.setContentTitle(title)
 				.setContentText(text)
 				.setAutoCancel(true)

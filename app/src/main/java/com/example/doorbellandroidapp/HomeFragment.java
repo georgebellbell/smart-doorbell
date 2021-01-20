@@ -40,7 +40,6 @@ public class HomeFragment extends Fragment {
 		assign(view);
 		preferences= PreferenceManager.getDefaultSharedPreferences(getContext());
 		currentUser= preferences.getString("currentUser",null);
-
 		loadImage();
 
 		btnOpenDoor.setOnClickListener(new View.OnClickListener() {
