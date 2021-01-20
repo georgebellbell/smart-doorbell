@@ -114,6 +114,8 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 				switch (response.getString("response")) {
 					case "success":
 						JSONArray jsonArray = response.getJSONArray("doorbells");
+						doorbells.clear();
+						doorbellIDs.clear();
 						for (int i = 0; i < jsonArray.length() ; i++) {
 							doorbells.add(jsonArray.getJSONObject(i).getString("name"));
 							doorbellIDs.add(jsonArray.getJSONObject(i).getString("id"));
