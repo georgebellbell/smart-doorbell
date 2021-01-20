@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 public class SettingsFragment extends Fragment implements AdapterView.OnItemSelectedListener{
 
 	EditText etDoorbellConnect, etDoorbellConnectName, pwdChangePassword, etChangeEmail;
-	Button btnDoorbellConnect, btnChangePassword, btnChangeEmail, btnDeleteAccount;
+	Button btnDoorbellConnect, btnChangePassword, btnChangeEmail, btnRemoveDoorbell, btnDeleteAccount;
 	ImageView ivInfo, ivAddDoorbellInfo;
 	Spinner spinnerID;
 
@@ -89,6 +89,15 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 			}
 		});
 
+		btnRemoveDoorbell.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO add remove doorbell confirmation
+				String currentDoorbellID = doorbellIDs.get(spinnerID.getSelectedItemPosition());
+				removeDoorbell(currentDoorbellID);
+			}
+		});
+
 		btnDeleteAccount.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -96,7 +105,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 			}
 		});
 
-		// TODO Remove selected doorbell for that user
+
 		return view;
 
 	}
@@ -162,6 +171,36 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 		client.setRequest(request);
 		client.start();
 
+	}
+
+	public void removeDoorbell(String doorbellID){
+		// Client to handle sign up response from server
+		Client client = new Client(getActivity()) {
+			@Override
+			public void handleResponse(JSONObject response) throws JSONException {
+				switch (response.getString("response")) {
+					case "success":
+						Toast.makeText(getContext(), "Doorbell Removed", Toast.LENGTH_SHORT).show();
+						break;
+					case "fail":
+						Toast.makeText(getContext(), "Doorbell could not be removed", Toast.LENGTH_SHORT).show();
+						break;
+				}
+			}
+		};
+
+		// JSON Request object
+		JSONObject request = new JSONObject();
+		try {
+			request.put("request","removedoorbell");
+			request.put("doorbellID", doorbellID);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		// Set request and start connection
+		client.setRequest(request);
+		client.start();
 	}
 
 	/**
@@ -244,6 +283,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 		btnChangePassword = view.findViewById(R.id.btnChangePassword);
 		btnChangeEmail = view.findViewById(R.id.btnChangeEmail);
 		btnDeleteAccount = view.findViewById(R.id.btnDeleteAccount);
+		btnRemoveDoorbell = view.findViewById(R.id.btnRemoveDoorbell);
 		ivAddDoorbellInfo = view.findViewById(R.id.ivAddDoorbellInfo);
 		ivInfo = view.findViewById(R.id.ivInfo);
 		spinnerID = view.findViewById(R.id.spinnerID);
