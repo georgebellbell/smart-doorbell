@@ -9,6 +9,26 @@ public class PollingTable extends DatabaseConnection {
 	PreparedStatement statement;
 
 	/**
+	 * @param deviceID - id of the doorbell to be added
+	 * @param message - message to send to the doorbell
+	 * @return - if poll added to table
+	 */
+	public boolean createPoll(String deviceID, String message) {
+		try {
+			String query = "INSERT INTO polling (Device_id, Message)"
+					+ " VALUES (?, ?)";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, deviceID);
+			statement.setString(2, message);
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (SQLException e){
+			return false;
+		}
+	}
+	
+	/**
 	 * @param id - id of the doorbell to retrieve the messages
 	 * @return all messages for device
 	 */
@@ -28,7 +48,6 @@ public class PollingTable extends DatabaseConnection {
 		return messages;
 	}
 
-
 	/**
 	 * @param deviceID - id of the doorbell to delete
 	 * @return if doorbell deleted
@@ -43,27 +62,6 @@ public class PollingTable extends DatabaseConnection {
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
-		}
-	}
-
-
-	/**
-	 * @param deviceID - id of the doorbell to be added
-	 * @param message - message to send to the doorbell
-	 * @return - if poll added to table
-	 */
-	public boolean createPoll(String deviceID, String message) {
-		try {
-			String query = "INSERT INTO polling (Device_id, Message)"
-					+ " VALUES (?, ?)";
-			statement = conn.prepareStatement(query);
-			statement.setString(1, deviceID);
-			statement.setString(2, message);
-			statement.execute();
-			statement.close();
-			return true;
-		} catch (SQLException e){
 			return false;
 		}
 	}
