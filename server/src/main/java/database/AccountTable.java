@@ -13,6 +13,31 @@ public class AccountTable extends DatabaseConnection {
 	PasswordManager passwordManager = new PasswordManager();
 
 	/**
+	 * @param user - to add to the database
+	 * @return if recorded add to the table
+	 */
+	public boolean addRecord(User user) {
+		try {
+			String salt = passwordManager.generateSalt();
+			String query = "INSERT INTO accounts (Username, Email, Password, Salt, Role, Created_at)"
+					+ " VALUES (?, ?, ?, ?, ?, ?)";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, user.getUsername());
+			statement.setString(2,user.getEmail());
+			statement.setString(3, passwordManager.hashPassword(user.getPassword(), salt));
+			statement.setString(4, salt);
+			statement.setString(5, user.getRole());
+			statement.setString(6, user.getCreated_at());
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	/**
 	 * @param role - role assigned to the registered user
 	 * @return number of users with the assigned role
 	 */
@@ -183,31 +208,6 @@ public class AccountTable extends DatabaseConnection {
 			return user;
 		}
 		return user;
-	}
-
-	/**
-	 * @param user - to add to the database
-	 * @return if recorded add to the table
-	 */
-	public boolean addRecord(User user) {
-		try {
-			String salt = passwordManager.generateSalt();
-			String query = "INSERT INTO accounts (Username, Email, Password, Salt, Role, Created_at)"
-					+ " VALUES (?, ?, ?, ?, ?, ?)";
-			statement = conn.prepareStatement(query);
-			statement.setString(1, user.getUsername());
-			statement.setString(2,user.getEmail());
-			statement.setString(3, passwordManager.hashPassword(user.getPassword(), salt));
-			statement.setString(4, salt);
-			statement.setString(5, user.getRole());
-			statement.setString(6, user.getCreated_at());
-			statement.execute();
-			statement.close();
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
 	}
 
 	/**
