@@ -25,6 +25,10 @@ public class DatabaseConnection {
 	static int assignedPort = -1;
 	static boolean connected;
 
+	public DatabaseConnection() {
+		establishSession();
+	}
+
 	/**
 	 * Connect via SSH tunnel forwarding local port to remote host and port
 	 */
