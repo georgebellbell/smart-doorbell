@@ -1,10 +1,12 @@
 package com.example.doorbellandroidapp;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,6 +120,9 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 				switch (response.getString("response")) {
 					case "success":
 						Toast.makeText(getContext(), "Doorbell Added", Toast.LENGTH_SHORT).show();
+						etDoorbellConnect.setText("");
+						etDoorbellConnectName.setText("");
+						getIDs();
 						break;
 					case "fail":
 						Toast.makeText(getContext(), "Doorbell Not Added", Toast.LENGTH_SHORT).show();
@@ -181,6 +186,8 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 				switch (response.getString("response")) {
 					case "success":
 						Toast.makeText(getContext(), "Doorbell Removed", Toast.LENGTH_SHORT).show();
+						SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+						preferences.edit().putString("userChoiceSpinner",null).apply();
 						Helper.refresh(mActivity,"settings");
 						break;
 					case "fail":

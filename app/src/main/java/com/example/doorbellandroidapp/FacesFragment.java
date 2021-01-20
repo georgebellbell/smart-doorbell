@@ -87,7 +87,13 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		ivAddFace.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				showPopup();
+
+				if (doorbellIDs.size()>0){
+					showPopup();
+				}
+				else {
+					Toast.makeText(mActivity, "Please add doorbell before adding faces", Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 
@@ -123,7 +129,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 						populateSpinner();
 						break;
 					case "fail":
-						Toast.makeText(mContext, "NO DOORBELL ASSIGNED, PLEASE CONTACT ADMIN", Toast.LENGTH_SHORT).show();
+						Toast.makeText(mContext, "NO DOORBELL ASSIGNED, ADD ONE IN SETTINGS", Toast.LENGTH_SHORT).show();
 						break;
 				}
 			}
@@ -393,7 +399,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	 * @param newFaceName name of new face
 	 * @param doorbellID doorbell the face is being added to
 	 */
-	public void addFace (Bitmap newFaceBitmap, String newFaceName, String doorbellID){
+	public void addFace (Bitmap newFaceBitmap, String newFaceName, final String doorbellID){
 		String newFace = Helper.bitmapToString(newFaceBitmap);
 		// Client to handle login response from server
 		Client client = new Client(mActivity) {
@@ -401,7 +407,8 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 			public void handleResponse(JSONObject response) throws JSONException {
 				switch (response.getString("response")) {
 					case "success":
-						Helper.refresh(mActivity,"faces");
+						dialog.dismiss();
+						loadImages(doorbellID);
 						break;
 					case "fail":
 						Toast.makeText(mContext, "NO DOORBELL ASSIGNED, PLEASE CONTACT ADMIN", Toast.LENGTH_SHORT).show();
