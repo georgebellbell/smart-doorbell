@@ -125,6 +125,7 @@ public class InformationPopups {
 		btnConfirmDeletion.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				dialogLogout.dismiss();
 				Helper.logout(activity);
 			}
 		});

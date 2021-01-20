@@ -58,7 +58,7 @@ public class EditFacePopup {
 			@Override
 			public void onClick(View v) {
 				Toast.makeText(mContext, "face deleted", Toast.LENGTH_SHORT).show();
-				deleteFace(holder.imageID);
+				deleteFace(holder.imageID, mActivity);
 				dialog.dismiss();
 			}
 		});
@@ -96,7 +96,7 @@ public class EditFacePopup {
 	 * @return boolean
 	 */
 	boolean validateNameChange(String newName){
-		if (newName.isEmpty() || newName.equals(" ")){
+		if (newName.isEmpty() || newName.equals(" ") || newName.toLowerCase().equals("unknown")){
 			Toast.makeText(mContext, "Please give valid name", Toast.LENGTH_SHORT).show();
 			return false;
 		}
@@ -145,11 +145,13 @@ public class EditFacePopup {
 		client.start();
 	}
 
+
+	// TODO Move to helper class
 	/**
 	 * Contacts server and deletes that face from database before refreshing page
 	 * @param ID identifier for given face
 	 */
-	void deleteFace(Integer ID) {
+	public static void  deleteFace(Integer ID, final Activity mActivity) {
 		// Client to handle response from server
 		Client client = new Client(mActivity) {
 			@Override
@@ -159,7 +161,7 @@ public class EditFacePopup {
 						Helper.refresh(mActivity, "Faces");
 						break;
 					case "fail":
-						Toast.makeText(mContext, "FAILED TO DELETE FACE", Toast.LENGTH_SHORT).show();
+						Toast.makeText(mActivity, "FAILED TO DELETE FACE", Toast.LENGTH_SHORT).show();
 						break;
 				}
 			}

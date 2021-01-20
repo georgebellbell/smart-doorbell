@@ -29,7 +29,9 @@ public class HomeFragment extends Fragment {
 	private SharedPreferences preferences;
 	private String currentUser;
 
-	private String id;
+	private String personAtDoor;
+	private String doorbellID;
+	private String imageID;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,11 +41,7 @@ public class HomeFragment extends Fragment {
 		preferences= PreferenceManager.getDefaultSharedPreferences(getContext());
 		currentUser= preferences.getString("currentUser",null);
 
-		InformationPopups informationPopups = new InformationPopups();
-		informationPopups.loadingPopUp(getContext());
-
 		loadImage();
-
 
 		btnOpenDoor.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -55,6 +53,9 @@ public class HomeFragment extends Fragment {
 		btnLeaveClosed.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if (personAtDoor.equals("Unknown")){
+					EditFacePopup.deleteFace(Integer.valueOf(imageID), getActivity());
+				}
 				tvDoorInformation.setText("You chose not to open the door");
 				contactDoor("close");
 			}
@@ -105,7 +106,7 @@ public class HomeFragment extends Fragment {
 		try {
 			request.put("request","opendoor");
 			request.put("message", messageToDoor);
-			request.put("doorbellID", id);
+			request.put("doorbellID", doorbellID);
 
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -128,8 +129,9 @@ public class HomeFragment extends Fragment {
 						JSONObject image = response.getJSONObject("image");
 						String time = response.getString("time");
 						String doorbellName = response.getString("doorbellname");
-						String personAtDoor = response.getString("person");
-						id = response.getString("doorbellID");
+						personAtDoor = response.getString("person");
+						doorbellID = response.getString("doorbellID");
+						imageID = response.getString("imageID");
 						byte[] decodedString = Base64.decode(image.getString("image"),Base64.DEFAULT);
 						final Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString,0, decodedString.length);
 						ivLastFace.setImageBitmap(decodedByte);

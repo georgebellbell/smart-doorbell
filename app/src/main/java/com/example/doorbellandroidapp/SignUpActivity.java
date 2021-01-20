@@ -143,8 +143,8 @@ public class SignUpActivity extends AppCompatActivity {
 	/**
 	 * Notifies user of failed signup attempt
 	 */
-	void signUpFail() {
-		Toast.makeText(getApplicationContext(), "Username already exists, please try again",
+	void signUpFail(String error) {
+		Toast.makeText(getApplicationContext(), error,
 				Toast.LENGTH_SHORT).show();
 		tvInformation.setText("Registration Unsuccessful");
 	}
@@ -166,7 +166,7 @@ public class SignUpActivity extends AppCompatActivity {
 						signUpSuccess();
 						break;
 					case "fail":
-						signUpFail();
+						signUpFail(response.getString("message"));
 						break;
 				}
 			}

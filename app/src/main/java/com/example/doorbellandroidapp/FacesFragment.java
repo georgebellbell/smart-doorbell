@@ -348,7 +348,6 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 				newFaceBitmap = (Bitmap) data.getExtras().get("data");
 				ivNewFace.setImageBitmap(newFaceBitmap);
 				pictureTaken = true;
-				onStart();
 			}
 		}
 	}
@@ -359,8 +358,8 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	 */
 	public void validateAddition (String newFaceName){
 
-		if (newFaceName.isEmpty() || newFaceName == null || newFaceName.equals(" ")) {
-			Toast.makeText(mContext, "Put a name to the face!", Toast.LENGTH_SHORT).show();
+		if (newFaceName.isEmpty() || newFaceName.equals(" ") ||newFaceName.toLowerCase().equals("unknown")) {
+			Toast.makeText(mContext, "Invalid name", Toast.LENGTH_SHORT).show();
 		}
 		else if (newFaceName.length()>10) {
 			Toast.makeText(mContext, "Name is too long", Toast.LENGTH_SHORT).show();

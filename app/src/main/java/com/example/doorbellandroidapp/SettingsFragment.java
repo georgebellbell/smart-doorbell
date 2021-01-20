@@ -1,5 +1,6 @@
 package com.example.doorbellandroidapp;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,24 +8,36 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends Fragment implements AdapterView.OnItemSelectedListener{
 
 	EditText etDoorbellConnect, etDoorbellConnectName, pwdChangePassword, etChangeEmail;
 	Button btnDoorbellConnect, btnChangePassword, btnChangeEmail, btnDeleteAccount;
 	ImageView ivInfo, ivAddDoorbellInfo;
+	Spinner spinnerID;
+
+	private ArrayList<String> doorbells = new ArrayList<>();
+	private ArrayList<String> doorbellIDs = new ArrayList<>();
+
+	Activity mActivity;
+
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,6 +45,10 @@ public class SettingsFragment extends Fragment {
 		// Inflate the layout for this fragment
 		View view = inflater.inflate(R.layout.fragment_settings, container, false);
 		assign(view);
+		mActivity = getActivity();
+		getIDs();
+
+
 
 		ivInfo.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -78,6 +95,8 @@ public class SettingsFragment extends Fragment {
 				InformationPopups.deleteConfirmation(getActivity(),getContext());
 			}
 		});
+
+		// TODO Remove selected doorbell for that user
 		return view;
 
 	}
@@ -112,6 +131,47 @@ public class SettingsFragment extends Fragment {
 		client.setRequest(request);
 		client.start();
 	}
+	public void getIDs(){
+		Client client = new Client(mActivity) {
+			@Override
+			public void handleResponse(JSONObject response) throws JSONException {
+				switch (response.getString("response")) {
+					case "success":
+						JSONArray jsonArray = response.getJSONArray("doorbells");
+						for (int i = 0; i < jsonArray.length() ; i++) {
+							doorbells.add(jsonArray.getJSONObject(i).getString("name"));
+							doorbellIDs.add(jsonArray.getJSONObject(i).getString("id"));
+						}
+						populateSpinner();
+						break;
+					case "fail":
+						Toast.makeText(mActivity, "NO DOORBELL ASSIGNED, PLEASE CONTACT ADMIN", Toast.LENGTH_SHORT).show();
+						break;
+				}
+			}
+		};
+
+		// JSON Request object
+		JSONObject request = new JSONObject();
+		try {
+			request.put("request","getdoorbells");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		// Set request and start connection
+		client.setRequest(request);
+		client.start();
+
+	}
+
+	/**
+	 * Adds the retrieved IDs to a dropdown menu the user can navigate between
+	 */
+	public void populateSpinner() {
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_dropdown_item,doorbells);
+		spinnerID.setAdapter(adapter);
+		spinnerID.setOnItemSelectedListener(this);
+	}
 
 	public void changeEmail(String newEmail){
 		// Client to handle sign up response from server
@@ -123,7 +183,7 @@ public class SettingsFragment extends Fragment {
 						Toast.makeText(getContext(), "Email Changed", Toast.LENGTH_SHORT).show();
 						break;
 					case "fail":
-						Toast.makeText(getContext(), "Email Not Changed", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getContext(), response.getString("message"), Toast.LENGTH_SHORT).show();
 						break;
 				}
 			}
@@ -186,6 +246,8 @@ public class SettingsFragment extends Fragment {
 		btnDeleteAccount = view.findViewById(R.id.btnDeleteAccount);
 		ivAddDoorbellInfo = view.findViewById(R.id.ivAddDoorbellInfo);
 		ivInfo = view.findViewById(R.id.ivInfo);
+		spinnerID = view.findViewById(R.id.spinnerID);
+
 	}
 
 	/**
@@ -218,4 +280,13 @@ public class SettingsFragment extends Fragment {
 	}
 
 
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		Toast.makeText(mActivity, doorbells.get(position), Toast.LENGTH_SHORT).show();
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> parent) {
+
+	}
 }
