@@ -1,12 +1,9 @@
 package server.protocol;
 
 import database.Data;
-import database.PollingTable;
 import facialrecognition.FaceSimilarity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.codec.Base64;
 import communication.NotificationMessenger;
-import server.ResponseHandler;
 
 import java.sql.Blob;
 import java.sql.Connection;
@@ -15,10 +12,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class DoorbellProtocol extends Protocol{
-	FaceSimilarity faceSimilarity = new FaceSimilarity();
-	public DoorbellProtocol() {
-		requestResponse.put("image", new ResponseHandler(this::image, "id", "data"));
-		requestResponse.put("poll", new ResponseHandler(this::poll, "id"));
+	private FaceSimilarity faceSimilarity = new FaceSimilarity();
+
+	@Override
+	public void init() {
+		requestHashMap.put("image", new RequestHandler(this::image, "id", "data"));
+		requestHashMap.put("poll", new RequestHandler(this::poll, "id"));
 	}
 
 	public void image() {

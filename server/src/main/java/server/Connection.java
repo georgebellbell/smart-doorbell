@@ -57,7 +57,7 @@ public class Connection extends Thread {
 				if (protocol.isRequestValid(request)) {
 					// Handle request
 					protocol.setRequest(request);
-					response = protocol.processInput();
+					response = protocol.processRequest();
 					out.println(response);
 				} else {
 					// Invalid request

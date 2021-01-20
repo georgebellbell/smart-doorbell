@@ -4,11 +4,9 @@ import authentication.TwoFactorAuthentication;
 import communication.Email;
 import database.Data;
 import database.User;
-import database.UserTokenTable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.security.crypto.codec.Base64;
-import server.ResponseHandler;
 
 import java.sql.Blob;
 import java.sql.Connection;
@@ -17,26 +15,28 @@ import java.util.ArrayList;
 
 public class UserProtocol extends Protocol {
 	private User user;
+	private ArrayList<String> noValidTokenRequests;
 
-	ArrayList<String> noValidTokenRequests;
-
-	public UserProtocol() {
-		requestResponse.put("login", new ResponseHandler(this::login, "username", "password"));
-		requestResponse.put("signup", new ResponseHandler(this::signUp, "username", "email", "password"));
-		requestResponse.put("twofactor", new ResponseHandler(this::twoFactor, "username", "code"));
-		requestResponse.put("resendtwofactor", new ResponseHandler(this::resendTwoFactor, "username"));
-		requestResponse.put("faces", new ResponseHandler(this::faces, "doorbellID"));
-		requestResponse.put("deleteface", new ResponseHandler(this::deleteFace, "id"));
-		requestResponse.put("renameface", new ResponseHandler(this::renameFace, "id", "name"));
-		requestResponse.put("addface", new ResponseHandler(this::addFace, "personname", "image", "doorbellID"));
-		requestResponse.put("lastface", new ResponseHandler(this::lastFace));
-		requestResponse.put("logout", new ResponseHandler(this::logout));
-		requestResponse.put("opendoor", new ResponseHandler(this::openDoor, "message", "doorbellID"));
-		requestResponse.put("getdoorbells", new ResponseHandler(this::getDoorbells));
-		requestResponse.put("connectdoorbell", new ResponseHandler(this::connectDoorbell, "doorbellID", "doorbellname"));
-		requestResponse.put("changepassword", new ResponseHandler(this::changePassword, "password"));
-		requestResponse.put("changeemail", new ResponseHandler(this::changeEmail, "email"));
-		requestResponse.put("deleteaccount", new ResponseHandler(this::deleteAccount));
+	@Override
+	public void init() {
+		requestHashMap.put("login", new RequestHandler(this::login, "username", "password"));
+		requestHashMap.put("signup", new RequestHandler(this::signUp, "username", "email", "password"));
+		requestHashMap.put("twofactor", new RequestHandler(this::twoFactor, "username", "code"));
+		requestHashMap.put("resendtwofactor", new RequestHandler(this::resendTwoFactor, "username"));
+		requestHashMap.put("faces", new RequestHandler(this::faces, "doorbellID"));
+		requestHashMap.put("deleteface", new RequestHandler(this::deleteFace, "id"));
+		requestHashMap.put("renameface", new RequestHandler(this::renameFace, "id", "name"));
+		requestHashMap.put("addface", new RequestHandler(this::addFace,
+				"personname", "image", "doorbellID"));
+		requestHashMap.put("lastface", new RequestHandler(this::lastFace));
+		requestHashMap.put("logout", new RequestHandler(this::logout));
+		requestHashMap.put("opendoor", new RequestHandler(this::openDoor, "message", "doorbellID"));
+		requestHashMap.put("getdoorbells", new RequestHandler(this::getDoorbells));
+		requestHashMap.put("connectdoorbell", new RequestHandler(this::connectDoorbell,
+				"doorbellID", "doorbellname"));
+		requestHashMap.put("changepassword", new RequestHandler(this::changePassword, "password"));
+		requestHashMap.put("changeemail", new RequestHandler(this::changeEmail, "email"));
+		requestHashMap.put("deleteaccount", new RequestHandler(this::deleteAccount));
 
 		noValidTokenRequests = new ArrayList<String>(){{
 			add("login");
@@ -170,11 +170,11 @@ public class UserProtocol extends Protocol {
 	}
 
 	@Override
-	public String processInput() {
+	public String processRequest() {
 		if (!checkToken()) {
 			return response.toString();
 		}
-		return super.processInput();
+		return super.processRequest();
 	}
 
 	public void lastFace(){

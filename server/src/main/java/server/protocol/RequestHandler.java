@@ -1,8 +1,8 @@
-package server;
+package server.protocol;
 
 import org.json.JSONObject;
 
-public class ResponseHandler {
+public class RequestHandler {
 	private final Runnable method;
 	private final String[] requiredKeys;
 
@@ -10,7 +10,7 @@ public class ResponseHandler {
 	 * @param method - Method that will deal with the request and create the response
 	 * @param requiredKeys - Required keys needed in request JSON object
 	 */
-	public ResponseHandler(Runnable method, String... requiredKeys) {
+	public RequestHandler(Runnable method, String... requiredKeys) {
 		this.method = method;
 		this.requiredKeys = requiredKeys;
 	}
