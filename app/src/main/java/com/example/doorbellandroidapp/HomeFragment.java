@@ -54,7 +54,7 @@ public class HomeFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				if (personAtDoor.equals("Unknown")){
-					EditFacePopup.deleteFace(Integer.valueOf(imageID), getActivity());
+					Helper.deleteFace(Integer.valueOf(imageID), getActivity(),"home");
 				}
 				tvDoorInformation.setText("You chose not to open the door");
 				contactDoor("close");

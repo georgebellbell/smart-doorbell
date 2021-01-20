@@ -67,18 +67,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		fm = getSupportFragmentManager();
 		if (savedInstanceState == null) {
 			FragmentTransaction t = fm.beginTransaction();
-			if (currentTask==null){
-				navigationView.setCheckedItem(R.id.nav_home);
-				fragment = new HomeFragment();
-			}
-			else{
-				if (currentTask.equals("Faces"))
+
+			navigationView.setCheckedItem(R.id.nav_home);
+			fragment = new HomeFragment();
+
+			if (currentTask!=null){
+				if (currentTask.equals("faces"))
 				{
 					navigationView.setCheckedItem(R.id.nav_faces);
 					preferences.edit().putString("currentTask",null).apply();
 					fragment = new FacesFragment();
 				}
-				else if (currentTask.equals("Settings"))
+				else if (currentTask.equals("settings"))
 				{
 					navigationView.setCheckedItem(R.id.nav_settings);
 					preferences.edit().putString("currentTask",null).apply();

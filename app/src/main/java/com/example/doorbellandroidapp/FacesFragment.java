@@ -146,6 +146,11 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	public void populateSpinner() {
 		ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_dropdown_item,doorbells);
 		selectDoorbellFaces.setAdapter(adapter);
+		String spinnerValue = preferences.getString("userChoiceSpinner",null);
+		if (spinnerValue!=null){
+			selectDoorbellFaces.setSelection(Integer.parseInt(spinnerValue));
+		}
+
 		selectDoorbellFaces.setOnItemSelectedListener(this);
 	}
 
@@ -160,6 +165,8 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
 
 		if (parent.getId()==R.id.spinnerID){
+			int userChoice = selectDoorbellFaces.getSelectedItemPosition();
+			preferences.edit().putString("userChoiceSpinner", String.valueOf(userChoice)).apply();
 
 			String currentID = doorbellIDs.get(position);
 			Toast.makeText(mContext, currentID, Toast.LENGTH_SHORT).show();
@@ -306,6 +313,10 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		chooseDoorbell = dialog.findViewById(R.id.spinnerAddID);
 		ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_dropdown_item, doorbells);
 		chooseDoorbell.setAdapter(adapter);
+		String spinnerValue = preferences.getString("userChoiceSpinner",null);
+		if (spinnerValue!=null){
+			chooseDoorbell.setSelection(Integer.parseInt(spinnerValue));
+		}
 		chooseDoorbell.setOnItemSelectedListener(this);
 
 		// Closes popup
@@ -388,7 +399,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 			public void handleResponse(JSONObject response) throws JSONException {
 				switch (response.getString("response")) {
 					case "success":
-						Helper.refresh(mActivity,"Faces");
+						Helper.refresh(mActivity,"faces");
 						break;
 					case "fail":
 						Toast.makeText(mContext, "NO DOORBELL ASSIGNED, PLEASE CONTACT ADMIN", Toast.LENGTH_SHORT).show();

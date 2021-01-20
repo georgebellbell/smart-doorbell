@@ -58,7 +58,7 @@ public class EditFacePopup {
 			@Override
 			public void onClick(View v) {
 				Toast.makeText(mContext, "face deleted", Toast.LENGTH_SHORT).show();
-				deleteFace(holder.imageID, mActivity);
+				Helper.deleteFace(holder.imageID, mActivity,"faces");
 				dialog.dismiss();
 			}
 		});
@@ -144,42 +144,5 @@ public class EditFacePopup {
 		client.setRequest(request);
 		client.start();
 	}
-
-
-	// TODO Move to helper class
-	/**
-	 * Contacts server and deletes that face from database before refreshing page
-	 * @param ID identifier for given face
-	 */
-	public static void  deleteFace(Integer ID, final Activity mActivity) {
-		// Client to handle response from server
-		Client client = new Client(mActivity) {
-			@Override
-			public void handleResponse(JSONObject response) throws JSONException {
-				switch (response.getString("response")) {
-					case "success":
-						Helper.refresh(mActivity, "Faces");
-						break;
-					case "fail":
-						Toast.makeText(mActivity, "FAILED TO DELETE FACE", Toast.LENGTH_SHORT).show();
-						break;
-				}
-			}
-		};
-
-		// JSON Request object
-		JSONObject request = new JSONObject();
-		try {
-			request.put("request","deleteface");
-			request.put("id", ID);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		// Set request and start connection
-		client.setRequest(request);
-		client.start();
-	}
-
 }
 

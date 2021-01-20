@@ -181,6 +181,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 				switch (response.getString("response")) {
 					case "success":
 						Toast.makeText(getContext(), "Doorbell Removed", Toast.LENGTH_SHORT).show();
+						Helper.refresh(mActivity,"settings");
 						break;
 					case "fail":
 						Toast.makeText(getContext(), "Doorbell could not be removed", Toast.LENGTH_SHORT).show();
