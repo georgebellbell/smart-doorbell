@@ -218,6 +218,7 @@ public class UserProtocol extends Protocol {
 			response.put("image", image);
 			response.put("time", recentImage.getCreatedAt());
 			response.put("person", recentImage.getPersonName());
+			response.put("imageID", recentImage.getImageID());
 			response.put("doorbellname", doorbellName);
 			response.put("doorbellID", recentImage.getDeviceID());
 
