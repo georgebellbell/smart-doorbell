@@ -23,7 +23,7 @@ public class AdminProtocol extends Protocol {
 		requestResponse.put("update", new ResponseHandler(this::update, "username", "newusername", "newemail", "devices"));
 		requestResponse.put("searchdoorbell", new ResponseHandler(this::searchDoorbell, "id"));
 		requestResponse.put("deletedoorbell", new ResponseHandler(this::deleteDoorbell, "id"));
-		requestResponse.put("updatedoorbell", new ResponseHandler(this::updateDoorbell,"id", "name"));
+		requestResponse.put("updatedoorbell", new ResponseHandler(this::updateDoorbell,"id", "name", "users"));
 		requestResponse.put("email", new ResponseHandler(this::sendEmail, "type", "subject", "contents", "recipient"));
 		requestResponse.put("newpassword", new ResponseHandler(this::newPassword, "username"));
 		requestResponse.put("analysis", new ResponseHandler(this::performAnalysis));
@@ -131,13 +131,35 @@ public class AdminProtocol extends Protocol {
 	public void updateDoorbell() {
 		String id = request.getString("id");
 		String name = request.getString("name");
+		JSONArray users = request.getJSONArray("users");
+
+		// Check users
+		for (int i=0; i < users.length(); i++) {
+			String userToBeAddedUsername = users.getString(i);
+			User userToBeAdded = accountTable.getRecord(userToBeAddedUsername);
+			if (userToBeAdded == null) {
+				response.put("response", "fail");
+				response.put("message", "Doorbell could not be updated\n" +
+						String.format("Username '%s' does not exist", userToBeAddedUsername));
+				return;
+			}
+		}
+
+		// Remove current users from doorbell
+		doorbellTable.deleteUsersFromDoorbell(id);
+
+		// Add users
+		for (int i=0; i < users.length(); i++)
+			doorbellTable.setDoorbell(users.getString(i), id);
+
+		// Update doorbell
 		if (doorbellTable.updateDoorbell(id, name)) {
 			response.put("response", "success");
 			response.put("message", "Doorbell successfully updated");
 		}
 		else {
 			response.put("response", "fail");
-			response.put("message", "Doorbell could not be updated");
+			response.put("message", "Doorbell name could not be updated");
 		}
 	}
 

@@ -227,6 +227,20 @@ public class DoorbellTable extends DatabaseConnection {
 		}
 	}
 
+	public boolean deleteUsersFromDoorbell(String doorbellID) {
+		try {
+			String query = "DELETE FROM doorbelluser WHERE Pi_id=?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, doorbellID);
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 	public boolean isUserAssignedDoorbell(String username, String doorbellID) {
 		try {
 			String query = "SELECT * FROM doorbelluser WHERE Pi_id = ? AND Username = ?";
