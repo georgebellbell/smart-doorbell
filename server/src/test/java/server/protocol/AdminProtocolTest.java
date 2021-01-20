@@ -25,9 +25,6 @@ class AdminProtocolTest {
 
 	@BeforeAll
 	static void init() {
-		// Create connection
-		DatabaseConnection.establishSession();
-
 		// Create test accounts
 		testUser = new User("testuser",
 				"quicksolutions.doorbell@gmail.com", "password", "user");
@@ -70,9 +67,6 @@ class AdminProtocolTest {
 		doorbellTable.deleteDoorbell(testDoorbell);
 		doorbellTable.deleteDoorbell(deleteDoorbell);
 		doorbellTable.deleteDoorbell(updateDoorbell);
-
-		// End session
-		DatabaseConnection.disconnectSession();
 	}
 
 	@BeforeEach

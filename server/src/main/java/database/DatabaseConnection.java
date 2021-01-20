@@ -12,6 +12,12 @@ public class DatabaseConnection {
 	private static final String USER = "username";
 	private static final String PASSWORD = "password";
 
+	// Database connection info
+	private static final String DB_USERNAME = "t2033t17";
+	private static final String DB_PASSWORD = "KnewBut+(Fin";
+	private static final String DB_URL = "jdbc:mysql://localhost:3306/t2033t17?autoReconnect=true";
+	private static final String DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
+
 	// Session variables
 	static JSch jsch = new JSch();
 	static Connection conn;
@@ -19,11 +25,9 @@ public class DatabaseConnection {
 	static int assignedPort = -1;
 	static boolean connected;
 
-	// Database connection info
-	private static final String DB_USERNAME = "t2033t17";
-	private static final String DB_PASSWORD = "KnewBut+(Fin";
-	private static final String DB_URL = "jdbc:mysql://localhost:3306/t2033t17";
-	private static final String DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
+	public DatabaseConnection() {
+		establishSession();
+	}
 
 	/**
 	 * Connect via SSH tunnel forwarding local port to remote host and port

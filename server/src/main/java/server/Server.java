@@ -43,7 +43,6 @@ public class Server {
 	 * Handle incoming client connections
 	 */
 	public void run() {
-		DatabaseConnection.establishSession();
 		try {
 			ServerSocket serverSocket = new ServerSocket(PORT);
 
@@ -68,7 +67,6 @@ public class Server {
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
-		DatabaseConnection.disconnectSession();
 	}
 
 	public static void main(String[] args) {
