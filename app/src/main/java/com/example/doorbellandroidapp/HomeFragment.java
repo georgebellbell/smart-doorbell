@@ -62,7 +62,7 @@ public class HomeFragment extends Fragment {
 		ivInfo.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				InformationPopups.showInformation(getContext(),"home");
+				Popups.showInformation(getContext(),"home");
 			}
 		});
 		return view;

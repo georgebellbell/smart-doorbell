@@ -13,20 +13,12 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Base64;
 import android.view.Gravity;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -173,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				break;
 
 			case R.id.nav_logout:
-				InformationPopups.logoutConfirmation(this);
+				Popups.logoutConfirmation(this);
 		}
 
 		// close drawer after clicking the menu item

@@ -100,7 +100,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		ivInfo.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				InformationPopups.showInformation(mContext,"faces");
+				Popups.showInformation(mContext,"faces");
 			}
 		});
 
@@ -129,7 +129,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 						populateSpinner();
 						break;
 					case "fail":
-						Toast.makeText(mContext, "NO DOORBELL ASSIGNED, ADD ONE IN SETTINGS", Toast.LENGTH_SHORT).show();
+						Toast.makeText(mContext, "NO DOORBELL ASSIGNED, ADD ONE IN SETTINGS", Toast.LENGTH_LONG).show();
 						break;
 				}
 			}
@@ -177,9 +177,8 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 			preferences.edit().putString("userChoiceSpinner", String.valueOf(userChoice)).apply();
 
 			String currentID = doorbellIDs.get(position);
-			Toast.makeText(mContext, currentID, Toast.LENGTH_SHORT).show();
-			InformationPopups informationPopups = new InformationPopups();
-			informationPopups.loadingPopUp(mContext);
+			Popups popups = new Popups();
+			popups.loadingPopUp(mContext);
 
 			loadImages(doorbellIDs.get(position));
 

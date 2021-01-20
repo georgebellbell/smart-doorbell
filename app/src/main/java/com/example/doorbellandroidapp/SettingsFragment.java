@@ -1,22 +1,18 @@
 package com.example.doorbellandroidapp;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -28,7 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class SettingsFragment extends Fragment implements AdapterView.OnItemSelectedListener{
+public class SettingsFragment extends Fragment{
 
 	EditText etDoorbellConnect, etDoorbellConnectName, pwdChangePassword, etChangeEmail;
 	Button btnDoorbellConnect, btnChangePassword, btnChangeEmail, btnRemoveDoorbell, btnDeleteAccount;
@@ -55,14 +51,14 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 		ivInfo.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				InformationPopups.showInformation(getContext(),"settings");
+				Popups.showInformation(getContext(),"settings");
 			}
 		});
 
 		ivAddDoorbellInfo.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				InformationPopups.showInformation(getContext(),"doorbell");
+				Popups.showInformation(getContext(),"doorbell");
 			}
 		});
 
@@ -94,16 +90,16 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 		btnRemoveDoorbell.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO add remove doorbell confirmation
 				String currentDoorbellID = doorbellIDs.get(spinnerID.getSelectedItemPosition());
-				removeDoorbell(currentDoorbellID);
+				String currentDoorbellName = doorbells.get(spinnerID.getSelectedItemPosition());
+				Popups.removeDoorbellConfirmation(currentDoorbellID, currentDoorbellName, mActivity);
 			}
 		});
 
 		btnDeleteAccount.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				InformationPopups.deleteConfirmation(getActivity(),getContext());
+				Popups.deleteConfirmation(getActivity());
 			}
 		});
 
@@ -159,7 +155,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 						populateSpinner();
 						break;
 					case "fail":
-						Toast.makeText(mActivity, "NO DOORBELL ASSIGNED, PLEASE CONTACT ADMIN", Toast.LENGTH_SHORT).show();
+						Toast.makeText(mActivity, "No doorbells assigned yet!", Toast.LENGTH_SHORT).show();
 						break;
 				}
 			}
@@ -178,38 +174,7 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 
 	}
 
-	public void removeDoorbell(String doorbellID){
-		// Client to handle sign up response from server
-		Client client = new Client(getActivity()) {
-			@Override
-			public void handleResponse(JSONObject response) throws JSONException {
-				switch (response.getString("response")) {
-					case "success":
-						Toast.makeText(getContext(), "Doorbell Removed", Toast.LENGTH_SHORT).show();
-						SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-						preferences.edit().putString("userChoiceSpinner",null).apply();
-						Helper.refresh(mActivity,"settings");
-						break;
-					case "fail":
-						Toast.makeText(getContext(), "Doorbell could not be removed", Toast.LENGTH_SHORT).show();
-						break;
-				}
-			}
-		};
 
-		// JSON Request object
-		JSONObject request = new JSONObject();
-		try {
-			request.put("request","removedoorbell");
-			request.put("doorbellID", doorbellID);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-		// Set request and start connection
-		client.setRequest(request);
-		client.start();
-	}
 
 	/**
 	 * Adds the retrieved IDs to a dropdown menu the user can navigate between
@@ -217,7 +182,6 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 	public void populateSpinner() {
 		ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_dropdown_item,doorbells);
 		spinnerID.setAdapter(adapter);
-		spinnerID.setOnItemSelectedListener(this);
 	}
 
 	public void changeEmail(String newEmail){
@@ -328,13 +292,4 @@ public class SettingsFragment extends Fragment implements AdapterView.OnItemSele
 	}
 
 
-	@Override
-	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-		Toast.makeText(mActivity, doorbells.get(position), Toast.LENGTH_SHORT).show();
-	}
-
-	@Override
-	public void onNothingSelected(AdapterView<?> parent) {
-
-	}
 }
