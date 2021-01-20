@@ -6,7 +6,6 @@ import database.User;
 import communication.Email;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import server.ResponseHandler;
 
 import java.sql.Blob;
 import java.sql.SQLException;
@@ -16,21 +15,22 @@ public class AdminProtocol extends Protocol {
 	private PasswordManager passwordManager = new PasswordManager();
 	private User user;
 
-	public AdminProtocol() {
-		requestResponse.put("login", new ResponseHandler(this::login, "username", "password"));
-		requestResponse.put("user", new ResponseHandler(this::userInfo, "username"));
-		requestResponse.put("deleteuser", new ResponseHandler(this::deleteUser, "username"));
-		requestResponse.put("update", new ResponseHandler(this::update, "username", "newusername", "newemail", "devices"));
-		requestResponse.put("searchdoorbell", new ResponseHandler(this::searchDoorbell, "id"));
-		requestResponse.put("deletedoorbell", new ResponseHandler(this::deleteDoorbell, "id"));
-		requestResponse.put("updatedoorbell", new ResponseHandler(this::updateDoorbell,"id", "name", "users"));
-		requestResponse.put("email", new ResponseHandler(this::sendEmail, "type", "subject", "contents", "recipient"));
-		requestResponse.put("newpassword", new ResponseHandler(this::newPassword, "username"));
-		requestResponse.put("analysis", new ResponseHandler(this::performAnalysis));
+	@Override
+	public void init() {
+		requestHashMap.put("login", new RequestHandler(this::login, "username", "password"));
+		requestHashMap.put("user", new RequestHandler(this::userInfo, "username"));
+		requestHashMap.put("deleteuser", new RequestHandler(this::deleteUser, "username"));
+		requestHashMap.put("update", new RequestHandler(this::update, "username", "newusername", "newemail", "devices"));
+		requestHashMap.put("searchdoorbell", new RequestHandler(this::searchDoorbell, "id"));
+		requestHashMap.put("deletedoorbell", new RequestHandler(this::deleteDoorbell, "id"));
+		requestHashMap.put("updatedoorbell", new RequestHandler(this::updateDoorbell,"id", "name", "users"));
+		requestHashMap.put("email", new RequestHandler(this::sendEmail, "type", "subject", "contents", "recipient"));
+		requestHashMap.put("newpassword", new RequestHandler(this::newPassword, "username"));
+		requestHashMap.put("analysis", new RequestHandler(this::performAnalysis));
 	}
 
 	@Override
-	public String processInput() {
+	public String processRequest() {
 		if (!request.getString("request").equals("login") && user == null) {
 			// Admin must be logged in to perform non-login requests
 			response.put("response", "invalid");
@@ -38,7 +38,7 @@ public class AdminProtocol extends Protocol {
 			return response.toString();
 		}
 
-		return super.processInput();
+		return super.processRequest();
 	}
 
 	public void performAnalysis() {

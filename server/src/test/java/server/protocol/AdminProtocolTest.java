@@ -57,7 +57,7 @@ class AdminProtocolTest {
 		request.put("username", testAdmin.getUsername());
 		request.put("password", testAdmin.getPassword());
 		loginProtocol.setRequest(request.toString());
-		loginProtocol.processInput();
+		loginProtocol.processRequest();
 	}
 
 	@AfterAll
@@ -137,7 +137,7 @@ class AdminProtocolTest {
 		request.put("username", testAdmin.getUsername());
 		request.put("password", testAdmin.getPassword());
 		protocol.setRequest(request.toString());
-		JSONObject response = new JSONObject(protocol.processInput());
+		JSONObject response = new JSONObject(protocol.processRequest());
 		assertEquals("success", response.getString("response"));
 	}
 
@@ -148,7 +148,7 @@ class AdminProtocolTest {
 		request.put("username", testAdmin.getUsername());
 		request.put("password", "incorrect");
 		protocol.setRequest(request.toString());
-		JSONObject response = new JSONObject(protocol.processInput());
+		JSONObject response = new JSONObject(protocol.processRequest());
 		assertEquals("fail", response.getString("response"));
 	}
 
@@ -159,7 +159,7 @@ class AdminProtocolTest {
 		request.put("username", testUser.getUsername());
 		request.put("password", testUser.getPassword());
 		protocol.setRequest(request.toString());
-		JSONObject response = new JSONObject(protocol.processInput());
+		JSONObject response = new JSONObject(protocol.processRequest());
 		assertEquals("fail", response.getString("response"));
 	}
 
@@ -168,7 +168,7 @@ class AdminProtocolTest {
 		JSONObject request = new JSONObject();
 		request.put("request","analysis");
 		protocol.setRequest(request.toString());
-		JSONObject response = new JSONObject(protocol.processInput());
+		JSONObject response = new JSONObject(protocol.processRequest());
 		assertEquals("invalid", response.getString("response"));
 	}
 
@@ -178,7 +178,7 @@ class AdminProtocolTest {
 		request.put("request","user");
 		request.put("username", testUser.getUsername());
 		loginProtocol.setRequest(request.toString());
-		JSONObject response = new JSONObject(loginProtocol.processInput());
+		JSONObject response = new JSONObject(loginProtocol.processRequest());
 		assertAll("success",
 				() -> assertEquals("success", response.getString("response")),
 				() -> assertEquals(testUser.getUsername(), response.getString("username")),
@@ -193,7 +193,7 @@ class AdminProtocolTest {
 		request.put("request","user");
 		request.put("username","non-existent-user");
 		loginProtocol.setRequest(request.toString());
-		JSONObject response = new JSONObject(loginProtocol.processInput());
+		JSONObject response = new JSONObject(loginProtocol.processRequest());
 		assertEquals("fail", response.getString("response"));
 	}
 
@@ -207,7 +207,7 @@ class AdminProtocolTest {
 		request.put("devices", new JSONArray());
 		testUpdateAccount.setUsername("New username");
 		loginProtocol.setRequest(request.toString());
-		JSONObject response = new JSONObject(loginProtocol.processInput());
+		JSONObject response = new JSONObject(loginProtocol.processRequest());
 		assertEquals("success", response.getString("response"));
 	}
 
@@ -221,7 +221,7 @@ class AdminProtocolTest {
 		request.put("newemail", testUser.getEmail());
 		request.put("devices", new JSONArray());
 		loginProtocol.setRequest(request.toString());
-		JSONObject response = new JSONObject(loginProtocol.processInput());
+		JSONObject response = new JSONObject(loginProtocol.processRequest());
 		assertAll("fail",
 				() -> assertEquals("fail", response.getString("response")),
 				() -> assertEquals("Account username is already taken", response.getString("message"))
@@ -234,7 +234,7 @@ class AdminProtocolTest {
 		request.put("request","deleteuser");
 		request.put("username", testDeleteAccount.getUsername());
 		loginProtocol.setRequest(request.toString());
-		JSONObject response = new JSONObject(loginProtocol.processInput());
+		JSONObject response = new JSONObject(loginProtocol.processRequest());
 		assertEquals("success", response.getString("response"));
 	}
 
@@ -244,7 +244,7 @@ class AdminProtocolTest {
 		request.put("request","deleteuser");
 		request.put("username", testAdmin.getUsername());
 		loginProtocol.setRequest(request.toString());
-		JSONObject response = new JSONObject(loginProtocol.processInput());
+		JSONObject response = new JSONObject(loginProtocol.processRequest());
 		assertAll("fail",
 				() -> assertEquals("fail", response.getString("response")),
 				() -> assertEquals("You cannot delete your own account", response.getString("message"))
@@ -257,7 +257,7 @@ class AdminProtocolTest {
 		request.put("request","newpassword");
 		request.put("username", testUser.getUsername());
 		loginProtocol.setRequest(request.toString());
-		JSONObject response = new JSONObject(loginProtocol.processInput());
+		JSONObject response = new JSONObject(loginProtocol.processRequest());
 		assertEquals("success", response.getString("response"));
 	}
 
@@ -267,7 +267,7 @@ class AdminProtocolTest {
 		request.put("request","searchdoorbell");
 		request.put("id", testDoorbell.getId());
 		loginProtocol.setRequest(request.toString());
-		JSONObject response = new JSONObject(loginProtocol.processInput());
+		JSONObject response = new JSONObject(loginProtocol.processRequest());
 		assertAll("success",
 				() -> assertEquals("success", response.getString("response")),
 				() -> assertEquals(testDoorbell.getId(), response.getString("id")),
@@ -281,7 +281,7 @@ class AdminProtocolTest {
 		request.put("request","searchdoorbell");
 		request.put("id","not-existing-doorbell");
 		loginProtocol.setRequest(request.toString());
-		JSONObject response = new JSONObject(loginProtocol.processInput());
+		JSONObject response = new JSONObject(loginProtocol.processRequest());
 		assertEquals("fail", response.getString("response"));
 	}
 
@@ -293,7 +293,7 @@ class AdminProtocolTest {
 		request.put("name", "New Doorbell Name");
 		request.put("users", new JSONArray());
 		loginProtocol.setRequest(request.toString());
-		JSONObject response = new JSONObject(loginProtocol.processInput());
+		JSONObject response = new JSONObject(loginProtocol.processRequest());
 		assertEquals("success", response.getString("response"));
 	}
 
@@ -307,7 +307,7 @@ class AdminProtocolTest {
 		users.put("non-existing-user");
 		request.put("users", users);
 		loginProtocol.setRequest(request.toString());
-		JSONObject response = new JSONObject(loginProtocol.processInput());
+		JSONObject response = new JSONObject(loginProtocol.processRequest());
 		assertEquals("fail", response.getString("response"));
 	}
 

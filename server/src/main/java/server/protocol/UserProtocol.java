@@ -4,11 +4,9 @@ import authentication.TwoFactorAuthentication;
 import communication.Email;
 import database.Data;
 import database.User;
-import database.UserTokenTable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.security.crypto.codec.Base64;
-import server.ResponseHandler;
 
 import java.sql.Blob;
 import java.sql.Connection;
@@ -17,26 +15,28 @@ import java.util.ArrayList;
 
 public class UserProtocol extends Protocol {
 	private User user;
+	private ArrayList<String> noValidTokenRequests;
 
-	ArrayList<String> noValidTokenRequests;
-
-	public UserProtocol() {
-		requestResponse.put("login", new ResponseHandler(this::login, "username", "password"));
-		requestResponse.put("signup", new ResponseHandler(this::signUp, "username", "email", "password"));
-		requestResponse.put("twofactor", new ResponseHandler(this::twoFactor, "username", "code"));
-		requestResponse.put("resendtwofactor", new ResponseHandler(this::resendTwoFactor, "username"));
-		requestResponse.put("faces", new ResponseHandler(this::faces, "doorbellID"));
-		requestResponse.put("deleteface", new ResponseHandler(this::deleteFace, "id"));
-		requestResponse.put("renameface", new ResponseHandler(this::renameFace, "id", "name"));
-		requestResponse.put("addface", new ResponseHandler(this::addFace, "personname", "image", "doorbellID"));
-		requestResponse.put("lastface", new ResponseHandler(this::lastFace));
-		requestResponse.put("logout", new ResponseHandler(this::logout));
-		requestResponse.put("opendoor", new ResponseHandler(this::openDoor, "message", "doorbellID"));
-		requestResponse.put("getdoorbells", new ResponseHandler(this::getDoorbells));
-		requestResponse.put("connectdoorbell", new ResponseHandler(this::connectDoorbell, "doorbellID", "doorbellname"));
-		requestResponse.put("changepassword", new ResponseHandler(this::changePassword, "password"));
-		requestResponse.put("changeemail", new ResponseHandler(this::changeEmail, "email"));
-		requestResponse.put("deleteaccount", new ResponseHandler(this::deleteAccount));
+	@Override
+	public void init() {
+		requestHashMap.put("login", new RequestHandler(this::login, "username", "password"));
+		requestHashMap.put("signup", new RequestHandler(this::signUp, "username", "email", "password"));
+		requestHashMap.put("twofactor", new RequestHandler(this::twoFactor, "username", "code"));
+		requestHashMap.put("resendtwofactor", new RequestHandler(this::resendTwoFactor, "username"));
+		requestHashMap.put("faces", new RequestHandler(this::faces, "doorbellID"));
+		requestHashMap.put("deleteface", new RequestHandler(this::deleteFace, "id"));
+		requestHashMap.put("renameface", new RequestHandler(this::renameFace, "id", "name"));
+		requestHashMap.put("addface", new RequestHandler(this::addFace,
+				"personname", "image", "doorbellID"));
+		requestHashMap.put("lastface", new RequestHandler(this::lastFace));
+		requestHashMap.put("logout", new RequestHandler(this::logout));
+		requestHashMap.put("opendoor", new RequestHandler(this::openDoor, "message", "doorbellID"));
+		requestHashMap.put("getdoorbells", new RequestHandler(this::getDoorbells));
+		requestHashMap.put("connectdoorbell", new RequestHandler(this::connectDoorbell,
+				"doorbellID", "doorbellname"));
+		requestHashMap.put("changepassword", new RequestHandler(this::changePassword, "password"));
+		requestHashMap.put("changeemail", new RequestHandler(this::changeEmail, "email"));
+		requestHashMap.put("deleteaccount", new RequestHandler(this::deleteAccount));
 
 		noValidTokenRequests = new ArrayList<String>(){{
 			add("login");
@@ -54,91 +54,6 @@ public class UserProtocol extends Protocol {
 		JSONObject requestObject = new JSONObject(request);
 		// All Android requests must include token
 		return (requestObject.get("token") != null);
-	}
-
-	public void connectDoorbell() {
-		String username = user.getUsername();
-		String doorbellID = request.getString("doorbellID");
-		String doorbellName = request.getString("doorbellname");
-		if (doorbellTable.isUserAssignedDoorbell(username, doorbellID)) {
-			response.put("response", "fail");
-			response.put("message", "Doorbell already assigned");
-			return;
-		}
-		if (!doorbellTable.doorbellExists(doorbellID)) {
-			doorbellTable.addNewDoorbell(doorbellID);
-		}
-		doorbellTable.setDoorbell(username, doorbellID);
-		doorbellTable.updateDoorbell(doorbellID, doorbellName);
-		response.put("response", "success");
-	}
-
-	public void deleteAccount() {
-		String username = user.getUsername();
-		boolean accountDeleted = accountTable.deleteRecord(username);
-		if (accountDeleted)
-			response.put("response", "success");
-		else
-			response.put("response", "fail");
-	}
-
-	public void changePassword() {
-		String username = user.getUsername();
-		String password = request.getString("password");
-		boolean passwordChanged = accountTable.changePassword(username, password);
-		if (passwordChanged)
-			response.put("response", "success");
-		else
-			response.put("response", "fail");
-	}
-
-	public void changeEmail() {
-		String username = user.getUsername();
-		String email = request.getString("email");
-
-		// Check email
-		if (!Email.isValidEmail(email)) {
-			response.put("response", "fail");
-			response.put("message", "Email is not valid");
-			return;
-		}
-
-		boolean emailChanged = accountTable.changeEmail(username, email);
-		if (emailChanged)
-			response.put("response", "success");
-		else
-			response.put("response", "fail");
-	}
-
-	public void getDoorbells() {
-		String username = user.getUsername();
-		JSONArray doorbells = doorbellTable.getDoorbells(username);
-		if (doorbells.length() != 0) {
-			response.put("response", "success");
-			response.put("doorbells", doorbells);
-		} else {
-			response.put("response", "fail");
-			response.put("message", "You have 0 doorbells assigned");
-		}
-	}
-
-	public void openDoor() {
-		String message = request.getString("message");
-		String deviceId = request.getString("doorbellID");
-
-		if (message.equals("open")) {
-			response.put("response", "open");
-			pollingTable.createPoll(deviceId, message);
-		}
-		else {
-			response.put("response", "close");
-		}
-	}
-
-	public void logout() {
-		String token = request.getString("token");
-		if (userTokenTable.deleteByToken(token))
-			response.put("response", "success");
 	}
 
 	/**
@@ -170,13 +85,122 @@ public class UserProtocol extends Protocol {
 	}
 
 	@Override
-	public String processInput() {
+	public String processRequest() {
 		if (!checkToken()) {
 			return response.toString();
 		}
-		return super.processInput();
+		return super.processRequest();
 	}
 
+	/**
+	 * Assigns current user to doorbell
+	 */
+	public void connectDoorbell() {
+		String username = user.getUsername();
+		String doorbellID = request.getString("doorbellID");
+		String doorbellName = request.getString("doorbellname");
+		if (doorbellTable.isUserAssignedDoorbell(username, doorbellID)) {
+			response.put("response", "fail");
+			response.put("message", "Doorbell already assigned");
+			return;
+		}
+		if (!doorbellTable.doorbellExists(doorbellID)) {
+			doorbellTable.addNewDoorbell(doorbellID);
+		}
+		doorbellTable.setDoorbell(username, doorbellID);
+		doorbellTable.updateDoorbell(doorbellID, doorbellName);
+		response.put("response", "success");
+	}
+
+	/**
+	 * Deletes logged in user's account
+	 */
+	public void deleteAccount() {
+		String username = user.getUsername();
+		boolean accountDeleted = accountTable.deleteRecord(username);
+		if (accountDeleted)
+			response.put("response", "success");
+		else
+			response.put("response", "fail");
+	}
+
+	/**
+	 * Sets user's password to new password
+	 */
+	public void changePassword() {
+		String username = user.getUsername();
+		String password = request.getString("password");
+		boolean passwordChanged = accountTable.changePassword(username, password);
+		if (passwordChanged)
+			response.put("response", "success");
+		else
+			response.put("response", "fail");
+	}
+
+	/**
+	 * Sets the user's email to new email address
+	 */
+	public void changeEmail() {
+		String username = user.getUsername();
+		String email = request.getString("email");
+
+		// Check email
+		if (!Email.isValidEmail(email)) {
+			response.put("response", "fail");
+			response.put("message", "Email is not valid");
+			return;
+		}
+
+		boolean emailChanged = accountTable.changeEmail(username, email);
+		if (emailChanged)
+			response.put("response", "success");
+		else
+			response.put("response", "fail");
+	}
+
+	/**
+	 * Gets the doorbells that the user is assigned to
+	 */
+	public void getDoorbells() {
+		String username = user.getUsername();
+		JSONArray doorbells = doorbellTable.getDoorbells(username);
+		if (doorbells.length() != 0) {
+			response.put("response", "success");
+			response.put("doorbells", doorbells);
+		} else {
+			response.put("response", "fail");
+			response.put("message", "You have 0 doorbells assigned");
+		}
+	}
+
+	/**
+	 * Opens the door request by the user
+	 */
+	public void openDoor() {
+		String message = request.getString("message");
+		String deviceId = request.getString("doorbellID");
+
+		if (message.equals("open")) {
+			response.put("response", "open");
+			pollingTable.createPoll(deviceId, message);
+		}
+		else {
+			response.put("response", "close");
+		}
+	}
+
+	/**
+	 * Logs out the current session of the user
+	 */
+	public void logout() {
+		String token = request.getString("token");
+		if (userTokenTable.deleteByToken(token))
+			response.put("response", "success");
+	}
+
+	/**
+	 * Gets the most recent face that ring the user's doorbell
+	 */
 	public void lastFace(){
 		try {
 			String username = user.getUsername();
@@ -194,6 +218,7 @@ public class UserProtocol extends Protocol {
 			response.put("image", image);
 			response.put("time", recentImage.getCreatedAt());
 			response.put("person", recentImage.getPersonName());
+			response.put("imageID", recentImage.getImageID());
 			response.put("doorbellname", doorbellName);
 			response.put("doorbellID", recentImage.getDeviceID());
 
@@ -203,6 +228,9 @@ public class UserProtocol extends Protocol {
 		}
 	}
 
+	/**
+	 * Adds a new face to recognise faces of the requested doorbell
+	 */
 	public void addFace() {
 		try {
 			String doorbellID = request.getString("doorbellID");
@@ -218,18 +246,28 @@ public class UserProtocol extends Protocol {
 		}
 	}
 
+	/**
+	 * Sets a new name for a requested face
+	 */
 	public void renameFace() {
 		int id = request.getInt("id");
 		String name = request.getString("name");
 		if (dataTable.changeName(id, name))
 			response.put("response", "success");
 	}
+
+	/**
+	 * Removes the recognise face requested
+	 */
 	public void deleteFace() {
 		int id = request.getInt("id");
 		if (dataTable.deleteRecordById(id))
 			response.put("response", "success");
 	}
 
+	/**
+	 * Gets all of the recognise faces of the doorbell requested
+	 */
 	public void faces() {
 		String doorbellID = request.getString("doorbellID");
 		ArrayList<Data> allImages = new ArrayList<>(dataTable.getAllImages(doorbellID));
@@ -261,6 +299,9 @@ public class UserProtocol extends Protocol {
 		}
 	}
 
+	/**
+	 * Attempts to sign in user with account details inputted
+	 */
 	public void login() {
 		String username = request.getString("username");
 		String password = request.getString("password");
@@ -291,6 +332,9 @@ public class UserProtocol extends Protocol {
 
 	}
 
+	/**
+	 * Creates a new account with details passed from app
+	 */
 	public void signUp() {
 		String username = request.getString("username");
 		String email = request.getString("email");
@@ -319,6 +363,9 @@ public class UserProtocol extends Protocol {
 		}
 	}
 
+	/**
+	 * Checks user's inputted 2FA code
+	 */
 	public void twoFactor() {
 		String username = request.getString("username");
 		String code = request.getString("code");
@@ -355,6 +402,9 @@ public class UserProtocol extends Protocol {
 		}
 	}
 
+	/**
+	 * Requests a new 2FA code to be sent
+	 */
 	public void resendTwoFactor() {
 		String username = request.getString("username");
 

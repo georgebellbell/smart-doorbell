@@ -1,22 +1,12 @@
 package server.protocol;
 
-import authentication.TwoFactorAuthentication;
 import database.*;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.security.core.parameters.P;
-import org.springframework.security.crypto.codec.Base64;
-import server.ResponseHandler;
 
-import javax.sql.rowset.serial.SerialBlob;
-import javax.sql.rowset.serial.SerialClob;
-import java.sql.Blob;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Protocol {
+public abstract class Protocol {
 	JSONObject request;
 	JSONObject response = new JSONObject();
 	AccountTable accountTable = new AccountTable();
@@ -24,7 +14,16 @@ public class Protocol {
 	DataTable dataTable = new DataTable();
 	DoorbellTable doorbellTable = new DoorbellTable();
 	PollingTable pollingTable = new PollingTable();
-	HashMap<String, ResponseHandler> requestResponse = new HashMap<>();
+	HashMap<String, RequestHandler> requestHashMap = new HashMap<>();
+
+	public Protocol() {
+		init();
+	}
+
+	/**
+	 * Initialise request handling hash map
+	 */
+	public abstract void init();
 
 	/**
 	 * Sets request to be handles
@@ -49,13 +48,13 @@ public class Protocol {
 
 			// Check if request type exists
 			String requestType = requestObject.getString("request");
-			if (!requestResponse.containsKey(requestType)) {
+			if (!requestHashMap.containsKey(requestType)) {
 				return false;
 			}
 
 			// Check if required keys for request are present
-			ResponseHandler responseHandler = requestResponse.get(requestType);
-			return responseHandler.requestHasRequiredKeys(requestObject);
+			RequestHandler requestHandler = requestHashMap.get(requestType);
+			return requestHandler.requestHasRequiredKeys(requestObject);
 
 		} catch (JSONException e) {
 			// Request is not a valid JSON object
@@ -67,16 +66,16 @@ public class Protocol {
 	 * Processes the input request
 	 * @return response
 	 */
-	public String processInput(){
+	public String processRequest(){
 		if (request == null) {
 			throw new IllegalStateException("Request must be set before processing");
 		}
 
 		// Handle response to request
 		String requestType = request.getString("request");
-		ResponseHandler responseHandler = requestResponse.get(requestType);
-		if (responseHandler != null) {
-			Runnable responseMethod = responseHandler.getMethod();
+		RequestHandler requestHandler = requestHashMap.get(requestType);
+		if (requestHandler != null) {
+			Runnable responseMethod = requestHandler.getMethod();
 			responseMethod.run();
 		}
 		return response.toString();
