@@ -13,28 +13,148 @@ public class AccountTable extends DatabaseConnection {
 	PasswordManager passwordManager = new PasswordManager();
 
 	/**
-	 * @param user - to add to the database
-	 * @return if recorded add to the table
+	 * @param role - role assigned to the registered user
+	 * @return number of users with the assigned role
 	 */
-	public boolean addRecord(User user) {
+	public int getTotalUsers(String role) {
+		int total = 0;
 		try {
-			String salt = passwordManager.generateSalt();
-			String query = "INSERT INTO accounts (Username, Email, Password, Salt, Role, Created_at)"
-					+ " VALUES (?, ?, ?, ?, ?, ?)";
+			String query = "SELECT COUNT(*) FROM accounts WHERE Role = ?";
 			statement = conn.prepareStatement(query);
-			statement.setString(1, user.getUsername());
-			statement.setString(2,user.getEmail());
-			statement.setString(3, passwordManager.hashPassword(user.getPassword(), salt));
-			statement.setString(4, salt);
-			statement.setString(5, user.getRole());
-			statement.setString(6, user.getCreated_at());
-			statement.execute();
+			statement.setString(1, role);
+			ResultSet resultSet = statement.executeQuery();
+			resultSet.next();
+			total = resultSet.getInt(1);
 			statement.close();
-			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
 		}
+		return total;
+	}
+
+	/**
+	 * @param username - username of the email to retrieve
+	 * @return email of the associated username
+	 */
+	public String getEmailByUsername(String username) {
+		String email = null;
+		try {
+			String query = "SELECT Email FROM accounts WHERE Username = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, username);
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next())
+				email = resultSet.getString("email");
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Invalid username");
+		}
+		return email;
+	}
+
+	/**
+	 * @param id - doorbell id that links to the associated users
+	 * @return all email addresses associated to id
+	 */
+	public ArrayList<String> getEmailByDoorbell(String id) {
+		ArrayList<String> emails = new ArrayList<>();
+		try {
+			String query = "SELECT Email FROM accounts, doorbelluser WHERE accounts.Username = doorbelluser.Username AND doorbelluser.Pi_id = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, id);
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next())
+				emails.add(resultSet.getString("email"));
+
+		} catch (SQLException e) {
+			System.out.println("Doorbell doesn't exist");
+		}
+		return emails;
+	}
+
+	/**
+	 * @return all emails from the account table
+	 */
+	public ArrayList<String> getAllEmails() {
+		ArrayList<String> emails = new ArrayList<>();
+		try {
+			String query = "SELECT Email FROM accounts";
+			statement = conn.prepareStatement(query);
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next())
+				emails.add(resultSet.getString("email"));
+
+		} catch (SQLException e) {
+			System.out.println("Can't retrieve all emails");
+		}
+		return emails;
+	}
+
+	/**
+	 * @param username - username of the account to retrieve the password of
+	 * @return password of the user if found, else null
+	 */
+	public String getPassword(String username) {
+		String found = null;
+		try {
+			String query = "SELECT Password FROM accounts WHERE Username=?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, username);
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next()){
+				found = resultSet.getString("password");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return found;
+	}
+
+	/**
+	 * @param username - username of the user's account
+	 * @param password - password of the account
+	 * @param role - role of the user
+	 * @return login retrieved from the database
+	 */
+	public boolean getLogin(String username, String password, String role) {
+		boolean found = false;
+		password = passwordManager.checkPasswords(getPassword(username), password);
+		try {
+			String query = "SELECT Username, Password, Role  FROM accounts " +
+					"WHERE Username=? AND Password=? AND Role = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, username);
+			statement.setString(2, password);
+			statement.setString(3, role);
+			ResultSet resultSet = statement.executeQuery();
+			found = resultSet.next();
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return found;
+	}
+
+	/**
+	 * @param username - username of the account to retrieve the deviceID or ID's from
+	 * @return deviceID associated with the user
+	 */
+	public ArrayList<String> getDeviceID(String username) {
+		ArrayList<String> deviceIDs = new ArrayList<>();
+		try {
+			String query = "SELECT Pi_id FROM doorbelluser WHERE Username=?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, username);
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()){
+				deviceIDs.add(resultSet.getString("Pi_id"));
+			}
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return deviceIDs;
 	}
 
 	/**
@@ -66,39 +186,21 @@ public class AccountTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param username - username of the account to retrieve the deviceID or ID's from
-	 * @return deviceID associated with the user
+	 * @param user - to add to the database
+	 * @return if recorded add to the table
 	 */
-	public ArrayList<String> getDeviceID(String username) {
-		ArrayList<String> deviceIDs = new ArrayList<>();
+	public boolean addRecord(User user) {
 		try {
-			String query = "SELECT Pi_id FROM doorbelluser WHERE Username=?";
+			String salt = passwordManager.generateSalt();
+			String query = "INSERT INTO accounts (Username, Email, Password, Salt, Role, Created_at)"
+					+ " VALUES (?, ?, ?, ?, ?, ?)";
 			statement = conn.prepareStatement(query);
-			statement.setString(1, username);
-			ResultSet resultSet = statement.executeQuery();
-			while (resultSet.next()){
-				deviceIDs.add(resultSet.getString("Pi_id"));
-			}
-			statement.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return deviceIDs;
-	}
-
-	public boolean deleteRecord(User user) {
-		return deleteRecord(user.getUsername());
-	}
-
-	/**
-	 * @param username of record to delete
-	 * @return if record deleted
-	 */
-	public boolean deleteRecord(String username) {
-		try {
-			String query = "DELETE FROM accounts WHERE Username=?";
-			statement = conn.prepareStatement(query);
-			statement.setString(1, username);
+			statement.setString(1, user.getUsername());
+			statement.setString(2,user.getEmail());
+			statement.setString(3, passwordManager.hashPassword(user.getPassword(), salt));
+			statement.setString(4, salt);
+			statement.setString(5, user.getRole());
+			statement.setString(6, user.getCreated_at());
 			statement.execute();
 			statement.close();
 			return true;
@@ -106,51 +208,6 @@ public class AccountTable extends DatabaseConnection {
 			e.printStackTrace();
 			return false;
 		}
-	}
-
-	/**
-	 * @param username - username of the user's account
-	 * @param password - password of the account
-	 * @param role - role of the user
-	 * @return login retrieved from the database
-	 */
-	public boolean getLogin(String username, String password, String role) {
-		boolean found = false;
-		password = passwordManager.checkPasswords(getPassword(username), password);
-		try {
-			String query = "SELECT Username, Password, Role  FROM accounts " +
-					"WHERE Username=? AND Password=? AND Role = ?";
-			statement = conn.prepareStatement(query);
-			statement.setString(1, username);
-			statement.setString(2, password);
-			statement.setString(3, role);
-			ResultSet resultSet = statement.executeQuery();
-			found = resultSet.next();
-			statement.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return found;
-	}
-
-	/**
-	 * @param username - username of the account to retrieve the password of
-	 * @return password of the user if found, else null
-	 */
-	public String getPassword(String username) {
-		String found = null;
-		try {
-			String query = "SELECT Password FROM accounts WHERE Username=?";
-			statement = conn.prepareStatement(query);
-			statement.setString(1, username);
-			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.next()){
-				found = resultSet.getString("password");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return found;
 	}
 
 	/**
@@ -212,82 +269,25 @@ public class AccountTable extends DatabaseConnection {
 		}
 	}
 
-	/**
-	 * @return all emails from the account table
-	 */
-	public ArrayList<String> getAllEmails() {
-		ArrayList<String> emails = new ArrayList<>();
-		try {
-			String query = "SELECT Email FROM accounts";
-			statement = conn.prepareStatement(query);
-			ResultSet resultSet = statement.executeQuery();
-			while (resultSet.next())
-				emails.add(resultSet.getString("email"));
-
-		} catch (SQLException e) {
-			System.out.println("Can't retrieve all emails");
-		}
-		return emails;
+	public boolean deleteRecord(User user) {
+		return deleteRecord(user.getUsername());
 	}
 
 	/**
-	 * @param id - doorbell id that links to the associated users
-	 * @return all email addresses associated to id
+	 * @param username of record to delete
+	 * @return if record deleted
 	 */
-	public ArrayList<String> getEmailByDoorbell(String id) {
-		ArrayList<String> emails = new ArrayList<>();
+	public boolean deleteRecord(String username) {
 		try {
-			String query = "SELECT Email FROM accounts, doorbelluser WHERE accounts.Username = doorbelluser.Username AND doorbelluser.Pi_id = ?";
-			statement = conn.prepareStatement(query);
-			statement.setString(1, id);
-			ResultSet resultSet = statement.executeQuery();
-			while (resultSet.next())
-				emails.add(resultSet.getString("email"));
-
-		} catch (SQLException e) {
-			System.out.println("Doorbell doesn't exist");
-		}
-		return emails;
-	}
-
-	/**
-	 * @param username - username of the email to retrieve
-	 * @return email of the associated username
-	 */
-	public String getEmailByUsername(String username) {
-		String email = null;
-		try {
-			String query = "SELECT Email FROM accounts WHERE Username = ?";
+			String query = "DELETE FROM accounts WHERE Username=?";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, username);
-			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.next())
-				email = resultSet.getString("email");
+			statement.execute();
 			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Invalid username");
-		}
-		return email;
-	}
-
-	/**
-	 * @param role - role assigned to the registered user
-	 * @return number of users with the assigned role
-	 */
-	public int getTotalUsers(String role) {
-		int total = 0;
-		try {
-			String query = "SELECT COUNT(*) FROM accounts WHERE Role = ?";
-			statement = conn.prepareStatement(query);
-			statement.setString(1, role);
-			ResultSet resultSet = statement.executeQuery();
-			resultSet.next();
-			total = resultSet.getInt(1);
-			statement.close();
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
-		return total;
 	}
 }
