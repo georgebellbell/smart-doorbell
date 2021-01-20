@@ -37,6 +37,7 @@ public class UserProtocol extends Protocol {
 		requestHashMap.put("changepassword", new RequestHandler(this::changePassword, "password"));
 		requestHashMap.put("changeemail", new RequestHandler(this::changeEmail, "email"));
 		requestHashMap.put("deleteaccount", new RequestHandler(this::deleteAccount));
+		requestHashMap.put("removedoorbell", new RequestHandler(this::removeDoorbell, "doorbellID"));
 
 		noValidTokenRequests = new ArrayList<String>(){{
 			add("login");
@@ -90,6 +91,18 @@ public class UserProtocol extends Protocol {
 			return response.toString();
 		}
 		return super.processRequest();
+	}
+
+	/**
+	 * Remove current user from doorbell
+	 */
+	public void removeDoorbell() {
+		String username = user.getUsername();
+		String doorbellID = request.getString("doorbellID");
+		if (doorbellTable.unassignDoorbell(doorbellID, username))
+			response.put("response", "success");
+		else
+			response.put("response", "fail");
 	}
 
 	/**
