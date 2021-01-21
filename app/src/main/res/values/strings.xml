@@ -10,4 +10,7 @@
     <string name="noLowercaseError">Password must include at least one lower case character</string>
     <string name="spacesError">Do not use spaces</string>
     <string name="shortUsernameError">Username must be at least two characters long</string>
+
+
+    <string name="addFaceToNoDoorbells">Please add doorbell before adding faces</string>
 </resources>

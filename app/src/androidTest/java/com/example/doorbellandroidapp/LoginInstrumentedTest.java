@@ -70,4 +70,10 @@ public class LoginInstrumentedTest {
 		}
 		onView(withId(R.id.btnLogin)).check(matches(not(isEnabled())));
 	}
+
+	@Test
+	public void moveToCreateAccount(){
+		onView(withId(R.id.tvGoToSignUp)).perform(click());
+		onView(withId(R.id.tvSignUp)).check(matches(isDisplayed()));
+	}
 }
