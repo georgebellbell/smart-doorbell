@@ -68,7 +68,10 @@ public class SettingsFragment extends Fragment{
 
 					String doorbellID = etDoorbellConnect.getText().toString();
 					String doorbellName = etDoorbellConnectName.getText().toString();
-					addDoorbell(doorbellID, doorbellName);
+					if (!doorbellID.isEmpty()||!doorbellName.isEmpty())
+						addDoorbell(doorbellID, doorbellName);
+					else
+						Toast.makeText(mActivity, "No ID or name was given", Toast.LENGTH_SHORT).show();
 			}
 		});
 
