@@ -2,15 +2,19 @@ package database;
 
 import com.jcraft.jsch.*;
 
+import java.net.URL;
 import java.sql.*;
+import java.util.Objects;
 
 public class DatabaseConnection {
 	// SSH connection info
 	private static final String HOST = "linux.cs.ncl.ac.uk";
 	private static final String R_HOST = "cs-db.ncl.ac.uk";
 	private static final int PORT = 3306;
-	private static final String USER = "username";
-	private static final String PASSWORD = "password";
+	private static final String USER = "b9021925";
+//	private static final String PASSWORD = "password";
+
+
 
 	// Database connection info
 	private static final String DB_USERNAME = "t2033t17";
@@ -32,11 +36,13 @@ public class DatabaseConnection {
 	/**
 	 * Connect via SSH tunnel forwarding local port to remote host and port
 	 */
-	public static void establishSession() {
+	public void establishSession() {
+		String privateKey = "C:/Users/Dom/IdeaProjects/smart-doorbell/server/src/main/resources/test.ppk";
 		if (connected) {
 			return;
 		}
 		try {
+			/*
 			// Not verify the public key of the HOST
 			java.util.Properties config = new java.util.Properties();
 			config.put("StrictHostKeyChecking", "no");
@@ -51,6 +57,17 @@ public class DatabaseConnection {
 			assignedPort = session.setPortForwardingL(PORT, R_HOST, PORT);
 
 			// Database connection
+			Class.forName(DRIVER_NAME).newInstance();
+			conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);*/
+			jsch.addIdentity(privateKey);
+			session = jsch.getSession(USER, HOST, PORT);
+			session.setConfig("PreferredAuthentications", "publickey,keyboard-interactive,password");
+			java.util.Properties config = new java.util.Properties();
+			config.put("StrictHostKeyChecking", "no");
+			session.setConfig(config);
+			session.connect();
+			assignedPort = session.setPortForwardingL(PORT, R_HOST, PORT);
+
 			Class.forName(DRIVER_NAME).newInstance();
 			conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
 
