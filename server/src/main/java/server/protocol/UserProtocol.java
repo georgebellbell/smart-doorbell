@@ -329,12 +329,14 @@ public class UserProtocol extends Protocol {
 			response.put("message", "Successfully logged in!");
 
 			// Create and send 2FA code
-			Thread emailThread = new Thread(() -> {
-				TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(currentUser);
-				twoFactorAuthentication.generateCode();
-				twoFactorAuthentication.sendEmail();
-			});
-			emailThread.start();
+			TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(currentUser);
+			if (twoFactorAuthentication.getGeneratedCode() == null) {
+				Thread emailThread = new Thread(() -> {
+					twoFactorAuthentication.generateCode();
+					twoFactorAuthentication.sendEmail();
+				});
+				emailThread.start();
+			}
 
 		}
 		else {
