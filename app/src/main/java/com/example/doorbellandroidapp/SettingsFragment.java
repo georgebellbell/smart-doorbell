@@ -75,7 +75,10 @@ public class SettingsFragment extends Fragment{
 			@Override
 			public void onClick(View v) {
 				String newEmail = etChangeEmail.getText().toString();
-				changeEmail(newEmail);
+				if(validateEmail(newEmail))
+					changeEmail(newEmail);
+				else
+					Toast.makeText(getContext(), "Invalid Email", Toast.LENGTH_SHORT).show();
 			}
 		});
 
@@ -83,7 +86,10 @@ public class SettingsFragment extends Fragment{
 			@Override
 			public void onClick(View v) {
 				String newPassword = pwdChangePassword.getText().toString();
-				changePassword(newPassword);
+				if(validatePassword(newPassword))
+					changePassword(newPassword);
+				else
+					Toast.makeText(getContext(), "Invalid Password, Passwords must be at least 9 characters in length and contain capital letters, lower case letters & numbers", Toast.LENGTH_SHORT).show();
 			}
 		});
 
@@ -224,7 +230,7 @@ public class SettingsFragment extends Fragment{
 						Toast.makeText(getContext(), "Password Changed", Toast.LENGTH_SHORT).show();
 						break;
 					case "fail":
-						Toast.makeText(getContext(), "Password Not Changed", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getContext(), response.getString("message"), Toast.LENGTH_SHORT).show();
 						break;
 				}
 			}
@@ -263,12 +269,11 @@ public class SettingsFragment extends Fragment{
 	}
 
 	/**
-	 * Validates all of the users inputs
-	 * @param inputEmail - email inputted by the user
+	 * Validates the change password input
 	 * @param inputPassword - password inputted by the user
 	 * @return - returns true if all validation checks have succeeded otherwise, returns false
 	 */
-	boolean validate(String inputEmail, String inputPassword) {
+	boolean validatePassword(String inputPassword) {
 		int passLength = inputPassword.length();
 
 		Pattern lowerCaseLetters = Pattern.compile("[a-z]");
@@ -279,15 +284,28 @@ public class SettingsFragment extends Fragment{
 		Matcher upperCasePasswordMatcher = upperCaseLetters.matcher(inputPassword);
 		Matcher numbersPasswordMatcher = numbers.matcher(inputPassword);
 
-		boolean emailCheck = inputEmail.contains("@");
 		boolean lowerCheck = lowerCasePasswordMatcher.find();
 		boolean upperCheck = upperCasePasswordMatcher.find();
 		boolean numberCheck = numbersPasswordMatcher.find();
 
-		if (emailCheck && passLength > 8 && numberCheck && upperCheck && lowerCheck){
+		if (passLength > 8 && numberCheck && upperCheck && lowerCheck){
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	/**
+	 * Validates the change email input
+	 * @param inputEmail - email inputted by the user
+	 * @return - returns true if all validation checks have succeeded otherwise, returns false
+	 */
+	boolean validateEmail(String inputEmail) {
+
+		if (!Pattern.matches("/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/",inputEmail)){
+			return false;
+		} else {
+			return true;
 		}
 	}
 
