@@ -20,12 +20,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 public abstract class Client extends Thread {
     // Connection details
-    private static final String HOST = "172.17.179.79";
+    private static final String HOST = "192.168.0.39";
     private static final int PORT = 4444;
 
     private Activity activity;
@@ -86,7 +89,8 @@ public abstract class Client extends Thread {
     public void run() {
         try {
             // Create connection
-            Socket socket = new Socket(HOST, PORT);
+            Socket socket = new Socket();
+            socket.connect(new InetSocketAddress(HOST, PORT), 5025);
             PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -121,12 +125,23 @@ public abstract class Client extends Thread {
             printWriter.flush();
             printWriter.close();
             socket.close();
-        } catch (Exception e) {
+        } catch (SocketTimeoutException | UnknownHostException e) {
+            // Unable to connect to socket
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     Popups.showInformation(activity,"server");
                     Toast.makeText(activity, "Unknown host, unable to connect to server",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+        } catch (Exception e) {
+            // Error while communicating with socket
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Popups.showInformation(activity,"server");
+                    Toast.makeText(activity, "Error while communicating with server",
                             Toast.LENGTH_LONG).show();
                 }
             });
