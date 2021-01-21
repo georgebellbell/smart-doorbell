@@ -12,24 +12,33 @@ import static org.junit.jupiter.api.Assertions.*;
 class AccountTableTest {
 	private AccountTable accountTable;
 	private DoorbellTable doorbellTable;
+
 	private User user;
 	private Doorbell doorbell;
 	private PasswordManager passwordManager;
+
+	private String newEmail;
+	private String newUsername;
 
 	@BeforeEach
 	void setUp() {
 		accountTable = new AccountTable();
 		doorbellTable = new DoorbellTable();
 		passwordManager = new PasswordManager();
+
 		user = new User("Test", "quicksolutions.doorbell@gmail.com",
 				"Password", "user");
 		doorbell = new Doorbell("QS-12345", "TestDoorbell");
+		newEmail = "quicksolutions@gmail.com";
+		newUsername = "Test1";
+
 		doorbellTable.addNewDoorbell(doorbell);
 	}
 
 	@AfterEach
 	void tearDown() {
 		accountTable.deleteRecord(user);
+		accountTable.deleteRecord(newUsername);
 		doorbellTable.deleteDoorbell(doorbell);
 	}
 
@@ -95,21 +104,25 @@ class AccountTableTest {
 
 	@Test
 	void changePassword() {
+		addRecord();
+		String newPassword = "newPassword";
+		assertTrue(accountTable.changePassword(user.getUsername(), newPassword));
 	}
 
 	@Test
 	void changeEmail() {
+		addRecord();
+		assertTrue(accountTable.changeEmail(user.getUsername(), newEmail));
 	}
 
 	@Test
 	void changeDetails() {
+		addRecord();
+		assertTrue(accountTable.changeDetails(user.getUsername(), newUsername, newEmail));
 	}
 
 	@Test
 	void deleteRecord() {
-	}
-
-	@Test
-	void testDeleteRecord() {
+		assertTrue(accountTable.deleteRecord(user.getUsername()));
 	}
 }
