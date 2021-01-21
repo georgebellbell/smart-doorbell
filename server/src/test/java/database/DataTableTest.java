@@ -7,9 +7,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DataTableTest {
+	private DataTable dataTable;
+	private Data data;
+
 
 	@BeforeEach
 	void setUp() {
+		dataTable = new DataTable();
 	}
 
 	@AfterEach

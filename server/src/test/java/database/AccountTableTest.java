@@ -12,10 +12,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class AccountTableTest {
 	private AccountTable accountTable;
 	private DoorbellTable doorbellTable;
+	private PasswordManager passwordManager;
 
 	private User user;
 	private Doorbell doorbell;
-	private PasswordManager passwordManager;
 
 	private String newEmail;
 	private String newUsername;
