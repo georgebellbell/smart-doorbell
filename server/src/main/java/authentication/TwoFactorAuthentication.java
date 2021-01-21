@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 public class TwoFactorAuthentication {
 
+	private TwoFactorTable twoFactorTable = new TwoFactorTable();
 	private final User user;
 
 	public TwoFactorAuthentication(User user) {
@@ -34,10 +35,8 @@ public class TwoFactorAuthentication {
 
 		// Save to database
 		TwoFactorTable twoFactorTable = new TwoFactorTable();
-		twoFactorTable.connect();
 		twoFactorTable.deleteRecord(user); // Delete any previous code
 		twoFactorTable.addRecord(user, generatedCode.toString()); // Add code
-		twoFactorTable.disconnect();
 	}
 
 	/**
@@ -45,13 +44,7 @@ public class TwoFactorAuthentication {
 	 * @return generated 2FA code
 	 */
 	public String getGeneratedCode() {
-		// Connect to database and get code
-		TwoFactorTable twoFactorTable = new TwoFactorTable();
-		twoFactorTable.connect();
-		String generatedCode = twoFactorTable.getCode(user);
-		twoFactorTable.disconnect();
-
-		return generatedCode;
+		return twoFactorTable.getCode(user);
 	}
 
 	/**
@@ -76,10 +69,7 @@ public class TwoFactorAuthentication {
 		}
 
 		// Get code from database
-		TwoFactorTable twoFactorTable = new TwoFactorTable();
-		twoFactorTable.connect();
 		String generatedCode = twoFactorTable.getCode(user);
-		twoFactorTable.disconnect();
 
 		if (generatedCode == null) {
 			// Code not generated
