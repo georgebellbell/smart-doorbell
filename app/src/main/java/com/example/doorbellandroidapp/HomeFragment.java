@@ -42,6 +42,8 @@ public class HomeFragment extends Fragment {
 		currentUser= preferences.getString("currentUser",null);
 		loadImage();
 
+
+
 		btnOpenDoor.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -141,6 +143,8 @@ public class HomeFragment extends Fragment {
 						tvLastFace.setText("No recent user");
 						ivLastFace.setBackgroundResource(R.drawable.ic_null);
 						Toast.makeText(getContext(), "FAILURE TO GET IMAGES", Toast.LENGTH_SHORT).show();
+						btnOpenDoor.setEnabled(false);
+						btnLeaveClosed.setEnabled(false);
 						break;
 				}
 			}

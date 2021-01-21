@@ -121,7 +121,7 @@ public class EditFacePopup {
 				switch (response.getString("response")) {
 					case "success":
 						Toast.makeText(mContext, "Name changed", Toast.LENGTH_SHORT).show();
-						Helper.refresh(mActivity,"Faces");
+						Helper.refresh(mActivity,"faces");
 						break;
 					case "fail":
 						Toast.makeText(mContext, "Failed to change name", Toast.LENGTH_SHORT).show();

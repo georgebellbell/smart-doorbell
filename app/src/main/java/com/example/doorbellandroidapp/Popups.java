@@ -179,7 +179,7 @@ public class Popups {
 			@Override
 			public void onClick(View v) {
 				removeDoorbell(doorbellID,activity);
-
+				dialogRemoveDoorbell.dismiss();
 			}
 		});
 

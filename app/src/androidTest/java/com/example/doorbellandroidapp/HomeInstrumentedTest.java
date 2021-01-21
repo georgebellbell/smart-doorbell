@@ -5,6 +5,7 @@ import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,13 +22,17 @@ public class HomeInstrumentedTest {
 	@Rule
 	public ActivityScenarioRule<MainActivity> mainActivityRule = new ActivityScenarioRule<>(MainActivity.class);
 
+
+
 	@Test
-	public void pressOpenDoorButton(){
+	public void pressOpenDoorButton() throws InterruptedException {
+		Thread.sleep(3000);
 		onView(withId(R.id.btnOpenDoor)).perform(click());
 		onView(withText("You opened the door!")).check(matches(isDisplayed()));
 	}
 	@Test
-	public void pressKeepDoorClosedButton(){
+	public void pressKeepDoorClosedButton() throws InterruptedException {
+		Thread.sleep(3000);
 		onView(withId(R.id.btnLeaveClosed)).perform(click());
 		onView(withText("You chose not to open the door")).check(matches(isDisplayed()));
 	}

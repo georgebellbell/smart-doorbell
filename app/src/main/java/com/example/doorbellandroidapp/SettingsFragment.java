@@ -65,9 +65,10 @@ public class SettingsFragment extends Fragment{
 		btnDoorbellConnect.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				String doorbellID = etDoorbellConnect.getText().toString();
-				String doorbellName = etDoorbellConnectName.getText().toString();
-				addDoorbell(doorbellID, doorbellName);
+
+					String doorbellID = etDoorbellConnect.getText().toString();
+					String doorbellName = etDoorbellConnectName.getText().toString();
+					addDoorbell(doorbellID, doorbellName);
 			}
 		});
 
@@ -93,12 +94,19 @@ public class SettingsFragment extends Fragment{
 			}
 		});
 
+
+
 		btnRemoveDoorbell.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				String currentDoorbellID = doorbellIDs.get(spinnerID.getSelectedItemPosition());
-				String currentDoorbellName = doorbells.get(spinnerID.getSelectedItemPosition());
-				Popups.removeDoorbellConfirmation(currentDoorbellID, currentDoorbellName, mActivity);
+				if (doorbellIDs.size()>0) {
+					String currentDoorbellID = doorbellIDs.get(spinnerID.getSelectedItemPosition());
+					String currentDoorbellName = doorbells.get(spinnerID.getSelectedItemPosition());
+					Popups.removeDoorbellConfirmation(currentDoorbellID, currentDoorbellName, mActivity);
+				}
+				else{
+					Toast.makeText(mActivity, "No doorbells to remove!", Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 
