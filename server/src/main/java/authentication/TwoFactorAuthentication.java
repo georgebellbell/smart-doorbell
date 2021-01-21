@@ -35,7 +35,7 @@ public class TwoFactorAuthentication {
 
 		// Save to database
 		TwoFactorTable twoFactorTable = new TwoFactorTable();
-		twoFactorTable.deleteRecord(user); // Delete any previous code
+		deleteCode(); // Delete any previous code
 		twoFactorTable.addRecord(user, generatedCode.toString()); // Add code
 	}
 
@@ -78,6 +78,13 @@ public class TwoFactorAuthentication {
 
 		// Compare codes
 		return (generatedCode.equals(code));
+	}
+
+	/**
+	 * Deletes any previous code from database
+	 */
+	public void deleteCode() {
+		twoFactorTable.deleteRecord(user);
 	}
 
 	/**
