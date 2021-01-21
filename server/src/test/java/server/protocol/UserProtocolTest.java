@@ -1,5 +1,6 @@
 package server.protocol;
 
+import authentication.TwoFactorAuthentication;
 import database.AccountTable;
 import database.User;
 import org.json.JSONObject;
@@ -16,6 +17,7 @@ class UserProtocolTest {
 	private User testAdmin = new User("testadmin",
 			"quicksolutions.doorbell@gmail.com", "password", "admin");
 	private String testToken = "testToken23443534534556546";
+	private TwoFactorAuthentication twoFactor = new TwoFactorAuthentication(testUser);
 	private AccountTable accountTable = new AccountTable();
 
 	@BeforeEach
@@ -27,6 +29,7 @@ class UserProtocolTest {
 
 	@AfterEach
 	void tearDown() {
+		twoFactor.deleteCode();
 		accountTable.deleteRecord(testUser);
 		accountTable.deleteRecord(testAdmin);
 	}
@@ -124,6 +127,73 @@ class UserProtocolTest {
 		protocol.setRequest(request.toString());
 		JSONObject response = new JSONObject(protocol.processRequest());
 		assertEquals("fail", response.getString("response"));
+	}
+
+	@Test
+	void testLogin2FACodeGenerated() {
+		JSONObject request = new JSONObject();
+		request.put("request","login");
+		request.put("username", testUser.getUsername());
+		request.put("password", testUser.getPassword());
+		request.put("token", testToken);
+		protocol.setRequest(request.toString());
+		protocol.processRequest();
+		assertNotEquals(null, twoFactor.getGeneratedCode());
+	}
+
+	@Test
+	void testTwoFactorCorrectCode() {
+		twoFactor.generateCode();
+		JSONObject request = new JSONObject();
+		request.put("request","twofactor");
+		request.put("username", testUser.getUsername());
+		request.put("code", twoFactor.getGeneratedCode());
+		request.put("token", testToken);
+		protocol.setRequest(request.toString());
+		JSONObject response = new JSONObject(protocol.processRequest());
+		assertEquals("success", response.getString("response"));
+	}
+
+	@Test
+	void testTwoFactorIncorrectCode() {
+		twoFactor.generateCode();
+		JSONObject request = new JSONObject();
+		request.put("request","twofactor");
+		request.put("username", testUser.getUsername());
+		request.put("code", "000000000000");
+		request.put("token", testToken);
+		protocol.setRequest(request.toString());
+		JSONObject response = new JSONObject(protocol.processRequest());
+		assertEquals("fail", response.getString("response"));
+	}
+
+	@Test
+	void testTwoFactorInvalidCode() {
+		twoFactor.generateCode();
+		JSONObject request = new JSONObject();
+		request.put("request","twofactor");
+		request.put("username", testUser.getUsername());
+		request.put("code", "AAAAAAAAAA");
+		request.put("token", testToken);
+		protocol.setRequest(request.toString());
+		JSONObject response = new JSONObject(protocol.processRequest());
+		assertEquals("fail", response.getString("response"));
+	}
+
+	@Test
+	void testTwoFactorExpiredCode() {
+		JSONObject request = new JSONObject();
+		request.put("request","twofactor");
+		request.put("username", testUser.getUsername());
+		request.put("code", "123456");
+		request.put("token", testToken);
+		protocol.setRequest(request.toString());
+		JSONObject response = new JSONObject(protocol.processRequest());
+		assertAll("success",
+				() -> assertEquals("fail", response.getString("response")),
+				() -> assertEquals("2FA code has expired, request a new one",
+						response.getString("message"))
+		);
 	}
 
 }
