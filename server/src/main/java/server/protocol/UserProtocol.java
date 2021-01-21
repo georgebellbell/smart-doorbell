@@ -419,6 +419,9 @@ public class UserProtocol extends Protocol {
 
 				// Add user's token
 				saveToken(username, token);
+
+				// Remove 2FA code
+				twoFactorAuthentication.deleteCode();
 			} else {
 				// Incorrect 2FA code entered
 				response.put("response", "fail");
