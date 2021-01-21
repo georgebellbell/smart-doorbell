@@ -21,10 +21,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 public abstract class Client extends Thread {
     // Connection details
-    private static final String HOST = "192.168.0.12";
+    private static final String HOST = "192.168.1.123";
     private static final int PORT = 4444;
 
     private Activity activity;
@@ -120,10 +121,14 @@ public abstract class Client extends Thread {
             printWriter.flush();
             printWriter.close();
             socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(activity, "Unknown host, unable to connect to server",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
         }
     }
 }

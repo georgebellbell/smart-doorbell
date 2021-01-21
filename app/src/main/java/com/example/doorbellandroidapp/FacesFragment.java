@@ -156,7 +156,9 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		selectDoorbellFaces.setAdapter(adapter);
 		String spinnerValue = preferences.getString("userChoiceSpinner",null);
 		if (spinnerValue!=null){
-			selectDoorbellFaces.setSelection(Integer.parseInt(spinnerValue));
+			if (Integer.parseInt(spinnerValue) < doorbellIDs.size()) {
+				selectDoorbellFaces.setSelection(Integer.parseInt(spinnerValue));
+			}
 		}
 
 		selectDoorbellFaces.setOnItemSelectedListener(this);
