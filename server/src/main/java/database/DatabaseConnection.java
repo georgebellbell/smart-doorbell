@@ -12,7 +12,7 @@ public class DatabaseConnection {
 	private static final String R_HOST = "cs-db.ncl.ac.uk";
 	private static final int PORT = 3306;
 	private static final String USER = "b9021925";
-//	private static final String PASSWORD = "password";
+	private static final String PASSWORD = "password";
 
 
 
@@ -37,12 +37,10 @@ public class DatabaseConnection {
 	 * Connect via SSH tunnel forwarding local port to remote host and port
 	 */
 	public void establishSession() {
-		String privateKey = "C:/Users/Dom/IdeaProjects/smart-doorbell/server/src/main/resources/test.ppk";
 		if (connected) {
 			return;
 		}
 		try {
-			/*
 			// Not verify the public key of the HOST
 			java.util.Properties config = new java.util.Properties();
 			config.put("StrictHostKeyChecking", "no");
@@ -58,18 +56,19 @@ public class DatabaseConnection {
 
 			// Database connection
 			Class.forName(DRIVER_NAME).newInstance();
-			conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);*/
-			jsch.addIdentity(privateKey);
-			session = jsch.getSession(USER, HOST, PORT);
-			session.setConfig("PreferredAuthentications", "publickey,keyboard-interactive,password");
-			java.util.Properties config = new java.util.Properties();
-			config.put("StrictHostKeyChecking", "no");
-			session.setConfig(config);
-			session.connect();
-			assignedPort = session.setPortForwardingL(PORT, R_HOST, PORT);
-
-			Class.forName(DRIVER_NAME).newInstance();
 			conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+
+//			jsch.addIdentity(privateKey);
+//			session = jsch.getSession(USER, HOST, PORT);
+//			session.setConfig("PreferredAuthentications", "publickey,keyboard-interactive,password");
+//			java.util.Properties config = new java.util.Properties();
+//			config.put("StrictHostKeyChecking", "no");
+//			session.setConfig(config);
+//			session.connect();
+//			assignedPort = session.setPortForwardingL(PORT, R_HOST, PORT);
+//
+//			Class.forName(DRIVER_NAME).newInstance();
+//			conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
 
 			connected = true;
 

@@ -77,11 +77,8 @@ public class User {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		User user = (User) o;
-		return Objects.equals(passwordManager, user.passwordManager) &&
-				Objects.equals(username, user.username) &&
+		return 	Objects.equals(username, user.username) &&
 				Objects.equals(email, user.email) &&
-				Objects.equals(password, user.password) &&
-				Objects.equals(salt, user.salt) &&
 				Objects.equals(role, user.role) &&
 				Objects.equals(created_at, user.created_at);
 	}
