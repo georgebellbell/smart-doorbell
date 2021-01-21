@@ -47,6 +47,9 @@ public class Popups {
 				break;
 			case "doorbell":
 				dialog.setContentView(R.layout.popup_info_add_doorbell);
+			case "server":
+				dialog.setContentView(R.layout.popup_server_error);
+
 		}
 
 		// closes popup
@@ -258,8 +261,5 @@ public class Popups {
 
 		dialogLogout.show();
 	}
-
-
-
 }
 

@@ -25,7 +25,7 @@ import java.net.UnknownHostException;
 
 public abstract class Client extends Thread {
     // Connection details
-    private static final String HOST = "192.168.1.123";
+    private static final String HOST = "172.17.179.79";
     private static final int PORT = 4444;
 
     private Activity activity;
@@ -125,6 +125,7 @@ public abstract class Client extends Thread {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    Popups.showInformation(activity,"server");
                     Toast.makeText(activity, "Unknown host, unable to connect to server",
                             Toast.LENGTH_LONG).show();
                 }
