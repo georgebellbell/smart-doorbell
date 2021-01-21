@@ -5,6 +5,7 @@ import communication.Email;
 import database.Data;
 import database.User;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.security.crypto.codec.Base64;
 
@@ -52,9 +53,18 @@ public class UserProtocol extends Protocol {
 		if (!super.isRequestValid(request)) {
 			return false;
 		}
-		JSONObject requestObject = new JSONObject(request);
+
 		// All Android requests must include token
-		return (requestObject.get("token") != null);
+		boolean hasToken = false;
+		try {
+			JSONObject requestObject = new JSONObject(request);
+			if (requestObject.get("token") != null) {
+				hasToken = true;
+			}
+		} catch (JSONException ignored) {
+		}
+
+		return hasToken;
 	}
 
 	/**
