@@ -24,7 +24,7 @@ import java.net.Socket;
 
 public abstract class Client extends Thread {
     // Connection details
-    private static final String HOST = "192.168.0.12";
+    private static final String HOST = "172.17.179.97";
     private static final int PORT = 4444;
 
     private Activity activity;

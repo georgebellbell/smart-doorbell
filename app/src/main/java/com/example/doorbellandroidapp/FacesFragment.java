@@ -155,7 +155,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_dropdown_item,doorbells);
 		selectDoorbellFaces.setAdapter(adapter);
 		String spinnerValue = preferences.getString("userChoiceSpinner",null);
-		if (spinnerValue!=null){
+		if (spinnerValue!=null || Integer.parseInt(spinnerValue)>= doorbellIDs.size()){
 			selectDoorbellFaces.setSelection(Integer.parseInt(spinnerValue));
 		}
 
