@@ -200,7 +200,7 @@ class UserProtocolTest {
 		request.put("token", testToken);
 		protocol.setRequest(request.toString());
 		JSONObject response = new JSONObject(protocol.processRequest());
-		assertAll("success",
+		assertAll("fail",
 				() -> assertEquals("fail", response.getString("response")),
 				() -> assertEquals("2FA code has expired, request a new one",
 						response.getString("message"))
@@ -271,7 +271,7 @@ class UserProtocolTest {
 		request.put("token", loggedInToken);
 		protocol.setRequest(request.toString());
 		JSONObject response = new JSONObject(protocol.processRequest());
-		assertAll("success",
+		assertAll("fail",
 				() -> assertEquals("fail", response.getString("response")),
 				() -> assertEquals("You have 0 doorbells assigned", response.getString("message"))
 		);
@@ -300,5 +300,52 @@ class UserProtocolTest {
 		JSONObject response = new JSONObject(protocol.processRequest());
 		assertEquals("close", response.getString("response"));
 	}
+
+	@Test
+	void testChangePassword() {
+		JSONObject request = new JSONObject();
+		request.put("request","changepassword");
+		request.put("password", "NewPassword12345");
+		request.put("token", loggedInToken);
+		protocol.setRequest(request.toString());
+		JSONObject response = new JSONObject(protocol.processRequest());
+		assertEquals("success", response.getString("response"));
+	}
+
+	@Test
+	void testChangeValidEmail() {
+		JSONObject request = new JSONObject();
+		request.put("request","changeemail");
+		request.put("email", "quicksolutions.doorbell2@gmail.com");
+		request.put("token", loggedInToken);
+		protocol.setRequest(request.toString());
+		JSONObject response = new JSONObject(protocol.processRequest());
+		assertEquals("success", response.getString("response"));
+	}
+
+	@Test
+	void testChangeInvalidEmail() {
+		JSONObject request = new JSONObject();
+		request.put("request","changeemail");
+		request.put("email", "newEmail@@@.co.uk");
+		request.put("token", loggedInToken);
+		protocol.setRequest(request.toString());
+		JSONObject response = new JSONObject(protocol.processRequest());
+		assertAll("fail",
+				() -> assertEquals("fail", response.getString("response")),
+				() -> assertEquals("Email is not valid", response.getString("message"))
+		);
+	}
+
+	@Test
+	void testDeleteAccount() {
+		JSONObject request = new JSONObject();
+		request.put("request","deleteaccount");
+		request.put("token", loggedInToken);
+		protocol.setRequest(request.toString());
+		JSONObject response = new JSONObject(protocol.processRequest());
+		assertEquals("success", response.getString("response"));
+	}
+
 
 }
