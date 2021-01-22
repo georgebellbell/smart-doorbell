@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,11 +22,12 @@ class FaceSimilarityTest {
 	private byte[] image;
 
 	@BeforeEach
-	void setUp() {
+	void setUp() throws IOException {
 		doorbellTable = new DoorbellTable();
 		faceSimilarity = new FaceSimilarity();
-		String imagePath = getClass().getClassLoader().getResource("190219257.jpg").getPath();
-		image = Base64.decode(new ImageIO(new File(imagePath)).getBytes());
+		File fi = new File(getClass().getClassLoader().getResource("190219257.png").getPath());
+		byte[] fileContent = Files.readAllBytes(fi.toPath());
+		image = Base64.decode(fileContent);
 		doorbell = new Doorbell("QS-12345", "TestDoorbell");
 
 		doorbellTable.addNewDoorbell(doorbell);
