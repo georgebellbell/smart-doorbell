@@ -1,30 +1,38 @@
 package server.protocol;
 
 import authentication.TwoFactorAuthentication;
-import database.AccountTable;
-import database.User;
+import database.*;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserProtocolTest {
 	private Protocol protocol;
+	private String loggedInToken = "123456123456";
 	private User testUser = new User("testuser",
 			"quicksolutions.doorbell@gmail.com", "password", "user");
 	private User testAdmin = new User("testadmin",
 			"quicksolutions.doorbell@gmail.com", "password", "admin");
 	private String testToken = "testToken23443534534556546";
 	private TwoFactorAuthentication twoFactor = new TwoFactorAuthentication(testUser);
+	private Doorbell testDoorbell1 = new Doorbell("3040596943", "Test Doorbell 1");
+	private Doorbell testDoorbell2 = new Doorbell("3040456945", "Test Doorbell 2");
 	private AccountTable accountTable = new AccountTable();
+	private DoorbellTable doorbellTable = new DoorbellTable();
+	private UserTokenTable userTokenTable = new UserTokenTable();
 
 	@BeforeEach
 	void setup() {
 		protocol = new UserProtocol();
 		accountTable.addRecord(testUser);
 		accountTable.deleteRecord(testAdmin);
+		doorbellTable.addNewDoorbell(testDoorbell1);
+		doorbellTable.addNewDoorbell(testDoorbell2);
+		userTokenTable.addToken(loggedInToken, testUser.getUsername());
+
 	}
 
 	@AfterEach
@@ -32,6 +40,9 @@ class UserProtocolTest {
 		twoFactor.deleteCode();
 		accountTable.deleteRecord(testUser);
 		accountTable.deleteRecord(testAdmin);
+		doorbellTable.deleteDoorbell(testDoorbell1);
+		doorbellTable.deleteDoorbell(testDoorbell2);
+		userTokenTable.deleteByToken(loggedInToken);
 	}
 
 	@Test
@@ -193,6 +204,76 @@ class UserProtocolTest {
 				() -> assertEquals("fail", response.getString("response")),
 				() -> assertEquals("2FA code has expired, request a new one",
 						response.getString("message"))
+		);
+	}
+
+	@Test
+	void testAddDoorbellToUser() {
+		JSONObject request = new JSONObject();
+		request.put("request","connectdoorbell");
+		request.put("doorbellID", testDoorbell1.getId());
+		request.put("doorbellname", testDoorbell1.getName());
+		request.put("token", loggedInToken);
+		protocol.setRequest(request.toString());
+		JSONObject response = new JSONObject(protocol.processRequest());
+		assertEquals("success", response.getString("response"));
+	}
+
+	@Test
+	void testDeleteDoorbellFromUser() {
+		doorbellTable.setDoorbell(testUser.getUsername(), testDoorbell1.getId());
+		JSONObject request = new JSONObject();
+		request.put("request","removedoorbell");
+		request.put("doorbellID", testDoorbell1.getId());
+		request.put("token", loggedInToken);
+		protocol.setRequest(request.toString());
+		JSONObject response = new JSONObject(protocol.processRequest());
+		assertEquals("success", response.getString("response"));
+	}
+
+	@Test
+	void testGetOneAssignedDoorbell() {
+		doorbellTable.setDoorbell(testUser.getUsername(), testDoorbell1.getId());
+		JSONObject request = new JSONObject();
+		request.put("request","getdoorbells");
+		request.put("token", loggedInToken);
+		protocol.setRequest(request.toString());
+		JSONObject response = new JSONObject(protocol.processRequest());
+		JSONArray doorbells = response.getJSONArray("doorbells");
+		JSONObject doorbell = doorbells.getJSONObject(0);
+		assertAll("success",
+				() -> assertEquals("success", response.getString("response")),
+				() -> assertEquals(1, doorbells.length()),
+				() -> assertEquals(testDoorbell1.getId(), doorbell.getString("id"))
+		);
+	}
+
+	@Test
+	void testGetMultipleAssignedDoorbells() {
+		doorbellTable.setDoorbell(testUser.getUsername(), testDoorbell1.getId());
+		doorbellTable.setDoorbell(testUser.getUsername(), testDoorbell2.getId());
+		JSONObject request = new JSONObject();
+		request.put("request","getdoorbells");
+		request.put("token", loggedInToken);
+		protocol.setRequest(request.toString());
+		JSONObject response = new JSONObject(protocol.processRequest());
+		JSONArray doorbells = response.getJSONArray("doorbells");
+		assertAll("success",
+				() -> assertEquals("success", response.getString("response")),
+				() -> assertEquals(2, doorbells.length())
+		);
+	}
+
+	@Test
+	void testGetNoAssignedDoorbells() {
+		JSONObject request = new JSONObject();
+		request.put("request","getdoorbells");
+		request.put("token", loggedInToken);
+		protocol.setRequest(request.toString());
+		JSONObject response = new JSONObject(protocol.processRequest());
+		assertAll("success",
+				() -> assertEquals("fail", response.getString("response")),
+				() -> assertEquals("You have 0 doorbells assigned", response.getString("message"))
 		);
 	}
 
