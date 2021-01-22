@@ -277,4 +277,28 @@ class UserProtocolTest {
 		);
 	}
 
+	@Test
+	void testOpenDoor() {
+		JSONObject request = new JSONObject();
+		request.put("request","opendoor");
+		request.put("message", "open");
+		request.put("doorbellID", testDoorbell1.getId());
+		request.put("token", loggedInToken);
+		protocol.setRequest(request.toString());
+		JSONObject response = new JSONObject(protocol.processRequest());
+		assertEquals("open", response.getString("response"));
+	}
+
+	@Test
+	void testCloseDoor() {
+		JSONObject request = new JSONObject();
+		request.put("request","opendoor");
+		request.put("message", "close");
+		request.put("doorbellID", testDoorbell1.getId());
+		request.put("token", loggedInToken);
+		protocol.setRequest(request.toString());
+		JSONObject response = new JSONObject(protocol.processRequest());
+		assertEquals("close", response.getString("response"));
+	}
+
 }
