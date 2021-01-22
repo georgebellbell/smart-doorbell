@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.doorbellandroidapp">
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACTION_IMAGE_CAPTURE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
@@ -19,6 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_notif_logo"/>
         <activity
             android:name=".TwoFactorAuthActivity"
             android:noHistory="true"/>
