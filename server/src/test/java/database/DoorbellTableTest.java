@@ -16,6 +16,7 @@ class DoorbellTableTest {
 
 	private User user;
 	private Doorbell doorbell;
+	private Doorbell doorbell2;
 	private Data data;
 
 	@BeforeEach
@@ -24,12 +25,15 @@ class DoorbellTableTest {
 		accountTable = new AccountTable();
 		dataTable = new DataTable();
 
-		user = new User("Test", "quicksolutions.doorbell@gmail.com",
+		user = new User("TestUser", "quicksolutions.doorbell@gmail.com",
 				"Password", "user");
 		doorbell = new Doorbell("QS-12345", "TestDoorbell");
+		doorbell2 = new Doorbell("QS-67891", "TestDoorbell2");
 		data = new Data(doorbell.getId(), null, "Test");
 
 		accountTable.addRecord(user);
+		doorbellTable.addNewDoorbell(doorbell);
+		doorbellTable.setDoorbell(user.getUsername(), doorbell.getId());
 	}
 
 	@AfterEach
@@ -37,70 +41,63 @@ class DoorbellTableTest {
 		dataTable.deleteRecordById(data.getImageID());
 		accountTable.deleteRecord(user);
 		doorbellTable.deleteDoorbell(doorbell);
+		doorbellTable.deleteDoorbell(doorbell2);
 	}
 
 	@Test
 	void setDoorbell() {
-		addNewDoorbell();
 		assertTrue(doorbellTable.setDoorbell(user.getUsername(), doorbell.getId()));
 	}
 
 	@Test
 	void addNewDoorbell() {
-		assertTrue(doorbellTable.addNewDoorbell(doorbell));
+		assertTrue(doorbellTable.addNewDoorbell(doorbell2));
 	}
 
 	@Test
 	void testAddNewDoorbell() {
-		assertTrue(doorbellTable.addNewDoorbell(doorbell.getId()));
+		assertTrue(doorbellTable.addNewDoorbell(doorbell2.getId()));
 	}
 
 	@Test
 	void testAddNewDoorbell1() {
-		assertTrue(doorbellTable.addNewDoorbell(doorbell.getId(), doorbell.getName()));
+		assertTrue(doorbellTable.addNewDoorbell(doorbell2.getId(), doorbell2.getName()));
 	}
 
 	@Test
 	void getDoorbellName() {
-		addNewDoorbell();
 		assertEquals(doorbellTable.getDoorbellName(doorbell.getId()), doorbell.getName());
 	}
 
 	@Test
 	void getUsers() {
-		setDoorbell();
 		ArrayList<String> users = doorbellTable.getUsers(doorbell.getId());
 		assertEquals(users.get(0), user.getUsername());
 	}
 
 	@Test
 	void getDoorbells() {
-		setDoorbell();
 		String id = doorbellTable.getDoorbells(user.getUsername()).getJSONObject(0).getString("id");
 		assertEquals(id, doorbell.getId());
 	}
 
 	@Test
 	void doorbellExists() {
-		addNewDoorbell();
 		assertTrue(doorbellTable.doorbellExists(doorbell.getId()));
 	}
 
 	@Test
 	void isUserAssignedDoorbell() {
-		setDoorbell();
 		assertTrue(doorbellTable.isUserAssignedDoorbell(user.getUsername(), doorbell.getId()));
 	}
 
 	@Test
 	void updateDoorbell() {
-		addNewDoorbell();
 		assertTrue(doorbellTable.updateDoorbell(doorbell.getId(), "newName"));
 	}
 
 	@Test
 	void unassignDoorbell() {
-		addNewDoorbell();
 		assertTrue(doorbellTable.unassignDoorbell(doorbell.getId(), user.getUsername()));
 	}
 
