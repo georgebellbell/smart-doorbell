@@ -66,8 +66,8 @@ class AccountTableTest {
 
 	@Test
 	void getEmailByUsername() {
-		String expectedEmail = accountTable.getEmailByUsername(user.getUsername());
-		assertEquals(expectedEmail, user.getEmail());
+		String email = accountTable.getEmailByUsername(user.getUsername());
+		assertEquals(user.getEmail(), email);
 	}
 
 	@Test
@@ -75,9 +75,9 @@ class AccountTableTest {
 
 	@Test
 	void getEmailByDoorbell() {
-		ArrayList<String> expectedEmail = accountTable.getEmailByDoorbell(doorbell.getId());
-		for (int i = 0; i < expectedEmail.size(); i++) {
-			assertEquals(expectedEmail.get(i), user.getEmail());
+		ArrayList<String> email = accountTable.getEmailByDoorbell(doorbell.getId());
+		for (int i = 0; i < email.size(); i++) {
+			assertEquals(user.getEmail(), email.get(i));
 		}
 	}
 
@@ -109,14 +109,14 @@ class AccountTableTest {
 	void getDeviceID() {
 		ArrayList<String> doorbellsAssigned = accountTable.getDeviceID(user.getUsername());
 		for (String doorbell : doorbellsAssigned)
-			assertEquals(doorbell, this.doorbell.getId());
+			assertEquals(this.doorbell.getId(), doorbell);
 	}
 
 	@Test
-	void getRecord() { assertEquals(accountTable.getRecord(user.getUsername()), user); }
+	void getRecord() { assertEquals(user, accountTable.getRecord(user.getUsername())); }
 
 	@Test
-	void getInvalidRecord() { assertNotEquals(accountTable.getRecord("InvalidUser"), user); }
+	void getInvalidRecord() { assertNotEquals(user, accountTable.getRecord("InvalidUser")); }
 
 	@Test
 	void changePassword() { assertTrue(accountTable.changePassword(user.getUsername(), newPassword)); }

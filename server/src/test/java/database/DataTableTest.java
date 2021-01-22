@@ -23,6 +23,7 @@ class DataTableTest {
 	private DataTable dataTable;
 	private DoorbellTable doorbellTable;
 	private AccountTable accountTable;
+
 	private Data data;
 	private Data data2;
 	private User user;
@@ -69,13 +70,19 @@ class DataTableTest {
 	void getRecord() {
 		ArrayList<Data> allImages = dataTable.getAllImages(doorbell.getId());
 		Data imageRetrieved = allImages.get(0);
-		assertEquals(imageRetrieved.getPersonName(), data.getPersonName());
+		assertEquals(data.getPersonName(), imageRetrieved.getPersonName());
 	}
 
 	@Test
 	void getAllImages() {
 		ArrayList<Data> allImages = dataTable.getAllImages(doorbell.getId());
-		assertTrue(allImages.size() == 1);
+		assertEquals(1, allImages.size());
+	}
+
+	@Test
+	void getAllImagesByInvalidDoorbell() {
+		ArrayList<Data> allImages = dataTable.getAllImages("InvalidDoorbell");
+		assertTrue(allImages.isEmpty());
 	}
 
 	@Test
@@ -87,6 +94,12 @@ class DataTableTest {
 	}
 
 	@Test
+	void getRecentImageByInvalidDoorbell() {
+		 assertTrue(dataTable.getAllImages("InvalidDoorbell").isEmpty());
+
+	}
+
+	@Test
 	void updateData() {
 		Integer imageID = dataTable.getAllImages(doorbell.getId()).get(0).getImageID();
 		dataTable.updateData(imageID);
@@ -95,14 +108,14 @@ class DataTableTest {
 		String[] currentTime  = LocalDateTime
 				.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).split(" ");
 
-		assertEquals(updateTime[0], currentTime[0]);
+		assertEquals(currentTime[0], updateTime[0]);
 	}
 
 	@Test
 	void changeName() {
 		Integer imageID = dataTable.getAllImages(doorbell.getId()).get(0).getImageID();
 		dataTable.changeName(imageID, "New Person");
-		assertTrue(dataTable.getRecord(imageID).getPersonName().equals("New Person"));
+		assertEquals("New Person", dataTable.getRecord(imageID).getPersonName());
 	}
 
 	@Test

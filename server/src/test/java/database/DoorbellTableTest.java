@@ -1,6 +1,5 @@
 package database;
 
-import org.json.JSONArray;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,19 +65,19 @@ class DoorbellTableTest {
 
 	@Test
 	void getDoorbellName() {
-		assertEquals(doorbellTable.getDoorbellName(doorbell.getId()), doorbell.getName());
+		assertEquals(doorbell.getName(), doorbellTable.getDoorbellName(doorbell.getId()));
 	}
 
 	@Test
 	void getUsers() {
 		ArrayList<String> users = doorbellTable.getUsers(doorbell.getId());
-		assertEquals(users.get(0), user.getUsername());
+		assertEquals(user.getUsername(), users.get(0));
 	}
 
 	@Test
 	void getDoorbells() {
 		String id = doorbellTable.getDoorbells(user.getUsername()).getJSONObject(0).getString("id");
-		assertEquals(id, doorbell.getId());
+		assertEquals(doorbell.getId(), id);
 	}
 
 	@Test
@@ -102,9 +101,7 @@ class DoorbellTableTest {
 	}
 
 	@Test
-	void deleteUserDoorbells() {
-		doorbellTable.deleteUserDoorbells(user.getUsername());
-	}
+	void deleteUserDoorbells() { assertTrue(doorbellTable.deleteUserDoorbells(user.getUsername())); }
 
 	@Test
 	void deleteUsersFromDoorbell() {

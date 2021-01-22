@@ -34,7 +34,7 @@ class TwoFactorTableTest {
 	@Test
 	void getCode() {
 		addRecord();
-		assertEquals(twoFactorTable.getCode(user), code);
+		assertEquals(code, twoFactorTable.getCode(user));
 	}
 
 	@Test

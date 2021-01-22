@@ -39,7 +39,7 @@ class PollingTableTest {
 	void getPolls() {
 		ArrayList<String> messages = pollingTable.getPolls(doorbell.getId());
 		for (int i = 0; i < messages.size(); i++) {
-			assertEquals(messages.get(i), message);
+			assertEquals(message, messages.get(i));
 		}
 	}
 
