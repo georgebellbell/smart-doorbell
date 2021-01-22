@@ -32,7 +32,6 @@ public class AccountTable extends DatabaseConnection {
 			statement.close();
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
 			return false;
 		}
 	}

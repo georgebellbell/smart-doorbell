@@ -74,15 +74,6 @@ class DoorbellTableTest {
 	}
 
 	@Test
-	void getTotalDoorbells() {
-
-	}
-
-	@Test
-	void getDoorbellPieData() {
-	}
-
-	@Test
 	void getDoorbells() {
 		setDoorbell();
 		String id = doorbellTable.getDoorbells(user.getUsername()).getJSONObject(0).getString("id");
