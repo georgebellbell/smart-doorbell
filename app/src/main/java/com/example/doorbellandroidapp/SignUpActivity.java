@@ -84,7 +84,7 @@ public class SignUpActivity extends AppCompatActivity {
 		Matcher upperCasePasswordMatcher = upperCaseLetters.matcher(inputPassword);
 		Matcher numbersPasswordMatcher = numbers.matcher(inputPassword);
 
-		boolean emailCheck = Pattern.matches("/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/",inputEmail);
+		boolean emailCheck = Pattern.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",inputEmail);
 		boolean lowerCheck = lowerCasePasswordMatcher.find();
 		boolean upperCheck = upperCasePasswordMatcher.find();
 		boolean numberCheck = numbersPasswordMatcher.find();
