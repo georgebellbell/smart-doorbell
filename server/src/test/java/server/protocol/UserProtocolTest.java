@@ -208,6 +208,28 @@ class UserProtocolTest {
 	}
 
 	@Test
+	void testLogout() {
+		twoFactor.generateCode();
+		JSONObject request = new JSONObject();
+		request.put("request","logout");
+		request.put("token", loggedInToken);
+		protocol.setRequest(request.toString());
+		JSONObject response = new JSONObject(protocol.processRequest());
+		assertEquals("success", response.getString("response"));
+	}
+
+	@Test
+	void testLogoutInvalidToken() {
+		twoFactor.generateCode();
+		JSONObject request = new JSONObject();
+		request.put("request","logout");
+		request.put("token", "324234234");
+		protocol.setRequest(request.toString());
+		JSONObject response = new JSONObject(protocol.processRequest());
+		assertEquals("invalid", response.getString("response"));
+	}
+
+	@Test
 	void testAddDoorbellToUser() {
 		JSONObject request = new JSONObject();
 		request.put("request","connectdoorbell");
