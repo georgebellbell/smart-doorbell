@@ -341,10 +341,8 @@ public class UserProtocol extends Protocol {
 			// Create and send 2FA code
 			TwoFactorAuthentication twoFactorAuthentication = new TwoFactorAuthentication(currentUser);
 			if (twoFactorAuthentication.getGeneratedCode() == null) {
-				Thread emailThread = new Thread(() -> {
-					twoFactorAuthentication.generateCode();
-					twoFactorAuthentication.sendEmail();
-				});
+				twoFactorAuthentication.generateCode();
+				Thread emailThread = new Thread(twoFactorAuthentication::sendEmail);
 				emailThread.start();
 			}
 
