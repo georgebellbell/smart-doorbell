@@ -47,8 +47,10 @@ public class Popups {
 				break;
 			case "doorbell":
 				dialog.setContentView(R.layout.popup_info_add_doorbell);
+				break;
 			case "server":
 				dialog.setContentView(R.layout.popup_server_error);
+				break;
 
 		}
 

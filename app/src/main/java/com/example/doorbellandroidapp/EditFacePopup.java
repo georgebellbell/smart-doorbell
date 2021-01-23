@@ -64,7 +64,7 @@ public class EditFacePopup {
 		});
 
 		// closes popup and updates face name to new one, if valid
-		btnSaveAndClose = (Button) dialog.findViewById(R.id.btnAddNewFace);
+		btnSaveAndClose = (Button) dialog.findViewById(R.id.btnSaveAndClose);
 		btnSaveAndClose.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -100,7 +100,7 @@ public class EditFacePopup {
 			Toast.makeText(mContext, "Please give valid name", Toast.LENGTH_SHORT).show();
 			return false;
 		}
-		if (newName.length()>10){
+		if (newName.length()>15){
 			Toast.makeText(mContext, "Name is too long", Toast.LENGTH_SHORT).show();
 			return false;
 		}

@@ -28,7 +28,7 @@ public class SettingsFragment extends Fragment{
 
 	EditText etDoorbellConnect, etDoorbellConnectName, pwdChangePassword, etChangeEmail;
 	Button btnDoorbellConnect, btnChangePassword, btnChangeEmail, btnRemoveDoorbell, btnDeleteAccount;
-	ImageView ivInfo, ivAddDoorbellInfo;
+	ImageView ivInfo, ivAddDoorbellInfo, ivConfirmedEmail, ivConfirmedPassword;
 	Spinner spinnerID;
 
 	private ArrayList<String> doorbells = new ArrayList<>();
@@ -45,8 +45,6 @@ public class SettingsFragment extends Fragment{
 		assign(view);
 		mActivity = getActivity();
 		getIDs();
-
-
 
 		ivInfo.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -68,10 +66,13 @@ public class SettingsFragment extends Fragment{
 
 					String doorbellID = etDoorbellConnect.getText().toString();
 					String doorbellName = etDoorbellConnectName.getText().toString();
-					if (!doorbellID.isEmpty()||!doorbellName.isEmpty())
-						addDoorbell(doorbellID, doorbellName);
-					else
+					if (doorbellID.isEmpty()||doorbellName.isEmpty()||doorbellID.equals(" ")||doorbellName.equals(" ")){
 						Toast.makeText(mActivity, "No ID or name was given", Toast.LENGTH_SHORT).show();
+					}
+					else {
+						addDoorbell(doorbellID, doorbellName);
+					}
+
 			}
 		});
 
@@ -79,8 +80,9 @@ public class SettingsFragment extends Fragment{
 			@Override
 			public void onClick(View v) {
 				String newEmail = etChangeEmail.getText().toString();
-				if(validateEmail(newEmail))
+				if(validateEmail(newEmail)) {
 					changeEmail(newEmail);
+				}
 				else
 					Toast.makeText(getContext(), "Invalid Email", Toast.LENGTH_SHORT).show();
 			}
@@ -90,8 +92,9 @@ public class SettingsFragment extends Fragment{
 			@Override
 			public void onClick(View v) {
 				String newPassword = pwdChangePassword.getText().toString();
-				if(validatePassword(newPassword))
+				if(validatePassword(newPassword)){
 					changePassword(newPassword);
+				}
 				else
 					Toast.makeText(getContext(), "Invalid Password, Passwords must be at least 9 characters in length and contain capital letters, lower case letters & numbers", Toast.LENGTH_SHORT).show();
 			}
@@ -159,6 +162,9 @@ public class SettingsFragment extends Fragment{
 		client.start();
 	}
 	public void getIDs(){
+		doorbells.clear();
+		doorbellIDs.clear();
+		populateSpinner();
 		Client client = new Client(mActivity) {
 			@Override
 			public void handleResponse(JSONObject response) throws JSONException {
@@ -208,6 +214,7 @@ public class SettingsFragment extends Fragment{
 			public void handleResponse(JSONObject response) throws JSONException {
 				switch (response.getString("response")) {
 					case "success":
+						ivConfirmedEmail.setVisibility(View.VISIBLE);
 						Toast.makeText(getContext(), "Email Changed", Toast.LENGTH_SHORT).show();
 						break;
 					case "fail":
@@ -238,6 +245,7 @@ public class SettingsFragment extends Fragment{
 			public void handleResponse(JSONObject response) throws JSONException {
 				switch (response.getString("response")) {
 					case "success":
+						ivConfirmedPassword.setVisibility(View.VISIBLE);
 						Toast.makeText(getContext(), "Password Changed", Toast.LENGTH_SHORT).show();
 						break;
 					case "fail":
@@ -275,6 +283,10 @@ public class SettingsFragment extends Fragment{
 		btnRemoveDoorbell = view.findViewById(R.id.btnRemoveDoorbell);
 		ivAddDoorbellInfo = view.findViewById(R.id.ivAddDoorbellInfo);
 		ivInfo = view.findViewById(R.id.ivInfo);
+		ivConfirmedEmail = view.findViewById(R.id.ivEmailConfirmed);
+		ivConfirmedPassword = view.findViewById(R.id.ivPasswordConfirmed);
+
+
 		spinnerID = view.findViewById(R.id.spinnerID);
 
 	}

@@ -381,7 +381,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		if (newFaceName.isEmpty() || newFaceName.equals(" ") ||newFaceName.toLowerCase().equals("unknown")) {
 			Toast.makeText(mContext, "Invalid name", Toast.LENGTH_SHORT).show();
 		}
-		else if (newFaceName.length()>10) {
+		else if (newFaceName.length()>15) {
 			Toast.makeText(mContext, "Name is too long", Toast.LENGTH_SHORT).show();
 		}
 		else  {

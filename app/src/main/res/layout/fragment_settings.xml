@@ -2,12 +2,12 @@
 
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".SettingsFragment"
@@ -161,6 +161,16 @@
             android:layout_below="@id/tvChangeEmail"
              />
 
+        <ImageView
+            android:id="@+id/ivEmailConfirmed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvChangeEmail"
+            android:layout_toRightOf="@+id/etChangeEmail"
+            android:padding="5dp"
+            android:src="@drawable/ic_confirmed"
+            android:visibility="invisible" />
+
         <Button
             android:id="@+id/btnChangeEmail"
             android:layout_width="wrap_content"
@@ -196,6 +206,16 @@
             android:inputType="textPassword"
             android:layout_below="@+id/tvPasswordChange"
             />
+
+        <ImageView
+            android:id="@+id/ivPasswordConfirmed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvPasswordChange"
+            android:layout_toRightOf="@+id/pwdChangePassword"
+            android:padding="5dp"
+            android:src="@drawable/ic_confirmed"
+            android:visibility="invisible" />
 
         <Button
             android:id="@+id/btnChangePassword"

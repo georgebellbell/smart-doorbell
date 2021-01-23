@@ -1,9 +1,12 @@
 package com.example.doorbellandroidapp;
 
+import androidx.test.espresso.contrib.DrawerActions;
+import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +15,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 
@@ -31,22 +35,33 @@ public class SignupInstrumentedTest {
 	@Rule
 	public ActivityScenarioRule<SignUpActivity> signUpActivityActivityScenarioRule = new ActivityScenarioRule<>(SignUpActivity.class);
 
-	@Test
-	public void accountCreatedSuccessfully() throws InterruptedException {
-		//DELETE USER FROM DATABASE AFTER RUNNING THIS TEST
+	public static void accountCreatedSuccessfully() throws InterruptedException {
 		onView(withId(R.id.etUsername)).perform(typeText("TestUser"), closeSoftKeyboard());
 		onView(withId(R.id.etEmailAddress)).perform(typeText("TestUser@gmail.com"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("Password123"), closeSoftKeyboard());
 		onView(withId(R.id.btnSignUp)).perform(click());
 		Thread.sleep(2000);
-		onView(withId(R.layout.fragment_home)).check(matches(isDisplayed()));
-		//ADD SQL TO CHECK IF VALUE IS ACTUALLY ADDED
+		onView(withId(R.id.tvLastFace)).check(matches(isDisplayed()));
+	}
+
+	@Test
+	public void createAccount() throws InterruptedException {
+		accountCreatedSuccessfully();
+	}
+	@After
+	public void deleteNewAccount() throws InterruptedException {
+		onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
+		onView(withId(R.id.navigationView)).perform(NavigationViewActions.navigateTo(R.id.nav_settings));
+		onView(withId(R.id.btnDeleteAccount)).perform(scrollTo()).perform(click());
+		onView(withId(R.id.btnConfirmDeletion)).perform(click());
+		Thread.sleep(1000);
+		onView(withId(R.id.tvLogin)).check(matches(isDisplayed()));
 	}
 
 	//USERNAME TESTS
 	@Test
 	public void usernameIsNotUnique() throws InterruptedException {
-		onView(withId(R.id.etUsername)).perform(typeText("TestUser"), closeSoftKeyboard());
+		onView(withId(R.id.etUsername)).perform(typeText("george"), closeSoftKeyboard());
 		onView(withId(R.id.etEmailAddress)).perform(typeText("TestUser@gmail.com"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("Password123"), closeSoftKeyboard());
 		Thread.sleep(2000);
