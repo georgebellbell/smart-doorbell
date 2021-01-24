@@ -1,11 +1,15 @@
+/*
+ * @author George Bell
+ * @version 1.0
+ * @since 24/01/2021
+ */
+
 package com.example.doorbellandroidapp;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +21,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+/**
+ * This class is for the edit face popup on the Faces Page, managing all the functionalities of it
+ */
 public class EditFacePopup {
 
 	private Dialog dialog;
@@ -46,9 +53,11 @@ public class EditFacePopup {
 		dialog = new Dialog(mContext);
 		dialog.setContentView(R.layout.popup_face);
 
+		//sets name for the popup to the face selected for editing
 		etEditImageName = (EditText) dialog.findViewById(R.id.etEditImageName);
 		etEditImageName.setHint(holder.imageName.getText().toString());
 
+		//sets image for the popup to the face selected for editing
 		ivPopupImage = (ImageView) dialog.findViewById(R.id.ivPopupImage);
 		ivPopupImage.setImageBitmap(img);
 
@@ -91,7 +100,7 @@ public class EditFacePopup {
 	}
 
 	/**
-	 * Checks if the new face name is given and isn't too long
+	 * Checks if the new face name is given and isn't too long or illegal name
 	 * @param newName updated name of face
 	 * @return boolean
 	 */

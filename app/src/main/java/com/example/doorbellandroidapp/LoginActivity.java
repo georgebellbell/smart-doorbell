@@ -1,9 +1,12 @@
+/*
+ * @author George Bell
+ * @version 1.0
+ * @since 24/01/2021
+ */
+
 package com.example.doorbellandroidapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,14 +21,19 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Class for the Login Page Activity where users log into existing accounts
+ */
 public class LoginActivity extends AppCompatActivity {
 	EditText etUsername, pwdPassword;
 	TextView tvInformation, tvGoToSignUp;
 	Button btnLogin;
 	Integer attempts = 5;
-	Boolean isValid;
 	SharedPreferences preferences;
 
+	/**
+	 * Assigns all the key functionalities of the login page
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		preferences = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);

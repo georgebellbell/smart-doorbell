@@ -1,3 +1,9 @@
+/*
+ * @author Zach Smith
+ * @version 1.0
+ * @since 24/01/2021
+ */
+
 package com.example.doorbellandroidapp;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +24,11 @@ import org.json.JSONObject;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Class for the Sign Up Page Activity where users can create new accounts
+ */
 public class SignUpActivity extends AppCompatActivity {
+
 	EditText etUsername, pwdPassword, etEmailAddress;
 	TextView tvInformation, tvSignUp, tvGoToLogin;
 	Button btnSignUp;
@@ -26,6 +36,9 @@ public class SignUpActivity extends AppCompatActivity {
 	private SharedPreferences preferences;
 	private String currentUser;
 
+	/**
+	 * Assigns all the key functionalities of the signup page
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		preferences= PreferenceManager.getDefaultSharedPreferences(SignUpActivity.this);
@@ -60,7 +73,6 @@ public class SignUpActivity extends AppCompatActivity {
 						Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
 				startActivity(intent);
-
 			}
 		});
 	}
@@ -119,14 +131,6 @@ public class SignUpActivity extends AppCompatActivity {
 			return false;
 		}
 		return true;
-
-		/*
-		if (emailCheck && passLength > 8 && numberCheck && upperCheck && lowerCheck && !spacesCheck && userLength > 1){
-			return true;
-		} else {
-			return false;
-		}
-		*/
 	}
 
 	/**
@@ -188,6 +192,9 @@ public class SignUpActivity extends AppCompatActivity {
 		client.start();
 	}
 
+	/**
+	 * Assigns the objects in the current view to different variables
+	 */
 	void assign(){
 		etUsername = findViewById(R.id.etUsername);
 		etEmailAddress = findViewById(R.id.etEmailAddress);

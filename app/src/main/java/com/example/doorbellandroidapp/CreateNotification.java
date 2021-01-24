@@ -1,3 +1,9 @@
+/*
+ * @author George Bell
+ * @version 1.0
+ * @since 24/01/2021
+ */
+
 package com.example.doorbellandroidapp;
 
 import android.app.Application;
@@ -8,17 +14,21 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.view.View;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-public class App extends Application {
+/**
+ * This class creates the notifications sent from the doorbell via the Firebase Server
+ */
+public class CreateNotification extends Application {
 	public static final String CHANNEL_1_ID = "channel1";
-
 
 	private NotificationManagerCompat notificationManager;
 
+	/**
+	 * When app first starts, create the notification channel
+	 */
 	@Override
 	public void onCreate() {
 		super.onCreate();

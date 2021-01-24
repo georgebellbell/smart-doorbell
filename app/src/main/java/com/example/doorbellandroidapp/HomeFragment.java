@@ -1,3 +1,9 @@
+/*
+ * @author George Bell
+ * @version 1.0
+ * @since 24/01/2021
+ */
+
 package com.example.doorbellandroidapp;
 
 import android.content.SharedPreferences;
@@ -21,7 +27,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+/**
+ * Class for the Home Page fragment where users can see most recent doorbell user and open and close door
+ */
 public class HomeFragment extends Fragment {
+
 	private ImageView ivLastFace, ivInfo;
 	private Button btnOpenDoor, btnLeaveClosed;
 	private TextView tvDoorInformation, tvLastFaceTime, tvLastFace;
@@ -33,6 +43,10 @@ public class HomeFragment extends Fragment {
 	private String doorbellID;
 	private String imageID;
 
+	/**
+	 * Assigns all the key functionalities of the home page
+	 * @return created view of the home page
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
@@ -42,8 +56,7 @@ public class HomeFragment extends Fragment {
 		currentUser= preferences.getString("currentUser",null);
 		loadImage();
 
-
-
+		//button for opening door
 		btnOpenDoor.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -51,6 +64,8 @@ public class HomeFragment extends Fragment {
 				contactDoor("open");
 			}
 		});
+
+		//button for keeping door close and removing last unknown user at door
 		btnLeaveClosed.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -61,6 +76,8 @@ public class HomeFragment extends Fragment {
 				contactDoor("close");
 			}
 		});
+
+		//button for showing information relating to the home page
 		ivInfo.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -94,7 +111,7 @@ public class HomeFragment extends Fragment {
 			public void handleResponse(JSONObject response) throws JSONException {
 				switch (response.getString("response")) {
 					case "success":
-						Toast.makeText(getContext(), "Woah, your doorbell message in on route", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getContext(), "Woah, your response in on route to your doorbell", Toast.LENGTH_SHORT).show();
 						break;
 					case "fail":
 						Toast.makeText(getContext(), "FATAL ERROR", Toast.LENGTH_SHORT).show();

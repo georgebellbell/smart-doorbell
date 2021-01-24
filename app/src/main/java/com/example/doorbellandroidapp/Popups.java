@@ -1,3 +1,9 @@
+/*
+ * @author George Bell
+ * @version 1.0
+ * @since 24/01/2021
+ */
+
 package com.example.doorbellandroidapp;
 
 import android.app.Activity;
@@ -15,6 +21,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+/**
+ * Class for the majority of popups from the app
+ */
 public class Popups {
 
 	private static Dialog dialog;
@@ -51,7 +60,6 @@ public class Popups {
 			case "server":
 				dialog.setContentView(R.layout.popup_server_error);
 				break;
-
 		}
 
 		// closes popup
@@ -71,6 +79,7 @@ public class Popups {
 	 * @param context current location of user
 	 */
 	public void loadingPopUp(Context context){
+
 		progressDialog = new ProgressDialog(context);
 		progressDialog.setMax(100);
 		progressDialog.setMessage("Please wait...");
@@ -108,6 +117,7 @@ public class Popups {
 		dialogDelete = new Dialog(activity);
 		dialogDelete.setContentView(R.layout.confirmation_delete);
 
+		// confirms the deletion of account and the send user back to login screen
 		btnConfirmDeletion = dialogDelete.findViewById(R.id.btnConfirmDeletion);
 		btnConfirmDeletion.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -117,6 +127,7 @@ public class Popups {
 			}
 		});
 
+		//closes the popup
 		btnCancelDeletion = dialogDelete.findViewById(R.id.btnCancelDeletion);
 		btnCancelDeletion.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -133,6 +144,7 @@ public class Popups {
 	 * @param activity current location in app
 	 */
 	public static void deleteAccount(final Activity activity){
+
 		// Client to handle sign up response from server
 		Client client = new Client(activity) {
 			@Override
@@ -173,9 +185,11 @@ public class Popups {
 		dialogRemoveDoorbell = new Dialog(activity);
 		dialogRemoveDoorbell.setContentView(R.layout.confirmation_remove_doorbell);
 
+		// shows user which doorbell is about to be removed
 		tvCurrentDoorbell = dialogRemoveDoorbell.findViewById(R.id.tvCurrentDoorbell);
 		tvCurrentDoorbell.setText(doorbellName);
 
+		// goes ahead with removal of doorbell
 		btnConfirmDeletion = dialogRemoveDoorbell.findViewById(R.id.btnConfirmRemove);
 		btnConfirmDeletion.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -185,6 +199,7 @@ public class Popups {
 			}
 		});
 
+		// cancels the removal of current doorbell and closes popup
 		btnCancelDeletion = dialogRemoveDoorbell.findViewById(R.id.btnCancelRemove);
 		btnCancelDeletion.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -240,12 +255,13 @@ public class Popups {
 	 */
 	public static void logoutConfirmation(final Activity activity){
 
-		Button btnConfirmDeletion, btnCancelDeletion;
+		Button btnConfirmLogout, btnCancelLogout;
 		dialogLogout = new Dialog(activity);
 		dialogLogout.setContentView(R.layout.confirmation_logout);
 
-		btnConfirmDeletion = dialogLogout.findViewById(R.id.btnConfirmLogout);
-		btnConfirmDeletion.setOnClickListener(new View.OnClickListener() {
+		// confirms logout of user
+		btnConfirmLogout = dialogLogout.findViewById(R.id.btnConfirmLogout);
+		btnConfirmLogout.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				dialogLogout.dismiss();
@@ -253,8 +269,9 @@ public class Popups {
 			}
 		});
 
-		btnCancelDeletion = dialogLogout.findViewById(R.id.btnCancelLogout);
-		btnCancelDeletion.setOnClickListener(new View.OnClickListener() {
+		// cancels user being logged out
+		btnCancelLogout = dialogLogout.findViewById(R.id.btnCancelLogout);
+		btnCancelLogout.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				dialogLogout.dismiss();

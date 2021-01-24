@@ -1,3 +1,9 @@
+/*
+ * @author George Bell
+ * @version 1.0
+ * @since 24/01/2021
+ */
+
 package com.example.doorbellandroidapp;
 
 import android.Manifest;
@@ -40,10 +46,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 
+/**
+ * Class for the Faces Page fragment where user can manage the faces for their registered doorbells
+ */
 public class FacesFragment extends Fragment implements AdapterView.OnItemSelectedListener {
-	private static final String TAG = "FacesFragment";
 
-	//vars
 	private ArrayList<String> mNames = new ArrayList<>();
 	private ArrayList<String> mImages = new ArrayList<>();
 	private ArrayList<Integer> mImageIDs = new ArrayList<>();
@@ -66,6 +73,10 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 
 	Dialog dialog;
 
+	/**
+	 * Assigns all the key functionalities of the faces page
+	 * @return created view of the faces page
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		view =  inflater.inflate(R.layout.fragment_faces, container, false);
@@ -80,23 +91,24 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 
 		selectDoorbellFaces = view.findViewById(R.id.spinnerID);
 
+		//gets all Doorbell IDs assigned to that user
 		getIDs();
 
 		dialog = new Dialog(mActivity);
 
+		//If there are available doorbells, allows user to add a new face
 		ivAddFace.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-
-				if (doorbellIDs.size()>0){
+				if (doorbellIDs.size()>0)
 					showPopup();
-				}
-				else {
+				else
 					Toast.makeText(mActivity, "Please add doorbell before adding faces", Toast.LENGTH_SHORT).show();
-				}
+
 			}
 		});
 
+		//shows information relating the the faces page
 		ivInfo.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -104,7 +116,6 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 			}
 		});
 
-		Log.d(TAG, "onCreateView: loop exited");
 		return view;
 	}
 
@@ -119,9 +130,10 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 			public void handleResponse(JSONObject response) throws JSONException {
 				switch (response.getString("response")) {
 					case "success":
-						JSONArray jsonArray = response.getJSONArray("doorbells");
+						//clears current doorbells
 						doorbells.clear();
 						doorbellIDs.clear();
+						JSONArray jsonArray = response.getJSONArray("doorbells");
 						for (int i = 0; i < jsonArray.length() ; i++) {
 							doorbells.add(jsonArray.getJSONObject(i).getString("name"));
 							doorbellIDs.add(jsonArray.getJSONObject(i).getString("id"));
@@ -145,7 +157,6 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		// Set request and start connection
 		client.setRequest(request);
 		client.start();
-
 	}
 
 	/**
@@ -154,6 +165,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	public void populateSpinner() {
 		ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_dropdown_item,doorbells);
 		selectDoorbellFaces.setAdapter(adapter);
+		//remembers current doorbell id selected
 		String spinnerValue = preferences.getString("userChoiceSpinner",null);
 		if (spinnerValue!=null){
 			if (Integer.parseInt(spinnerValue) < doorbellIDs.size()) {
@@ -173,18 +185,15 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	 */
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
-
 		if (parent.getId()==R.id.spinnerID){
 			int userChoice = selectDoorbellFaces.getSelectedItemPosition();
+			//saves current doorbell
 			preferences.edit().putString("userChoiceSpinner", String.valueOf(userChoice)).apply();
 
-			String currentID = doorbellIDs.get(position);
 			Popups popups = new Popups();
 			popups.loadingPopUp(mContext);
 
 			loadImages(doorbellIDs.get(position));
-
-
 		}
 	}
 
@@ -244,7 +253,6 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		Log.d(TAG, "handleResponse: images got");
 		initRecyclerView(view);
 	}
 
@@ -255,11 +263,9 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		mImages = new ArrayList<>();
 		mNames = new ArrayList<>();
 		mImageIDs = new ArrayList<>();
-		Log.d(TAG, "initImageBitmaps: preparing bitmaps");
 		JSONObject currentImage;
 		for (int i = 0; i < images.length() ; i++) {
 			currentImage = images.getJSONObject(i);
-			Log.d(TAG, "initImageBitmaps: "+currentImage.getString("image"));
 			mImages.add(currentImage.getString("image"));
 			mNames.add(currentImage.getString("person"));
 			mImageIDs.add(currentImage.getInt("id"));
@@ -272,7 +278,6 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	 * @param view current view of android app
 	 */
 	private void initRecyclerView(View view){
-		Log.d(TAG, "initRecyclerView: init recyclerview.");
 		RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
 		RecyclerViewAdapter adapter = new RecyclerViewAdapter(mContext, mActivity, mNames, mImages, mImageIDs);
 		recyclerView.setAdapter(adapter);

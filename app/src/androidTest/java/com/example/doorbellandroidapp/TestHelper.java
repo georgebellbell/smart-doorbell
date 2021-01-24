@@ -1,15 +1,17 @@
+/*
+ * @author George Bell
+ * @version 1.0
+ * @since 24/01/2021
+ */
 package com.example.doorbellandroidapp;
 
 import android.view.View;
 
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
-import androidx.test.espresso.matcher.BoundedMatcher;
 
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
 import static androidx.test.espresso.Espresso.onView;

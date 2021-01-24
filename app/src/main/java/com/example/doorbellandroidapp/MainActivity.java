@@ -1,3 +1,9 @@
+/*
+ * @author George Bell
+ * @version 1.0
+ * @since 24/01/2021
+ */
+
 package com.example.doorbellandroidapp;
 
 import androidx.annotation.NonNull;
@@ -20,6 +26,9 @@ import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
 
+/**
+ * Main basis for the app, controls app navigation and is the template for the different fragments
+ */
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 	private DrawerLayout drawer;
@@ -32,12 +41,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	private SharedPreferences preferences;
 	private String currentUser, currentTask;
 
+	/**
+	 * When first created, app will create navigation bar and load the home page
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
 		preferences= PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 		currentUser= preferences.getString("currentUser",null);
 		currentTask = preferences.getString("currentTask",null);
+
+		//checks if user has logged in before, if not they are sent to the login page
 		if (currentUser==null){
 			Intent intent = new Intent(MainActivity.this, LoginActivity.class);
 			startActivity(intent);
@@ -46,8 +60,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		//creates the navigation bar for moving between the fragments and logging out
 		generateNavigationBar();
 
+		//loads a fragment depending where the user has just been
 		selectFragment(savedInstanceState);
 	}
 
@@ -60,24 +76,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		if (savedInstanceState == null) {
 			FragmentTransaction t = fm.beginTransaction();
 
+			//default is to set the fragment to the home page
 			navigationView.setCheckedItem(R.id.nav_home);
 			fragment = new HomeFragment();
 
+			//this will only occur when refreshing the page
 			if (currentTask!=null){
-				if (currentTask.equals("faces"))
-				{
+				//reloads the faces page
+				if (currentTask.equals("faces")) {
 					navigationView.setCheckedItem(R.id.nav_faces);
 					preferences.edit().putString("currentTask",null).apply();
 					fragment = new FacesFragment();
 				}
-				else if (currentTask.equals("settings"))
-				{
+				//reloads the settings page
+				else if (currentTask.equals("settings")) {
 					navigationView.setCheckedItem(R.id.nav_settings);
 					preferences.edit().putString("currentTask",null).apply();
 					fragment = new SettingsFragment();
 				}
 			}
-
+			//applies the set fragment
 			t.replace(R.id.content_frame, fragment);
 			t.commit();
 		} else {
@@ -91,17 +109,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	 */
 	public void generateNavigationBar(){
 		ActionBar toolbar = getSupportActionBar();
-
 		drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		coordLay = (CoordinatorLayout) findViewById(R.id.coordLay);
 		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
 				this, drawer, R.string.app_name, R.string.app_name);
 		drawer.addDrawerListener(toggle);
 		toggle.syncState();
-
 		navigationView = (NavigationView) findViewById(R.id.navigationView);
 		navigationView.setNavigationItemSelectedListener(this);
-
 		// display home button for actionbar
 		toolbar.setDisplayHomeAsUpEnabled(true);
 
@@ -137,33 +152,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		FragmentTransaction t = fm.beginTransaction();
 
 		switch (id){
+			//move to home page
 			case R.id.nav_home:
-
 				fragment = new HomeFragment();
 				t.replace(R.id.content_frame, fragment);
 				t.commit();
-
 				navigationView.setCheckedItem(id);
 				break;
-
+			//move to the faces page
 			case R.id.nav_faces:
-
 				fragment = new FacesFragment();
 				t.replace(R.id.content_frame, fragment);
 				t.commit();
-
 				navigationView.setCheckedItem(id);
 				break;
-
+			//move to the settings page
 			case R.id.nav_settings:
-
 				fragment = new SettingsFragment();
 				t.replace(R.id.content_frame, fragment);
 				t.commit();
-
 				navigationView.setCheckedItem(id);
 				break;
-
+			//log out of current account
 			case R.id.nav_logout:
 				Popups.logoutConfirmation(this);
 		}

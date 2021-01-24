@@ -1,34 +1,34 @@
+/*
+ * @author Dominykas Makarovas and Jack Reed
+ * @version 1.0
+ * @since 24/01/2021
+ */
+
 package com.example.doorbellandroidapp;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+/**
+ * This class manages the connection between the server and app
+ */
 public abstract class Client extends Thread {
     // Connection details
-    private static final String HOST = "172.18.53.209";
+    private static final String HOST = "172.18.53.209"; /** <--- CHANGE THIS TO YOU LOCAL IP ADDRESS*/
     private static final int PORT = 4444;
 
     private Activity activity;
@@ -38,6 +38,10 @@ public abstract class Client extends Thread {
         this.activity = activity;
     }
 
+    /**
+     * Sets the token of the app to the server with all messages
+     * @param request JSONObject being sent to the server
+     */
     public void setRequest(JSONObject request) {
         this.request = request;
         try {
@@ -86,6 +90,9 @@ public abstract class Client extends Thread {
         return valid;
     }
 
+    /**
+     * Contacts server with request
+     */
     public void run() {
         try {
             // Create connection

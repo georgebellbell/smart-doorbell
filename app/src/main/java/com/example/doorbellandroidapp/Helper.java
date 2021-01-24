@@ -1,3 +1,9 @@
+/*
+ * @author George Bell
+ * @version 1.0
+ * @since 24/01/2021
+ */
+
 package com.example.doorbellandroidapp;
 
 import android.app.Activity;
@@ -8,14 +14,20 @@ import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.widget.Toast;
 
-import androidx.core.app.ActivityCompat;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 
+/**
+ * A class to keep useful methods that are required in more than one place
+ */
 public class Helper {
+	/**
+	 * Converts pictures taken from bitmaps into base 64 strings to be sent and stored via the server
+	 * @param bitmap bitmap of image taken
+	 * @return string equivalent of the bitmap
+	 */
 	public static String bitmapToString(Bitmap bitmap){
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
@@ -23,6 +35,11 @@ public class Helper {
 		return Base64.encodeToString(byteArray,Base64.DEFAULT);
 	}
 
+	/**
+	 *
+	 * @param activity what the user is currently doing
+	 * @param location where the user is currently located
+	 */
 	public static void refresh(Activity activity, String location) {
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
 		preferences.edit().putString("currentTask", location).apply();

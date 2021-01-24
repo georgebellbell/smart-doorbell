@@ -1,3 +1,9 @@
+/*
+ * @author Jack Reed and George Bell
+ * @version 1.0
+ * @since 24/01/2021
+ */
+
 package com.example.doorbellandroidapp;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,13 +22,18 @@ import org.json.JSONObject;
 
 import java.util.regex.Pattern;
 
+/**
+ * Class for the Two Factor Authentication Activity  where users have to input code sent to their email address
+ */
 public class TwoFactorAuthActivity extends AppCompatActivity {
 	TextView etInputDigits, tv2FAResponse, tv2FAAgain;
 	Button btnSubmitDigits, btnReturn;
 	private SharedPreferences preferences;
 	private String currentUser;
 
-
+	/**
+	 * Assigns all the key functionalities of the 2FA page
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		preferences = PreferenceManager.getDefaultSharedPreferences(TwoFactorAuthActivity.this);
@@ -36,35 +47,32 @@ public class TwoFactorAuthActivity extends AppCompatActivity {
 		btnSubmitDigits = findViewById(R.id.btnSubmitDigits);
 		btnReturn = findViewById(R.id.btnReturn);
 
+		// submit details and check if they match
 		btnSubmitDigits.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// Check if code is correct
 				String digits = etInputDigits.getText().toString();
-				if (isValidCode(digits)){
+				if (isValidCode(digits))
 					checkCode(digits);
-				}
 			}
 		});
 
+		// return to the login page
 		btnReturn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// Back to login
 				preferences.edit().clear().apply();
 				Intent intent = new Intent(TwoFactorAuthActivity.this, LoginActivity.class);
 				startActivity(intent);
 			}
 		});
 
+		// Resend 2FA email
 		tv2FAAgain.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v) {
-				// Resend 2FA email
-				resendEmail();
+			public void onClick(View v) { resendEmail();
 			}
 		});
-
 	}
 
 	/**

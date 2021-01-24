@@ -1,3 +1,8 @@
+/*
+ * @author George Bell
+ * @version 1.0
+ * @since 24/01/2021
+ */
 package com.example.doorbellandroidapp;
 
 import androidx.test.espresso.contrib.RecyclerViewActions;
@@ -30,7 +35,6 @@ import static androidx.test.espresso.Espresso.onData;
 public class FacesPageTest {
 	@Rule
 	public ActivityScenarioRule<SignUpActivity> signUpActivityActivityScenarioRule = new ActivityScenarioRule<>(SignUpActivity.class);
-
 
 	/**
 	 * Before each test set up the faces page by creating a new account and adding a couple doorbells

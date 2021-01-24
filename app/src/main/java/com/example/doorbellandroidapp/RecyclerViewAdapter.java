@@ -1,19 +1,21 @@
+/*
+ * @author George Bell
+ * @version 1.0
+ * @since 24/01/2021
+ */
+
 package com.example.doorbellandroidapp;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -24,15 +26,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static android.content.ContentValues.TAG;
 
+/**
+ * This class is the template for all the view holders to be created, in this case the faces of a doorbell
+ */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
 	private ArrayList<String> mImageNames = new ArrayList<>();
@@ -54,7 +55,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 		this.mImageIDs = mImageIDs;
 		this.mContext = mContext;
 		this.mActivity = mActivity;
-
 	}
 
 	/**
@@ -77,7 +77,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 	 */
 	@Override
 	public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-		Log.d(TAG, "onBindViewHolder: called.");
 		byte[] decodedString = Base64.decode(mImages.get(position), Base64.DEFAULT );
 		final Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString,0, decodedString.length);
 
@@ -92,7 +91,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 		holder.ivEdit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.d(TAG, "onClick: clicked on: " + mImageNames.get(position));
 				EditFacePopup editFacePopup = new EditFacePopup(mContext,mActivity);
 				editFacePopup.showPopup(holder, decodedByte);
 
@@ -109,6 +107,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 		return mImageNames.size();
 	}
 
+	/**
+	 * The item apart of the recycler view
+	 */
 	public class ViewHolder extends RecyclerView.ViewHolder{
 
 		CircleImageView image;
