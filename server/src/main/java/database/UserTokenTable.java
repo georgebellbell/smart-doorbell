@@ -30,42 +30,6 @@ public class UserTokenTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param username - username to delete the token by
-	 * @return if token deleted
-	 */
-	public boolean deleteToken(String username) {
-		try {
-			String query = "DELETE FROM usertoken WHERE Username=?";
-			statement = conn.prepareStatement(query);
-			statement.setString(1, username);
-			statement.execute();
-			statement.close();
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	/**
-	 * @param token - token to be deleted
-	 * @return if token deleted
-	 */
-	public boolean deleteByToken(String token) {
-		try {
-			String query = "DELETE FROM usertoken WHERE token=?";
-			statement = conn.prepareStatement(query);
-			statement.setString(1, token);
-			statement.execute();
-			statement.close();
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	/**
 	 * @param username - username to retrieve all the tokens by from the database
 	 * @return list of all tokens assigned to the username
 	 */
@@ -134,5 +98,41 @@ public class UserTokenTable extends DatabaseConnection {
 			e.printStackTrace();
 		}
 		return user;
+	}
+
+	/**
+	 * @param username - username to delete the token by
+	 * @return if token deleted
+	 */
+	public boolean deleteToken(String username) {
+		try {
+			String query = "DELETE FROM usertoken WHERE Username=?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, username);
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * @param token - token to be deleted
+	 * @return if token deleted
+	 */
+	public boolean deleteByToken(String token) {
+		try {
+			String query = "DELETE FROM usertoken WHERE token=?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, token);
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

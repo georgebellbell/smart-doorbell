@@ -12,6 +12,54 @@ public class DoorbellTable extends DatabaseConnection {
 	PreparedStatement statement;
 
 	/**
+	 * @param username - username of the user to assign the doorbell to
+	 * @param deviceID - doorbell id to assign to the user
+	 * @return if doorbell set successfully
+	 */
+	public boolean setDoorbell(String username, String deviceID) {
+		try {
+			String query = "INSERT INTO doorbelluser (Pi_id, Username)"
+					+ " VALUES (?, ?)";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, deviceID);
+			statement.setString(2, username);
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (SQLException e){
+			return false;
+		}
+	}
+
+	/**
+	 * @param doorbellID - doorbellid to add
+	 * @param name - name of the doorbell
+	 * @return record added
+	 */
+	public boolean addNewDoorbell(String doorbellID, String name) {
+		try {
+			String query = "INSERT INTO doorbell (Pi_id, DoorbellName)"
+					+ " VALUES (?, ?)";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, doorbellID);
+			statement.setString(2, name);
+			statement.execute();
+			statement.close();
+			return true;
+		} catch (SQLException e){
+			return false;
+		}
+	}
+
+	public boolean addNewDoorbell(Doorbell doorbell) {
+		return addNewDoorbell(doorbell.getId(), doorbell.getName());
+	}
+
+	public boolean addNewDoorbell(String doorbellID) {
+		return addNewDoorbell(doorbellID, "Name not set");
+	}
+
+	/**
 	 * @param id - id of the doorbell to retrieve the name of
 	 * @return the user friendly name of the doorbell
 	 */
@@ -49,45 +97,6 @@ public class DoorbellTable extends DatabaseConnection {
 			System.out.println("Doorbell ID doesn't exist");
 		}
 		return users;
-	}
-
-	/**
-	 * @param id - id of the doorbell to delete
-	 * @return if doorbell deleted
-	 */
-	public boolean deleteDoorbell(String id) {
-		try {
-			String query = "DELETE FROM doorbell WHERE Pi_id=?";
-			statement = conn.prepareStatement(query);
-			statement.setString(1, id);
-			statement.execute();
-			statement.close();
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	/**
-	 * @param id - id of the doorbell to update the name of
-	 * @param name - name to change the doorbell to
-	 * @return if sucessfully updated the name
-	 */
-	public boolean updateDoorbell(String id, String name) {
-		try {
-			String query = "UPDATE doorbell Set DoorbellName = ? WHERE Pi_id = ?";
-			statement = conn.prepareStatement(query);
-			statement.setString(1, name);
-			statement.setString(2, id);
-			statement.execute();
-			statement.close();
-			return true;
-		}
-		catch (SQLException e) {
-		System.out.println("Duplicate username");
-		return false;
-		}
 	}
 
 	/**
@@ -132,6 +141,10 @@ public class DoorbellTable extends DatabaseConnection {
 		return jsonArray;
 	}
 
+	/**
+	 * @param username - doorbells to retrieve from assigned user
+	 * @return JSONArray of doorbells with their id and name
+	 */
 	public JSONArray getDoorbells(String username) {
 		JSONArray jsonArray = new JSONArray();
 		try {
@@ -155,21 +168,10 @@ public class DoorbellTable extends DatabaseConnection {
 		return jsonArray;
 	}
 
-	public boolean setDoorbell(String username, String deviceID) {
-		try {
-			String query = "INSERT INTO doorbelluser (Pi_id, Username)"
-					+ " VALUES (?, ?)";
-			statement = conn.prepareStatement(query);
-			statement.setString(1, deviceID);
-			statement.setString(2, username);
-			statement.execute();
-			statement.close();
-			return true;
-		} catch (SQLException e){
-			return false;
-		}
-	}
-
+	/**
+	 * @param doorbellID - the doorbellid to check if exists in the database
+	 * @return doorbell found
+	 */
 	public boolean doorbellExists(String doorbellID) {
 		boolean exists = false;
 		try {
@@ -186,31 +188,65 @@ public class DoorbellTable extends DatabaseConnection {
 		return exists;
 	}
 
-	public boolean addNewDoorbell(Doorbell doorbell) {
-		return addNewDoorbell(doorbell.getId(), doorbell.getName());
-	}
-
-	public boolean addNewDoorbell(String doorbellID) {
-		return addNewDoorbell(doorbellID, "Name not set");
-	}
-
-	public boolean addNewDoorbell(String doorbellID, String name) {
+	/**
+	 * @param username - username to compare against in the database
+	 * @param doorbellID - doorbellid to compare against in the database
+	 * @return if user is assigned the doorbellid
+	 */
+	public boolean isUserAssignedDoorbell(String username, String doorbellID) {
 		try {
-			String query = "INSERT INTO doorbell (Pi_id, DoorbellName)"
-					+ " VALUES (?, ?)";
+			String query = "SELECT * FROM doorbelluser WHERE Pi_id = ? AND Username = ?";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, doorbellID);
-			statement.setString(2, name);
+			statement.setString(2, username);
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next())
+				return true;
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	/**
+	 * @param id - id of the doorbell to update the name of
+	 * @param name - name to change the doorbell to
+	 * @return if sucessfully updated the name
+	 */
+	public boolean updateDoorbell(String id, String name) {
+		try {
+			String query = "UPDATE doorbell Set DoorbellName = ? WHERE Pi_id = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, name);
+			statement.setString(2, id);
+			statement.execute();
+			statement.close();
+			return true;
+		}
+		catch (SQLException e) {
+			System.out.println("Duplicate username");
+			return false;
+		}
+	}
+
+	/**
+	 * @param doorbellID - doorbellid to delete by
+	 * @param username - username to delete by
+	 * @return record deleted from the database
+	 */
+	public boolean unassignDoorbell(String doorbellID, String username) {
+		try {
+			String query = "DELETE FROM doorbelluser WHERE Pi_id = ? AND Username = ?";
+			statement = conn.prepareStatement(query);
+			statement.setString(1, doorbellID);
+			statement.setString(2, username);
 			statement.execute();
 			statement.close();
 			return true;
 		} catch (SQLException e){
 			return false;
 		}
-	}
-
-	public boolean deleteDoorbell(Doorbell doorbell) {
-		return deleteDoorbell(doorbell.getId());
 	}
 
 	public boolean deleteUserDoorbells(String username) {
@@ -241,33 +277,25 @@ public class DoorbellTable extends DatabaseConnection {
 		}
 	}
 
-	public boolean isUserAssignedDoorbell(String username, String doorbellID) {
+	/**
+	 * @param id - id of the doorbell to delete
+	 * @return if doorbell deleted
+	 */
+	public boolean deleteDoorbell(String id) {
 		try {
-			String query = "SELECT * FROM doorbelluser WHERE Pi_id = ? AND Username = ?";
+			String query = "DELETE FROM doorbell WHERE Pi_id=?";
 			statement = conn.prepareStatement(query);
-			statement.setString(1, doorbellID);
-			statement.setString(2, username);
-			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.next())
-				return true;
-			statement.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	public boolean unassignDoorbell(String doorbellID, String username) {
-		try {
-			String query = "DELETE FROM doorbelluser WHERE Pi_id = ? AND Username = ?";
-			statement = conn.prepareStatement(query);
-			statement.setString(1, doorbellID);
-			statement.setString(2, username);
+			statement.setString(1, id);
 			statement.execute();
 			statement.close();
 			return true;
-		} catch (SQLException e){
+		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
+	}
+
+	public boolean deleteDoorbell(Doorbell doorbell) {
+		return deleteDoorbell(doorbell.getId());
 	}
 }

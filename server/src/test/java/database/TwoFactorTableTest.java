@@ -1,5 +1,6 @@
 package database;
 
+import authentication.TwoFactorAuthentication;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,21 +9,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TwoFactorTableTest {
 	private TwoFactorTable twoFactorTable;
+	private TwoFactorAuthentication twoFactor;
 	private User user;
 	private String code;
 
 	@BeforeEach
 	void setUp() {
 		twoFactorTable = new TwoFactorTable();
-		twoFactorTable.connect();
-		user = new User("JohnnyD54143", "johnnyD@dom.com", "password", "salt", "role");
+		user = new User("Test", "quicksolutions.doorbell@gmail.com",
+				"Password", "Salt", "User");
 		code = "123456";
 	}
 
 	@AfterEach
-	public void afterEach() {
+	void tearDown() {
 		twoFactorTable.deleteRecord(user);
-		twoFactorTable.disconnect();
 	}
 
 	@Test
@@ -31,14 +32,13 @@ class TwoFactorTableTest {
 	}
 
 	@Test
-	void getRecord() {
-		twoFactorTable.addRecord(user, code);
+	void getCode() {
+		addRecord();
 		assertEquals(code, twoFactorTable.getCode(user));
 	}
 
 	@Test
 	void deleteRecord() {
-		twoFactorTable.addRecord(user, code);
 		assertTrue(twoFactorTable.deleteRecord(user));
 	}
 }
