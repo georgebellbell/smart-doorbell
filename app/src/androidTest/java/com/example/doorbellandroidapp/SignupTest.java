@@ -30,35 +30,40 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class SignupInstrumentedTest {
+public class SignupTest {
 
 	@Rule
 	public ActivityScenarioRule<SignUpActivity> signUpActivityActivityScenarioRule = new ActivityScenarioRule<>(SignUpActivity.class);
 
-	public static void accountCreatedSuccessfully() throws InterruptedException {
+	/**
+	 * Input valid details and create a new account
+	 */
+	@Test
+	public void successfullyCreateAccount() throws InterruptedException {
 		onView(withId(R.id.etUsername)).perform(typeText("TestUser"), closeSoftKeyboard());
 		onView(withId(R.id.etEmailAddress)).perform(typeText("TestUser@gmail.com"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("Password123"), closeSoftKeyboard());
 		onView(withId(R.id.btnSignUp)).perform(click());
 		Thread.sleep(2000);
 		onView(withId(R.id.tvLastFace)).check(matches(isDisplayed()));
+		Thread.sleep(1000);
+		TestHelper.deleteAccount();
 	}
 
+	/**
+	 * Move from the signup page to the login page
+	 */
 	@Test
-	public void createAccount() throws InterruptedException {
-		accountCreatedSuccessfully();
-	}
-	@After
-	public void deleteNewAccount() throws InterruptedException {
-		onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-		onView(withId(R.id.navigationView)).perform(NavigationViewActions.navigateTo(R.id.nav_settings));
-		onView(withId(R.id.btnDeleteAccount)).perform(scrollTo()).perform(click());
-		onView(withId(R.id.btnConfirmDeletion)).perform(click());
-		Thread.sleep(1000);
+	public void moveToLogin(){
+		onView(withId(R.id.tvGoToLogin)).perform(click());
 		onView(withId(R.id.tvLogin)).check(matches(isDisplayed()));
 	}
 
 	//USERNAME TESTS
+
+	/**
+	 * Attempting to create an account with a username that has already been taken
+	 */
 	@Test
 	public void usernameIsNotUnique() throws InterruptedException {
 		onView(withId(R.id.etUsername)).perform(typeText("george"), closeSoftKeyboard());
@@ -67,6 +72,10 @@ public class SignupInstrumentedTest {
 		Thread.sleep(2000);
 		onView(withId(R.id.tvSignUp)).check(matches(isDisplayed()));
 	}
+
+	/**
+	 * Attempting to create an account with a username that is too short
+	 */
 	@Test
 	public void usernameIsTooShort() {
 		onView(withId(R.id.etUsername)).perform(typeText("t"), closeSoftKeyboard());
@@ -76,6 +85,10 @@ public class SignupInstrumentedTest {
 		onView(withId(R.id.tvSignUp)).check(matches(isDisplayed()));
 
 	}
+
+	/**
+	 * Attempting to create an account without giving a username
+	 */
 	@Test
 	public void noUsernameInput()  {
 		onView(withId(R.id.etUsername)).perform(typeText(""), closeSoftKeyboard());
@@ -84,6 +97,10 @@ public class SignupInstrumentedTest {
 		onView(withText(R.string.noUppercaseError));
 		onView(withId(R.id.tvSignUp)).check(matches(isDisplayed()));
 	}
+
+	/**
+	 * Attempting to create an account with a space in it
+	 */
 	@Test
 	public void usernameWithSpace() {
 		onView(withId(R.id.etUsername)).perform(typeText("    "), closeSoftKeyboard());
@@ -94,14 +111,22 @@ public class SignupInstrumentedTest {
 	}
 
 	//EMAIL TESTS
+
+	/**
+	 * Attempting to create an account with an email that is already taken
+	 */
 	@Test
 	public void emailIsNotUnique() throws InterruptedException {
 		onView(withId(R.id.etUsername)).perform(typeText("NotUnique"), closeSoftKeyboard());
-		onView(withId(R.id.etEmailAddress)).perform(typeText("TestUser@gmail.com"), closeSoftKeyboard());
+		onView(withId(R.id.etEmailAddress)).perform(typeText("g.bell1@newcastle.ac.uk"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("Password123"), closeSoftKeyboard());
 		Thread.sleep(2000);
 		onView(withId(R.id.tvSignUp)).check(matches(isDisplayed()));
 	}
+
+	/**
+	 * Attempting to create an account with an email that isn't in a valid format
+	 */
 	@Test
 	public void emailIsNotValid() {
 		onView(withId(R.id.etUsername)).perform(typeText("BadEmail"), closeSoftKeyboard());
@@ -112,6 +137,9 @@ public class SignupInstrumentedTest {
 	}
 
 	//PASSWORD TESTS
+	/**
+	 * Attempting to create an account with a too short password
+	 */
 	@Test
 	public void passwordIsTooShort(){
 		onView(withId(R.id.etUsername)).perform(typeText("shortPassword"), closeSoftKeyboard());
@@ -121,6 +149,10 @@ public class SignupInstrumentedTest {
 		onView(withId(R.id.tvSignUp)).check(matches(isDisplayed()));
 
 	}
+
+	/**
+	 * Attempting to create an account with a password with a space in it
+	 */
 	@Test
 	public void passwordWithASpace() {
 		onView(withId(R.id.etUsername)).perform(typeText("spacePassword"), closeSoftKeyboard());
@@ -130,6 +162,9 @@ public class SignupInstrumentedTest {
 		onView(withId(R.id.tvSignUp)).check(matches(isDisplayed()));
 	}
 
+	/**
+	 * Attempting to create an account with a password with no lower case characters
+	 */
 	@Test
 	public void passwordWithNoLowerCaseCharacters() {
 		onView(withId(R.id.etUsername)).perform(typeText("uppercasePassword"), closeSoftKeyboard());
@@ -139,6 +174,9 @@ public class SignupInstrumentedTest {
 		onView(withId(R.id.tvSignUp)).check(matches(isDisplayed()));
 	}
 
+	/**
+	 * Attempting to create an account with a password with no upper case characters
+	 */
 	@Test
 	public void passwordWithNoUpperCaseCharacters() {
 		onView(withId(R.id.etUsername)).perform(typeText("lowercasePassword"), closeSoftKeyboard());

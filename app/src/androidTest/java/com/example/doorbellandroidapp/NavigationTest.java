@@ -15,6 +15,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,13 +31,18 @@ import static org.hamcrest.Matchers.not;
 
 
 @RunWith(JUnit4.class)
-public class NavigationInstrumentedTest {
-	private static final String TAG = "Testing";
-	
-	
-	@Rule
-	public ActivityScenarioRule<MainActivity> mainActivityRule = new ActivityScenarioRule<>(MainActivity.class);
+public class NavigationTest {
 
+	@Rule
+	public ActivityScenarioRule<SignUpActivity> signUpActivityActivityScenarioRule = new ActivityScenarioRule<>(SignUpActivity.class);
+
+	/**
+	 * Before each test create a new account
+	 */
+	@Before
+	public void setup() throws InterruptedException {
+		TestHelper.accountCreatedSuccessfully();
+	}
 
 	/**
 	 * Checks to see if user is sent to Home Fragment via navigation
@@ -66,6 +72,14 @@ public class NavigationInstrumentedTest {
 		onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
 		onView(withId(R.id.navigationView)).perform(NavigationViewActions.navigateTo(R.id.nav_settings));
 		onView(withId(R.id.tvSettings)).check(matches(isDisplayed()));
+	}
+
+	/**
+	 * After each test delete the account
+	 */
+	@After
+	public void cleanup() throws InterruptedException {
+		TestHelper.deleteAccount();
 	}
 
 }

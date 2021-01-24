@@ -27,7 +27,7 @@ import static org.hamcrest.Matchers.not;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class LoginInstrumentedTest {
+public class LoginTest {
 
 	@Rule
 	public ActivityScenarioRule<LoginActivity> loginActivityRule = new ActivityScenarioRule<>(LoginActivity.class);
@@ -71,6 +71,9 @@ public class LoginInstrumentedTest {
 		onView(withId(R.id.btnLogin)).check(matches(not(isEnabled())));
 	}
 
+	/**
+	 * Move to the signup page
+	 */
 	@Test
 	public void moveToCreateAccount(){
 		onView(withId(R.id.tvGoToSignUp)).perform(click());

@@ -28,7 +28,7 @@ import java.net.UnknownHostException;
 
 public abstract class Client extends Thread {
     // Connection details
-    private static final String HOST = "192.168.0.39";
+    private static final String HOST = "172.18.53.209";
     private static final int PORT = 4444;
 
     private Activity activity;

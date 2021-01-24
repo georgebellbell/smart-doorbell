@@ -26,7 +26,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class TwoFAInstrumentedTest {
+public class TwoFATest {
 
 	@Rule
 	public ActivityScenarioRule<TwoFactorAuthActivity> twoFactorAuthActivity = new ActivityScenarioRule<>(TwoFactorAuthActivity.class);
