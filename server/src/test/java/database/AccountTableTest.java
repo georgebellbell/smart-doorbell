@@ -60,6 +60,13 @@ class AccountTableTest {
 	}
 
 	@Test
+	void userAddedCorrectlyToDatabase() {
+		accountTable.addRecord(testUser);
+		User fromDB = accountTable.getRecord(testUser.getUsername());
+		assertEquals(testUser, fromDB);
+	}
+
+	@Test
 	void getTotalUsers() {
 		assertEquals(1, accountTable.getTotalUsers("admin"));
 	}
@@ -76,8 +83,8 @@ class AccountTableTest {
 	@Test
 	void getEmailByDoorbell() {
 		ArrayList<String> email = accountTable.getEmailByDoorbell(doorbell.getId());
-		for (int i = 0; i < email.size(); i++) {
-			assertEquals(user.getEmail(), email.get(i));
+		for (String s : email) {
+			assertEquals(user.getEmail(), s);
 		}
 	}
 

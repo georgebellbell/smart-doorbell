@@ -52,16 +52,16 @@ class UserTokenTableTest {
 	@Test
 	void getTokens() {
 		ArrayList<String> tokens = userTokenTable.getTokens(user.getUsername());
-		for (int i = 0; i < tokens.size(); i++) {
-			assertEquals(token, tokens.get(i));
+		for (String s : tokens) {
+			assertEquals(token, s);
 		}
 	}
 
 	@Test
 	void getTokensByDoorbell() {
 		ArrayList<String> tokens = userTokenTable.getTokensByDoorbell(doorbell.getId());
-		for (int i = 0; i < tokens.size(); i++) {
-			assertEquals(token, tokens.get(i));
+		for (String s : tokens) {
+			assertEquals(token, s);
 		}
 	}
 
