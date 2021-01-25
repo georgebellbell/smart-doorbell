@@ -1,23 +1,21 @@
-package server;
+package server.protocol;
 
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import server.protocol.Protocol;
-import server.protocol.UserProtocol;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ProtocolTest {
+class DoorbellProtocolTest {
 
 	private Protocol protocol;
 
 	@BeforeEach
 	void setup() {
-		protocol = new UserProtocol();
+		protocol = new DoorbellProtocol();
 	}
 
-	@Test
+	/*@Test
 	void testValidRequest() {
 		JSONObject request = new JSONObject();
 		request.put("request","login");
@@ -25,7 +23,7 @@ class ProtocolTest {
 		request.put("password", "Password");
 
 		assertTrue(protocol.isRequestValid(request.toString()));
-	}
+	}*/
 
 	@Test
 	void testInvalidJSONRequest() {
