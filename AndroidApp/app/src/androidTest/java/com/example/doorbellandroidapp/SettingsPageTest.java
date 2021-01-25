@@ -92,15 +92,6 @@ public class SettingsPageTest {
 	}
 
 	//EMAIL TESTS
-	// TEST FAILED
-	/*
-	@Test
-	public void emailIsNotUnique() {
-		onView(withId(R.id.etChangeEmail)).perform(typeText("g.bell1@newcastle.ac.uk"), closeSoftKeyboard());
-		onView(withId(R.id.btnChangeEmail)).perform(click());
-		onView(withId(R.id.ivPasswordConfirmed)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
-	}
-	*/
 
 	/**
 	 * Successfully changing email address of account
@@ -146,15 +137,6 @@ public class SettingsPageTest {
 		onView(withId(R.id.ivPasswordConfirmed)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
 	}
 
-	/* TEST FAILED
-	@Test
-	public void passwordWithASpace() throws InterruptedException {
-		onView(withId(R.id.pwdChangePassword)).perform(scrollTo()).perform(typeText("Pass word 123"), closeSoftKeyboard());
-		onView(withId(R.id.btnChangePassword)).perform(click());
-		Thread.sleep(500);
-		onView(withId(R.id.ivPasswordConfirmed)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
-	}
-	*/
 	/**
 	 * Attempting to change password to something with no lowercase characters
 	 */
