@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ * @author George Bell
+ * @version 1.0
+ * @since 25/01/2021
+-->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#D3D3D3"
+    android:layout_gravity="center"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/tvConfirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Are you sure you want to logout?"
+        android:padding="10dp"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:id="@+id/btnConfirmLogout"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/tvConfirm"
+        android:layout_marginTop="35dp"
+        android:layout_alignParentLeft="true"
+        android:background="#F44336"
+        android:text="Logout"
+        />
+
+    <Button
+        android:id="@+id/btnCancelLogout"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/tvConfirm"
+        android:layout_alignRight="@id/tvConfirm"
+        android:layout_marginTop="35dp"
+        android:background="#67656A"
+        android:textColor="#F2EFF4"
+        android:text="Cancel"/>
+
+
+
+
+
+
+
+
+</RelativeLayout>

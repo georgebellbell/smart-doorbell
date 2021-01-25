@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ * @author George Bell
+ * @version 1.0
+ * @since 25/01/2021
+-->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:background="#D3D3D3"
+    android:layout_gravity="center"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="35dp"
+        android:padding="15dp"
+        android:textStyle="bold"
+        android:text="Quick Solutions"/>
+    <TextView
+        android:id="@+id/tvClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="X"
+        android:layout_alignParentRight="true"
+        android:padding="15dp"/>
+    <TextView
+        android:id="@+id/tvInfoTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:padding="15dp"
+        android:textStyle="italic"
+        android:layout_below="@+id/tvTitle"
+        android:text="How to use the home page"/>
+    <TextView
+        android:id="@+id/tvInfoLine1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvInfoTitle"
+        android:textSize="20sp"
+        android:padding="15dp"
+        android:text="Here is where you directly communicate with your doorbell!"/>
+    <TextView
+        android:id="@+id/tvInfoLine2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvInfoLine1"
+        android:textSize="20sp"
+        android:padding="15dp"
+        android:text="You can see the most recent users and send a response to doorbell to open it."/>
+    <TextView
+        android:id="@+id/tvInfoLine3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvInfoLine2"
+        android:textSize="20sp"
+        android:padding="15dp"
+        android:text="Be careful with who you let in!"/>
+
+</RelativeLayout>

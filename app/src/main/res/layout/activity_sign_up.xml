@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ * @author Zach Smith
+ * @version 1.0
+ * @since 25/01/2021
+-->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SignUpActivity"
+    android:layout_marginLeft = "15dp"
+    android:layout_marginRight="15dp">
+
+    <TextView
+        android:id="@+id/tvAppName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Smart Doorbell"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:layout_marginTop="35dp"
+        android:padding="10dp"/>
+
+    <TextView
+        android:id="@+id/tvSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create An Account"
+        android:textSize="24sp"
+        android:layout_below="@id/tvAppName"
+        android:layout_marginTop="40dp"
+        android:padding="15dp"/>
+
+    <EditText
+        android:id="@+id/etUsername"
+        android:layout_width="275dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Username"
+        android:inputType="textPersonName"
+        android:layout_below="@+id/tvSignUp"
+        android:layout_marginTop="25dp"
+        android:padding="15dp"/>
+
+    <EditText
+        android:id="@+id/etEmailAddress"
+        android:layout_width="275dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Email Address"
+        android:inputType="textEmailAddress"
+        android:layout_below="@+id/etUsername"
+        android:layout_marginTop="25dp"
+        android:padding="15dp"/>
+
+
+    <EditText
+        android:id="@+id/pwdPassword"
+        android:layout_width="275dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:layout_below="@+id/etEmailAddress"
+        android:layout_marginTop="25dp"
+        android:padding="15dp"/>
+
+
+    <TextView
+        android:id="@+id/tvInformation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pwdPassword"
+        android:layout_marginTop="35dp"
+        android:padding="15dp"/>
+
+
+    <TextView
+        android:id="@+id/tvGoToLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Log into existing account"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="25dp"
+        android:padding="15dp"/>
+
+    <Button
+        android:id="@+id/btnSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign Up"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="25dp"
+        android:layout_alignParentRight="true"
+        android:padding="15dp"/>
+</RelativeLayout>

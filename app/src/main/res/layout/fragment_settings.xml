@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ * @author George Bell
+ * @version 1.0
+ * @since 25/01/2021
+-->
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".SettingsFragment"
+        android:layout_marginLeft = "15dp"
+        android:layout_marginRight="15dp">
+
+
+        <ImageView
+            android:id="@+id/ivInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="15dp"
+            android:layout_alignParentRight="true"
+            android:padding="10dp"
+            android:src="@drawable/ic_info" />
+
+
+
+        <TextView
+            android:id="@+id/tvSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:padding="15dp"
+            android:text="Settings"
+            android:textSize="36sp"
+            android:textStyle="bold"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_below="@+id/tvSettings"
+            android:layout_marginTop="25dp"/>
+
+        <TextView
+            android:id="@+id/tvConnectDoorbell"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:text="Connect to Doorbell"
+            android:textStyle="bold"
+            android:layout_below="@+id/tvSettings"
+             />
+
+        <ImageView
+            android:id="@+id/ivAddDoorbellInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvSettings"
+            android:layout_marginTop="35dp"
+            android:layout_toRightOf="@+id/tvConnectDoorbell"
+
+            android:padding="10dp"
+            android:src="@drawable/ic_info" />
+
+
+        <EditText
+            android:id="@+id/etDoorbellConnect"
+            android:layout_width="182dp"
+            android:layout_height="41dp"
+            android:ems="10"
+            android:hint="Doorbell ID"
+            android:inputType="textPersonName"
+            android:layout_below="@+id/tvConnectDoorbell"
+             />
+
+        <EditText
+            android:id="@+id/etDoorbellConnectName"
+            android:layout_width="182dp"
+            android:layout_height="41dp"
+            android:ems="10"
+            android:hint="Doorbell Name"
+            android:inputType="textPersonName"
+            android:layout_below="@+id/etDoorbellConnect"
+            />
+
+        <Button
+            android:id="@+id/btnDoorbellConnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connect to Doorbell"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/etDoorbellConnectName"/>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_below="@+id/btnDoorbellConnect"
+            android:layout_marginTop="25dp"/>
+
+        <TextView
+            android:id="@+id/tvRemoveDoorbell"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remove a Doorbell"
+            android:textStyle="bold"
+            android:layout_marginTop="50dp"
+            android:layout_below="@id/btnDoorbellConnect"
+            />
+
+
+        <Spinner
+            android:id="@+id/spinnerID"
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:background="@android:drawable/btn_dropdown"
+            android:layout_marginTop="10dp"
+            android:spinnerMode="dropdown"
+            android:layout_below="@id/tvRemoveDoorbell"
+            />
+        <Button
+            android:id="@+id/btnRemoveDoorbell"
+            android:layout_width="124dp"
+            android:layout_height="45dp"
+            android:layout_toRightOf="@+id/spinnerID"
+            android:layout_below="@id/tvRemoveDoorbell"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:background="#FF0000"
+            android:text="Remove doorbell"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_below="@+id/spinnerID"
+            android:layout_marginTop="25dp"/>
+
+
+        <TextView
+            android:id="@+id/tvChangeEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Change Email Address"
+            android:textStyle="bold"
+            android:layout_marginTop="50dp"
+            android:layout_below="@id/spinnerID"
+             />
+
+        <EditText
+            android:id="@+id/etChangeEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="New Email"
+            android:inputType="textEmailAddress"
+            android:layout_below="@id/tvChangeEmail"
+             />
+
+        <ImageView
+            android:id="@+id/ivEmailConfirmed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvChangeEmail"
+            android:layout_toRightOf="@+id/etChangeEmail"
+            android:padding="5dp"
+            android:src="@drawable/ic_confirmed"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/btnChangeEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Submit New Email"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/etChangeEmail"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_below="@+id/btnChangeEmail"
+            android:layout_marginTop="25dp"/>
+
+        <TextView
+            android:id="@+id/tvPasswordChange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Change Password"
+            android:textStyle="bold"
+            android:layout_marginTop="50dp"
+            android:layout_below="@id/btnChangeEmail"
+            />
+
+        <EditText
+            android:id="@+id/pwdChangePassword"
+            android:layout_width="171dp"
+            android:layout_height="52dp"
+            android:ems="10"
+            android:hint="New Password"
+            android:inputType="textPassword"
+            android:layout_below="@+id/tvPasswordChange"
+            />
+
+        <ImageView
+            android:id="@+id/ivPasswordConfirmed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvPasswordChange"
+            android:layout_toRightOf="@+id/pwdChangePassword"
+            android:padding="5dp"
+            android:src="@drawable/ic_confirmed"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/btnChangePassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Submit New Password"
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/pwdChangePassword"
+             />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_below="@+id/btnChangePassword"
+            android:layout_marginTop="25dp"/>
+
+        <Button
+            android:id="@+id/btnDeleteAccount"
+            android:layout_width="124dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="825dp"
+            android:layout_marginBottom="25dp"
+            android:background="#FF0000"
+            android:text="Delete Account"
+            />
+
+    </RelativeLayout>
+</ScrollView>
