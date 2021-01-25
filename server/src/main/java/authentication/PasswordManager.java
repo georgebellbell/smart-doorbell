@@ -1,3 +1,9 @@
+/**
+ * @author Dominykas Makarovas, Jack Reed
+ * @version 1.0
+ * @since 25/01/2021
+ */
+
 package authentication;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;

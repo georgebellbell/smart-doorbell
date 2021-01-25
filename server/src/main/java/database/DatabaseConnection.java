@@ -1,10 +1,13 @@
+/**
+ * @author Dominykas Makarovas, Jack Reed
+ * @version 1.0
+ * @since 25/01/2021
+ */
+
 package database;
 
 import com.jcraft.jsch.*;
-
-import java.net.URL;
 import java.sql.*;
-import java.util.Objects;
 
 public class DatabaseConnection {
 	// SSH connection info
