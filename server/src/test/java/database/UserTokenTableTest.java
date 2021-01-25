@@ -45,12 +45,12 @@ class UserTokenTableTest {
 	}
 
 	@Test
-	void addToken() {
+	void testAddToken() {
 		assertTrue(userTokenTable.addToken(token2, user.getUsername()));
 	}
 
 	@Test
-	void getTokens() {
+	void testGetTokens() {
 		ArrayList<String> tokens = userTokenTable.getTokens(user.getUsername());
 		for (String s : tokens) {
 			assertEquals(token, s);
@@ -58,7 +58,7 @@ class UserTokenTableTest {
 	}
 
 	@Test
-	void getTokensByDoorbell() {
+	void testGetTokensByDoorbell() {
 		ArrayList<String> tokens = userTokenTable.getTokensByDoorbell(doorbell.getId());
 		for (String s : tokens) {
 			assertEquals(token, s);
@@ -66,17 +66,17 @@ class UserTokenTableTest {
 	}
 
 	@Test
-	void getUserByToken() {
+	void testGetUserByToken() {
 		assertEquals(user, userTokenTable.getUserByToken(token));
 	}
 
 	@Test
-	void deleteToken() {
+	void testDeleteToken() {
 		assertTrue(userTokenTable.deleteToken(user.getUsername()));
 	}
 
 	@Test
-	void deleteByToken() {
+	void testDeleteByToken() {
 		assertTrue(userTokenTable.deleteByToken(token));
 	}
 }

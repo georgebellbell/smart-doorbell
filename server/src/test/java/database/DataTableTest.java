@@ -50,31 +50,31 @@ class DataTableTest {
 	}
 
 	@Test
-	void addRecord() {
+	void testAddRecord() {
 		assertTrue(dataTable.addRecord(data2));
 	}
 
 	@Test
-	void getRecord() {
+	void testGetRecord() {
 		ArrayList<Data> allImages = dataTable.getAllImages(doorbell.getId());
 		Data imageRetrieved = allImages.get(0);
 		assertEquals(data.getPersonName(), imageRetrieved.getPersonName());
 	}
 
 	@Test
-	void getAllImages() {
+	void testGetAllImages() {
 		ArrayList<Data> allImages = dataTable.getAllImages(doorbell.getId());
 		assertEquals(1, allImages.size());
 	}
 
 	@Test
-	void getAllImagesByInvalidDoorbell() {
+	void testGetAllImagesByInvalidDoorbell() {
 		ArrayList<Data> allImages = dataTable.getAllImages("InvalidDoorbell");
 		assertTrue(allImages.isEmpty());
 	}
 
 	@Test
-	void getRecentImage() {
+	void testGetRecentImage() {
 		Data recentImage = dataTable.getAllImages(doorbell.getId()).get(0);
 		Integer imageID = recentImage.getImageID();
 		dataTable.updateData(imageID);
@@ -82,13 +82,13 @@ class DataTableTest {
 	}
 
 	@Test
-	void getRecentImageByInvalidDoorbell() {
+	void testGetRecentImageByInvalidDoorbell() {
 		 assertTrue(dataTable.getAllImages("InvalidDoorbell").isEmpty());
 
 	}
 
 	@Test
-	void updateData() {
+	void testUpdateData() {
 		Integer imageID = dataTable.getAllImages(doorbell.getId()).get(0).getImageID();
 		dataTable.updateData(imageID);
 		Data updatedImage = dataTable.getAllImages(doorbell.getId()).get(0);
@@ -100,14 +100,14 @@ class DataTableTest {
 	}
 
 	@Test
-	void changeName() {
+	void testChangeName() {
 		Integer imageID = dataTable.getAllImages(doorbell.getId()).get(0).getImageID();
 		dataTable.changeName(imageID, "New Person");
 		assertEquals("New Person", dataTable.getRecord(imageID).getPersonName());
 	}
 
 	@Test
-	void deleteRecordById() {
+	void testDeleteRecordById() {
 		Integer imageID = dataTable.getAllImages(doorbell.getId()).get(0).getImageID();
 		assertTrue(dataTable.deleteRecordById(imageID));
 	}

@@ -44,72 +44,72 @@ class DoorbellTableTest {
 	}
 
 	@Test
-	void setDoorbell() {
+	void testSetDoorbell() {
 		assertTrue(doorbellTable.setDoorbell(user.getUsername(), doorbell.getId()));
 	}
 
 	@Test
-	void addNewDoorbell() {
+	void testAddNewDoorbell() {
 		assertTrue(doorbellTable.addNewDoorbell(doorbell2));
 	}
 
 	@Test
-	void testAddNewDoorbell() {
+	void testAddNewDoorbellById() {
 		assertTrue(doorbellTable.addNewDoorbell(doorbell2.getId()));
 	}
 
 	@Test
-	void testAddNewDoorbell1() {
+	void testAddNewDoorbellByIdAndName() {
 		assertTrue(doorbellTable.addNewDoorbell(doorbell2.getId(), doorbell2.getName()));
 	}
 
 	@Test
-	void getDoorbellName() {
+	void testGetDoorbellName() {
 		assertEquals(doorbell.getName(), doorbellTable.getDoorbellName(doorbell.getId()));
 	}
 
 	@Test
-	void getUsers() {
+	void testGetUsers() {
 		ArrayList<String> users = doorbellTable.getUsers(doorbell.getId());
 		assertEquals(user.getUsername(), users.get(0));
 	}
 
 	@Test
-	void getDoorbells() {
+	void testGetDoorbells() {
 		String id = doorbellTable.getDoorbells(user.getUsername()).getJSONObject(0).getString("id");
 		assertEquals(doorbell.getId(), id);
 	}
 
 	@Test
-	void doorbellExists() {
+	void testDoorbellExists() {
 		assertTrue(doorbellTable.doorbellExists(doorbell.getId()));
 	}
 
 	@Test
-	void isUserAssignedDoorbell() {
+	void testIsUserAssignedDoorbell() {
 		assertTrue(doorbellTable.isUserAssignedDoorbell(user.getUsername(), doorbell.getId()));
 	}
 
 	@Test
-	void updateDoorbell() {
+	void testUpdateDoorbell() {
 		assertTrue(doorbellTable.updateDoorbell(doorbell.getId(), "newName"));
 	}
 
 	@Test
-	void unassignDoorbell() {
+	void testUnassignDoorbell() {
 		assertTrue(doorbellTable.unassignDoorbell(doorbell.getId(), user.getUsername()));
 	}
 
 	@Test
-	void deleteUserDoorbells() { assertTrue(doorbellTable.deleteUserDoorbells(user.getUsername())); }
+	void testDeleteUserDoorbells() { assertTrue(doorbellTable.deleteUserDoorbells(user.getUsername())); }
 
 	@Test
-	void deleteUsersFromDoorbell() {
+	void testDeleteUsersFromDoorbell() {
 		assertTrue(doorbellTable.deleteUsersFromDoorbell(doorbell.getId()));
 	}
 
 	@Test
-	void deleteDoorbell() {
+	void testDeleteDoorbellById() {
 		assertTrue(doorbellTable.deleteDoorbell(doorbell.getId()));
 	}
 

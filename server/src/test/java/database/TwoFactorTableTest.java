@@ -27,18 +27,18 @@ class TwoFactorTableTest {
 	}
 
 	@Test
-	void addRecord() {
+	void testAddRecord() {
 		assertTrue(twoFactorTable.addRecord(user, code));
 	}
 
 	@Test
-	void getCode() {
-		addRecord();
+	void testGetCode() {
+		testAddRecord();
 		assertEquals(code, twoFactorTable.getCode(user));
 	}
 
 	@Test
-	void deleteRecord() {
+	void testDeleteRecord() {
 		assertTrue(twoFactorTable.deleteRecord(user));
 	}
 }
