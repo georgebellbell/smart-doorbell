@@ -1,6 +1,6 @@
 package server.protocol;
 
-import database.Data;
+import database.ImageData;
 import facialrecognition.FaceSimilarity;
 import communication.NotificationMessenger;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class DoorbellProtocol extends Protocol{
 			byte[] image = java.util.Base64.getDecoder().decode(request.getString("data").getBytes());
 			String faceRecognised = faceSimilarity.compareFaces(image,doorbellID);
 			if (faceRecognised == null) {
-				dataTable.addRecord(new Data(doorbellID, image, "Unknown", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
+				dataTable.addRecord(new ImageData(doorbellID, image, "Unknown", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
 				NotificationMessenger notificationMessenger = new NotificationMessenger();
 				notificationMessenger.setDoorbellGroup(doorbellID);
 				notificationMessenger.setMessage("Unrecognised person is at the door", "Open app to find out more!");
@@ -31,17 +31,16 @@ public class DoorbellProtocol extends Protocol{
 				response.put("message", "Unknown user at the door");
 			}
 			else {
-				Data data = dataTable.getRecord(Integer.parseInt(faceRecognised));
+				ImageData imageData = dataTable.getRecord(Integer.parseInt(faceRecognised));
 				NotificationMessenger notificationMessenger = new NotificationMessenger();
 				notificationMessenger.setDoorbellGroup(doorbellID);
-				notificationMessenger.setMessage(data.getPersonName() + " is at the door", "Open app to find out more!");
+				notificationMessenger.setMessage(imageData.getPersonName() + " is at the door", "Open app to find out more!");
 				notificationMessenger.sendNotification();
-				dataTable.updateData(data.getImageID());
+				dataTable.updateData(imageData.getImageID());
 				response.put("response", "success");
-				response.put("message", data.getPersonName() + " is at the door");
+				response.put("message", imageData.getPersonName() + " is at the door");
 			}
 		} catch (Exception e) {
-			System.out.println(e);
 			e.printStackTrace();
 		}
 	}

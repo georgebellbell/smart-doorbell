@@ -1,6 +1,6 @@
 package facialrecognition;
 
-import database.Data;
+import database.ImageData;
 import database.DataTable;
 import database.Doorbell;
 import database.DoorbellTable;
@@ -23,13 +23,13 @@ class FaceSimilarityTest {
 	private Doorbell doorbell2;
 	private Doorbell doorbell3;
 	private Doorbell doorbell4;
-	private Data dataDom;
-	private Data dataDale;
-	private Data dataJack;
-	private Data dataGeorge;
-	private Data dataZach;
-	private Data dataDaleDifferentAngle;
-	private Data dataBlank;
+	private ImageData imageDataDom;
+	private ImageData imageDataDale;
+	private ImageData imageDataJack;
+	private ImageData imageDataGeorge;
+	private ImageData imageDataZach;
+	private ImageData imageDataDaleDifferentAngle;
+	private ImageData imageDataBlank;
 
 	@BeforeEach
 	void setUp() throws IOException {
@@ -55,20 +55,20 @@ class FaceSimilarityTest {
 		doorbellTable.addNewDoorbell(doorbell3);
 		doorbellTable.addNewDoorbell(doorbell4);
 
-		dataDom = new Data(doorbell2.getId(), dom, "Dom");
-		dataDale = new Data(doorbell3.getId(), dale, "Dale");
-		dataJack = new Data(doorbell3.getId(), jack, "Jack");
-		dataGeorge = new Data(doorbell3.getId(), george, "George");
-		dataZach = new Data(doorbell3.getId(), zach, "Zach");
-		dataBlank = new Data(doorbell3.getId(), blankImage, "Blank Image");
-		dataDaleDifferentAngle = new Data(doorbell4.getId(), daleDifferentAngle, "Dale");
+		imageDataDom = new ImageData(doorbell2.getId(), dom, "Dom");
+		imageDataDale = new ImageData(doorbell3.getId(), dale, "Dale");
+		imageDataJack = new ImageData(doorbell3.getId(), jack, "Jack");
+		imageDataGeorge = new ImageData(doorbell3.getId(), george, "George");
+		imageDataZach = new ImageData(doorbell3.getId(), zach, "Zach");
+		imageDataBlank = new ImageData(doorbell3.getId(), blankImage, "Blank Image");
+		imageDataDaleDifferentAngle = new ImageData(doorbell4.getId(), daleDifferentAngle, "Dale");
 
-		dataTable.addRecord(dataDom);
-		dataTable.addRecord(dataDale);
-		dataTable.addRecord(dataJack);
-		dataTable.addRecord(dataGeorge);
-		dataTable.addRecord(dataZach);
-		dataTable.addRecord(dataDaleDifferentAngle);
+		dataTable.addRecord(imageDataDom);
+		dataTable.addRecord(imageDataDale);
+		dataTable.addRecord(imageDataJack);
+		dataTable.addRecord(imageDataGeorge);
+		dataTable.addRecord(imageDataZach);
+		dataTable.addRecord(imageDataDaleDifferentAngle);
 	}
 
 	@AfterEach
@@ -81,41 +81,41 @@ class FaceSimilarityTest {
 
 	@Test
 	void testCompareDuplicateFaces() {
-		Data data = null;
-		String found = faceSimilarity.compareFaces(dataDom.getImage(), doorbell2.getId());
+		ImageData imageData = null;
+		String found = faceSimilarity.compareFaces(imageDataDom.getImage(), doorbell2.getId());
 		if (found != null) {
-			data = dataTable.getRecord(Integer.parseInt(found));
+			imageData = dataTable.getRecord(Integer.parseInt(found));
 		}
-		assert data != null;
-		assertEquals(dataDom.getPersonName(), data.getPersonName());
+		assert imageData != null;
+		assertEquals(imageDataDom.getPersonName(), imageData.getPersonName());
 	}
 
 	@Test
 	void testCompareToEmptyDoorbellFaces() {
-		String found = faceSimilarity.compareFaces(dataDom.getImage(), doorbell1.getId());
+		String found = faceSimilarity.compareFaces(imageDataDom.getImage(), doorbell1.getId());
 		assertEquals(null, found);
 	}
 
 	@Test
 	void testCompareToUnknownFace() {
-		String found = faceSimilarity.compareFaces(dataDom.getImage(), doorbell3.getId());
+		String found = faceSimilarity.compareFaces(imageDataDom.getImage(), doorbell3.getId());
 		assertEquals(null, found);
 	}
 
 	@Test
 	void testCompareToSamePerson() {
-		Data data = null;
-		String found = faceSimilarity.compareFaces(dataDaleDifferentAngle.getImage(), doorbell3.getId());
+		ImageData imageData = null;
+		String found = faceSimilarity.compareFaces(imageDataDaleDifferentAngle.getImage(), doorbell3.getId());
 		if (found != null) {
-			data = dataTable.getRecord(Integer.parseInt(found));
+			imageData = dataTable.getRecord(Integer.parseInt(found));
 		}
-		assert data != null;
-		assertEquals(dataDaleDifferentAngle.getPersonName(), data.getPersonName());
+		assert imageData != null;
+		assertEquals(imageDataDaleDifferentAngle.getPersonName(), imageData.getPersonName());
 	}
 
 	@Test
 	void testCompareToBlank() {
-		String found = faceSimilarity.compareFaces(dataBlank.getImage(), doorbell3.getId());
+		String found = faceSimilarity.compareFaces(imageDataBlank.getImage(), doorbell3.getId());
 		assertEquals(null, found);
 	}
 }

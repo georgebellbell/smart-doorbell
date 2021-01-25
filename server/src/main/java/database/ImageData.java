@@ -2,7 +2,7 @@ package database;
 
 import java.util.Objects;
 
-public class Data {
+public class ImageData {
 	// Object properties
 	private Integer imageID;
 	private byte[] image;
@@ -11,11 +11,11 @@ public class Data {
 	private String lastUsed;
 
 	// Double constructor for when retrieving data from database and when adding to the database
-	public Data(String deviceID, byte[] image, String personName) {
+	public ImageData(String deviceID, byte[] image, String personName) {
 		this(-1, deviceID, image, personName, null);
 	}
 
-	public Data(Integer imageID, String deviceID, byte[] image, String personName, String lastUsed) {
+	public ImageData(Integer imageID, String deviceID, byte[] image, String personName, String lastUsed) {
 		this.imageID = imageID;
 		this.deviceID = deviceID;
 		this.image = image;
@@ -23,7 +23,7 @@ public class Data {
 		this.lastUsed = lastUsed;
 	}
 
-	public Data(String deviceID, byte[] image, String personName, String used) {
+	public ImageData(String deviceID, byte[] image, String personName, String used) {
 		this(-1, deviceID, image, personName, used);
 	}
 
@@ -65,12 +65,12 @@ public class Data {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		Data data = (Data) o;
-		return imageID == data.imageID &&
-				Objects.equals(image, data.image) &&
-				Objects.equals(deviceID, data.deviceID) &&
-				Objects.equals(personName, data.personName) &&
-				Objects.equals(lastUsed, data.lastUsed);
+		ImageData imageData = (ImageData) o;
+		return imageID == imageData.imageID &&
+				Objects.equals(image, imageData.image) &&
+				Objects.equals(deviceID, imageData.deviceID) &&
+				Objects.equals(personName, imageData.personName) &&
+				Objects.equals(lastUsed, imageData.lastUsed);
 	}
 
 	@Override

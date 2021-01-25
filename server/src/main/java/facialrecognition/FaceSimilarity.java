@@ -1,6 +1,6 @@
 package facialrecognition;
 
-import database.Data;
+import database.ImageData;
 import database.DataTable;
 import org.openimaj.image.processing.face.detection.HaarCascadeDetector;
 
@@ -56,11 +56,11 @@ public class FaceSimilarity {
 
 		String name = null;
 
-		ArrayList<Data> allImages = dataTable.getAllImages(deviceID);
+		ArrayList<ImageData> allImages = dataTable.getAllImages(deviceID);
 
-		for (Data data : allImages) {
-			byte[] imageFromDB = data.getImage();
-			name = data.getPersonName();
+		for (ImageData imageData : allImages) {
+			byte[] imageFromDB = imageData.getImage();
+			name = imageData.getPersonName();
 			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(imageFromDB);
 			final FImage imageToCompare;
 			try {
@@ -70,7 +70,7 @@ public class FaceSimilarity {
 			}
 
 			engine.setQuery(image1, "doorbell");
-			engine.setTest(imageToCompare, data.getImageID().toString());
+			engine.setTest(imageToCompare, imageData.getImageID().toString());
 			engine.performTest();
 		}
 		//checks through faces in both images for best matching pair

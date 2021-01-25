@@ -13,7 +13,8 @@ public class AccountTable extends DatabaseConnection {
 	PasswordManager passwordManager = new PasswordManager();
 
 	/**
-	 * @param user - to add to the database
+	 * Adds record to the database
+	 * @param user to add to the database
 	 * @return if recorded add to the table
 	 */
 	public boolean addRecord(User user) {
@@ -37,7 +38,8 @@ public class AccountTable extends DatabaseConnection {
 	}
 	
 	/**
-	 * @param role - role assigned to the registered user
+	 * Get total amount of users by role
+	 * @param role role assigned to the registered user
 	 * @return number of users with the assigned role
 	 */
 	public int getTotalUsers(String role) {
@@ -57,7 +59,8 @@ public class AccountTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param username - username of the email to retrieve
+	 * Get email by username from the database
+	 * @param username username of the email to retrieve
 	 * @return email of the associated username
 	 */
 	public String getEmailByUsername(String username) {
@@ -78,7 +81,8 @@ public class AccountTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param id - doorbell id that links to the associated users
+	 * Get email to an assigned doorbell by id
+	 * @param id doorbell id that links to the associated users
 	 * @return all email addresses associated to id
 	 */
 	public ArrayList<String> getEmailByDoorbell(String id) {
@@ -98,6 +102,7 @@ public class AccountTable extends DatabaseConnection {
 	}
 
 	/**
+	 * Return all emails from the database
 	 * @return all emails from the account table
 	 */
 	public ArrayList<String> getAllEmails() {
@@ -116,7 +121,8 @@ public class AccountTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param username - username of the account to retrieve the password of
+	 * Get password by username from the database
+	 * @param username username of the account to retrieve the password of
 	 * @return password of the user if found, else null
 	 */
 	public String getPassword(String username) {
@@ -136,9 +142,10 @@ public class AccountTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param username - username of the user's account
-	 * @param password - password of the account
-	 * @param role - role of the user
+	 * Get login details from the database and see if they match
+	 * @param username username of the user's account
+	 * @param password password of the account
+	 * @param role role of the user
 	 * @return login retrieved from the database
 	 */
 	public boolean getLogin(String username, String password, String role) {
@@ -161,7 +168,8 @@ public class AccountTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param username - username of the account to retrieve the deviceID or ID's from
+	 * Get device ID by username
+	 * @param username username of the account to retrieve the deviceID or ID's from
 	 * @return deviceID associated with the user
 	 */
 	public ArrayList<String> getDeviceID(String username) {
@@ -182,7 +190,8 @@ public class AccountTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param username - record to get from the accounts table
+	 * Get record by username
+	 * @param username record to get from the accounts table
 	 * @return User object constructed by data if exists
 	 */
 	public User getRecord(String username){
@@ -210,8 +219,9 @@ public class AccountTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param username - username of the person to change the password of
-	 * @param password - password to change in the database
+	 * Change password of user
+	 * @param username username of the person to change the password of
+	 * @param password password to change in the database
 	 * @return if password successfully updated
 	 */
 	public boolean changePassword(String username, String password) {
@@ -231,6 +241,12 @@ public class AccountTable extends DatabaseConnection {
 		}
 	}
 
+	/**
+	 * Change email of user
+	 * @param username of user to change email address
+	 * @param email to change
+	 * @return if email changed
+	 */
 	public boolean changeEmail(String username, String email) {
 		try {
 			String query = "UPDATE accounts Set Email = ? WHERE Username = ?";
@@ -247,9 +263,10 @@ public class AccountTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param oldUsername - username that the user had previously
-	 * @param newUsername - username to be changed to
-	 * @param newEmail - email to change to
+	 * Change username and email of user
+	 * @param oldUsername username that the user had previously
+	 * @param newUsername username to be changed to
+	 * @param newEmail email to change to
 	 * @return details changed
 	 */
 	public boolean changeDetails(String oldUsername, String newUsername, String newEmail) {
@@ -273,6 +290,7 @@ public class AccountTable extends DatabaseConnection {
 	}
 
 	/**
+	 * Delete record by username
 	 * @param username of record to delete
 	 * @return if record deleted
 	 */

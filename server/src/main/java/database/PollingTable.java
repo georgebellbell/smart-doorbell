@@ -9,9 +9,10 @@ public class PollingTable extends DatabaseConnection {
 	PreparedStatement statement;
 
 	/**
-	 * @param deviceID - id of the doorbell to be added
-	 * @param message - message to send to the doorbell
-	 * @return - if poll added to table
+	 * Create poll with device ID and message
+	 * @param deviceID id of the doorbell to be added
+	 * @param message message to send to the doorbell
+	 * @return if poll added to table
 	 */
 	public boolean createPoll(String deviceID, String message) {
 		try {
@@ -29,7 +30,8 @@ public class PollingTable extends DatabaseConnection {
 	}
 	
 	/**
-	 * @param id - id of the doorbell to retrieve the messages
+	 * Get poll by device id
+	 * @param id id of the doorbell to retrieve the messages
 	 * @return all messages for device
 	 */
 	public ArrayList<String> getPolls(String id) {
@@ -49,7 +51,8 @@ public class PollingTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param deviceID - id of the doorbell to delete
+	 * Delete poll by device id
+	 * @param deviceID id of the doorbell to delete
 	 * @return if doorbell deleted
 	 */
 	public boolean deletePolls(String deviceID) {

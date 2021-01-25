@@ -12,20 +12,21 @@ public class DataTable extends DatabaseConnection {
 	PreparedStatement statement;
 
 	/**
-	 * @param data - add data object to the database
+	 * Adds record
+	 * @param imageData add data object to the database
 	 * @return if data inserted into the record
 	 */
-	public boolean addRecord(Data data) {
+	public boolean addRecord(ImageData imageData) {
 		try {
 			String query = "INSERT INTO data (Device_id, Image, Person, Last_used)"
 					+ " VALUES (?, ?, ?, ?)";
 			statement = conn.prepareStatement(query);
-			statement.setString(1, data.getDeviceID());
+			statement.setString(1, imageData.getDeviceID());
 			Blob blobImage = conn.createBlob();
-			blobImage.setBytes(1, data.getImage());
+			blobImage.setBytes(1, imageData.getImage());
 			statement.setBlob(2, blobImage);
-			statement.setString(3, data.getPersonName());
-			statement.setString(4, data.getLastUsed());
+			statement.setString(3, imageData.getPersonName());
+			statement.setString(4, imageData.getLastUsed());
 			statement.execute();
 			statement.close();
 		} catch (Exception e) {
@@ -36,11 +37,12 @@ public class DataTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param id - id of data to retrieve
+	 * Get record by Id
+	 * @param id id of data to retrieve
 	 * @return data object if exists in the database
 	 */
-	public Data getRecord(int id) {
-		Data data = null;
+	public ImageData getRecord(int id) {
+		ImageData imageData = null;
 		try {
 			String query = "SELECT Id, Device_id, Image, Person, Last_used FROM data WHERE Id=?";
 			statement = conn.prepareStatement(query);
@@ -49,7 +51,7 @@ public class DataTable extends DatabaseConnection {
 			while (resultSet.next()) {
 				Blob blob = resultSet.getBlob("Image");
 				byte[] image = blob.getBytes(1, (int) blob.length());
-				data = new Data(
+				imageData = new ImageData(
 						resultSet.getInt("id"),
 						resultSet.getString("Device_id"),
 						image,
@@ -61,15 +63,16 @@ public class DataTable extends DatabaseConnection {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return data;
+		return imageData;
 	}
 
 	/**
-	 * @param deviceId - the id of the device which contains all saved images
+	 * Get all images by deviceId
+	 * @param deviceId the id of the device which contains all saved images
 	 * @return list of all images with as data objects
 	 */
-	public ArrayList<Data> getAllImages(String deviceId) {
-		ArrayList<Data> allImages = new ArrayList<>();
+	public ArrayList<ImageData> getAllImages(String deviceId) {
+		ArrayList<ImageData> allImages = new ArrayList<>();
 		try {
 			String query = "SELECT Id, Device_id, Image, Person, Last_used FROM data WHERE Device_id=?";
 			statement = conn.prepareStatement(query);
@@ -79,14 +82,14 @@ public class DataTable extends DatabaseConnection {
 				try {
 					Blob blob = resultSet.getBlob("Image");
 					byte[] image = blob.getBytes(1, (int) blob.length());
-					Data data = new Data(
+					ImageData imageData = new ImageData(
 							resultSet.getInt("Id"),
 							resultSet.getString("Device_id"),
 							image,
 							resultSet.getString("Person"),
 							resultSet.getString("Last_used")
 					);
-					allImages.add(data);
+					allImages.add(imageData);
 				} catch (SQLException ignored) {
 					// Blob error
 				}
@@ -99,6 +102,7 @@ public class DataTable extends DatabaseConnection {
 	}
 
 	/**
+	 * Get total amount of images in the data table
 	 * @return total images stored in the database
 	 */
 	public int getTotalImages() {
@@ -117,11 +121,12 @@ public class DataTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param username - username of the doorbell
+	 * Get most recent image by user
+	 * @param username username of the doorbell
 	 * @return HashMap of the image as the key and time as the value
 	 */
-	public Data getRecentImage(String username) {
-		Data recentImage = null;
+	public ImageData getRecentImage(String username) {
+		ImageData recentImage = null;
 		try {
 			String query = "SELECT * FROM data WHERE Last_used = " +
 					"(SELECT Max(Last_used) FROM data WHERE Device_id IN" +
@@ -135,7 +140,7 @@ public class DataTable extends DatabaseConnection {
 			if (resultSet.next()) {
 				Blob blob = resultSet.getBlob("Image");
 				byte[] image = blob.getBytes(1, (int) blob.length());
-				recentImage = new Data(
+				recentImage = new ImageData(
 						resultSet.getInt("id"),
 						resultSet.getString("Device_id"),
 						image,
@@ -151,7 +156,8 @@ public class DataTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param imageID - ID of the image to update in the database
+	 * Update image information by imageID
+	 * @param imageID ID of the image to update in the database
 	 * @return if record updated
 	 */
 	public boolean updateData(Integer imageID) {
@@ -170,8 +176,9 @@ public class DataTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param id - id of image stored in the database
-	 * @param name - name to change the person to be displayed in the app
+	 * Change name of face
+	 * @param id id of image stored in the database
+	 * @param name name to change the person to be displayed in the app
 	 * @return if name has been changed
 	 */
 	public boolean changeName(int id, String name) {
@@ -190,7 +197,8 @@ public class DataTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param id - id of the data to delete
+	 * Delete record by id stored in the database
+	 * @param id id of the data to delete
 	 * @return if record deleted
 	 */
 	public boolean deleteRecordById(int id) {

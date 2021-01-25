@@ -16,7 +16,7 @@ class DoorbellTableTest {
 	private User user;
 	private Doorbell doorbell;
 	private Doorbell doorbell2;
-	private Data data;
+	private ImageData imageData;
 
 	@BeforeEach
 	void setUp() {
@@ -28,7 +28,7 @@ class DoorbellTableTest {
 				"Password", "user");
 		doorbell = new Doorbell("QS-12345", "TestDoorbell");
 		doorbell2 = new Doorbell("QS-67891", "TestDoorbell2");
-		data = new Data(doorbell.getId(), null, "Test");
+		imageData = new ImageData(doorbell.getId(), null, "Test");
 
 		accountTable.addRecord(user);
 		doorbellTable.addNewDoorbell(doorbell);
@@ -37,7 +37,7 @@ class DoorbellTableTest {
 
 	@AfterEach
 	void tearDown() {
-		dataTable.deleteRecordById(data.getImageID());
+		dataTable.deleteRecordById(imageData.getImageID());
 		accountTable.deleteRecord(user);
 		doorbellTable.deleteDoorbell(doorbell);
 		doorbellTable.deleteDoorbell(doorbell2);
