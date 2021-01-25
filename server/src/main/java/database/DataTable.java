@@ -22,6 +22,7 @@ public class DataTable extends DatabaseConnection {
 			statement = conn.prepareStatement(query);
 			statement.setString(1, data.getDeviceID());
 			Blob blobImage = conn.createBlob();
+			blobImage.setBytes(1, data.getImage());
 			statement.setBlob(2, blobImage);
 			statement.setString(3, data.getPersonName());
 			statement.setString(4, data.getLastUsed());

@@ -25,9 +25,9 @@ import org.openimaj.image.processing.face.similarity.FaceSimilarityEngine;
 import javax.imageio.ImageIO;
 
 public class FaceSimilarity {
-	DataTable dataTable = new DataTable();
+	private DataTable dataTable = new DataTable();
 
-	public String compareFaces(byte[] doorbellImage, String deviceID) throws IOException {
+	public String compareFaces(byte[] doorbellImage, String deviceID) {
 		//haar cascade detector used to find faces
 		final HaarCascadeDetector detector = HaarCascadeDetector.BuiltInCascade.frontalface_alt2.load();
 
@@ -47,7 +47,12 @@ public class FaceSimilarity {
 
 		//load the two images, a face from database and face from doorbell
 		ByteArrayInputStream bais = new ByteArrayInputStream(doorbellImage);
-		final FImage image1 = ImageUtilities.createFImage(ImageIO.read(bais));
+		final FImage image1;
+		try {
+			image1 = ImageUtilities.createFImage(ImageIO.read(bais));
+		} catch (IOException ioException) {
+			return null;
+		}
 
 		String name = null;
 
@@ -57,7 +62,12 @@ public class FaceSimilarity {
 			byte[] imageFromDB = data.getImage();
 			name = data.getPersonName();
 			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(imageFromDB);
-			final FImage imageToCompare = ImageUtilities.createFImage(ImageIO.read(byteArrayInputStream));
+			final FImage imageToCompare;
+			try {
+				imageToCompare = ImageUtilities.createFImage(ImageIO.read(byteArrayInputStream));
+			} catch (IOException ioException) {
+				continue;
+			}
 
 			engine.setQuery(image1, "doorbell");
 			engine.setTest(imageToCompare, data.getImageID().toString());
