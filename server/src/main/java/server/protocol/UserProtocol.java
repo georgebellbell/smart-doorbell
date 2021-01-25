@@ -7,11 +7,6 @@ import database.User;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.security.crypto.codec.Base64;
-
-import java.sql.Blob;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class UserProtocol extends Protocol {
@@ -229,14 +224,9 @@ public class UserProtocol extends Protocol {
 			String username = user.getUsername();
 			JSONObject image = new JSONObject();
 			Data recentImage = dataTable.getRecentImage(username);
-			Blob blob = recentImage.getImage();
-			byte[] imageBytes = null;
-			String encodedImage = null;
 			String doorbellName = doorbellTable.getDoorbellName(recentImage.getDeviceID());
-			imageBytes = blob.getBytes(1, (int) blob.length());
-			encodedImage = java.util.Base64.getEncoder().encodeToString(imageBytes);
+			String encodedImage = java.util.Base64.getEncoder().encodeToString(recentImage.getImage());
 			image.put("image", encodedImage);
-
 			response.put("response", "success");
 			response.put("image", image);
 			response.put("time", recentImage.getCreatedAt());
@@ -255,16 +245,12 @@ public class UserProtocol extends Protocol {
 	 * Adds a new face to recognise faces of the requested doorbell
 	 */
 	public void addFace() {
-		try {
-			String doorbellID = request.getString("doorbellID");
-			String personName = request.getString("personname");
-			byte[] image = Base64.decode(request.getString("image").getBytes());
-			Connection conn = dataTable.getConn();
-			Blob blobImage = conn.createBlob();
-			blobImage.setBytes(1, image);
-			dataTable.addRecord(new Data(doorbellID, blobImage, personName));
+		String doorbellID = request.getString("doorbellID");
+		String personName = request.getString("personname");
+		byte[] image = java.util.Base64.getDecoder().decode(request.getString("image").getBytes());
+		if (dataTable.addRecord(new Data(doorbellID, image, personName))) {
 			response.put("response", "success");
-		} catch (SQLException e) {
+		} else {
 			response.put("response", "fail");
 		}
 	}
@@ -298,15 +284,7 @@ public class UserProtocol extends Protocol {
 		if (allImages.size() != 0) {
 			for (Data data: allImages) {
 				JSONObject jsonData = new JSONObject();
-				Blob blob = data.getImage();
-				byte[] image = null;
-				String encodedImage = null;
-				try {
-					image = blob.getBytes(1, (int) blob.length());
-					encodedImage = java.util.Base64.getEncoder().encodeToString(image);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+				String encodedImage = java.util.Base64.getEncoder().encodeToString(data.getImage());
 				jsonData.put("id", data.getImageID());
 				jsonData.put("image", encodedImage);
 				jsonData.put("person", data.getPersonName());

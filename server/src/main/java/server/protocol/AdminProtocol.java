@@ -6,9 +6,6 @@ import database.User;
 import communication.Email;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.sql.Blob;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class AdminProtocol extends Protocol {
@@ -231,18 +228,10 @@ public class AdminProtocol extends Protocol {
 		if (allImages != null) {
 			for (Data data: allImages) {
 				JSONObject jsonData = new JSONObject();
-				Blob blob = data.getImage();
-				byte[] image;
-				String encodedImage = null;
-				try {
-					image = blob.getBytes(1, (int) blob.length());
-					encodedImage = java.util.Base64.getEncoder().encodeToString(image);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+				String encodedImage = java.util.Base64.getEncoder().encodeToString(data.getImage());
 				jsonData.put("id", data.getImageID());
-				jsonData.put("image", encodedImage);
 				jsonData.put("person", data.getPersonName());
+				jsonData.put("image", encodedImage);
 				jsonData.put("created", data.getCreatedAt());
 				jsonImages.add(jsonData);
 			}

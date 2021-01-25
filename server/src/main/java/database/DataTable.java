@@ -1,7 +1,9 @@
 package database;
 
+import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -19,7 +21,8 @@ public class DataTable extends DatabaseConnection {
 					+ " VALUES (?, ?, ?, ?)";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, data.getDeviceID());
-			statement.setBlob(2, data.getImage());
+			Blob blobImage = conn.createBlob();
+			statement.setBlob(2, blobImage);
 			statement.setString(3, data.getPersonName());
 			statement.setString(4, data.getCreatedAt());
 			statement.execute();
@@ -43,10 +46,12 @@ public class DataTable extends DatabaseConnection {
 			statement.setInt(1, id);
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
+				Blob blob = resultSet.getBlob("Image");
+				byte[] image = blob.getBytes(1, (int) blob.length());
 				data = new Data(
-						resultSet.getInt("Id"),
+						resultSet.getInt("id"),
 						resultSet.getString("Device_id"),
-						resultSet.getBlob("Image"),
+						image,
 						resultSet.getString("Person"),
 						resultSet.getString("Last_used")
 				);
@@ -70,14 +75,20 @@ public class DataTable extends DatabaseConnection {
 			statement.setString(1, deviceId);
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
-				Data data = new Data(
-						resultSet.getInt("Id"),
-						resultSet.getString("Device_id"),
-						resultSet.getBlob("Image"),
-						resultSet.getString("Person"),
-						resultSet.getString("Last_used")
-				);
-				allImages.add(data);
+				try {
+					Blob blob = resultSet.getBlob("Image");
+					byte[] image = blob.getBytes(1, (int) blob.length());
+					Data data = new Data(
+							resultSet.getInt("Id"),
+							resultSet.getString("Device_id"),
+							image,
+							resultSet.getString("Person"),
+							resultSet.getString("Last_used")
+					);
+					allImages.add(data);
+				} catch (SQLException ignored) {
+					// Blob error
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -121,10 +132,12 @@ public class DataTable extends DatabaseConnection {
 			statement.setString(2, username);
 			ResultSet resultSet = statement.executeQuery();
 			if (resultSet.next()) {
+				Blob blob = resultSet.getBlob("Image");
+				byte[] image = blob.getBytes(1, (int) blob.length());
 				recentImage = new Data(
 						resultSet.getInt("id"),
 						resultSet.getString("Device_id"),
-						resultSet.getBlob("Image"),
+						image,
 						resultSet.getString("Person"),
 						resultSet.getString("Last_used")
 				);

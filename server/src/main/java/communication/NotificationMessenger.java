@@ -37,9 +37,7 @@ public class NotificationMessenger {
 	}
 
 	public void setDoorbellGroup(String doorbellID) {
-		userTokenTable.connect();
 		tokens = userTokenTable.getTokensByDoorbell(doorbellID);
-		userTokenTable.disconnect();
 	}
 
 	public void setMessage(String title, String body) {

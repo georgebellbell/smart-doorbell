@@ -3,7 +3,6 @@ package database;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.crypto.codec.Base64;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -35,14 +34,11 @@ class DataTableTest {
 		doorbellTable = new DoorbellTable();
 		accountTable = new AccountTable();
 
-		byte[] image = Base64.encode("src/test/resources/testImage.png".getBytes());
-		Connection conn = dataTable.getConn();
-		Blob blobImage = conn.createBlob();
-		blobImage.setBytes(1, image);
+		byte[] image = java.util.Base64.getEncoder().encode("src/test/resources/testImage.png".getBytes());
 
 		doorbell = new Doorbell("QS-12345", "TestDoorbell");
-		data = new Data(doorbell.getId(), blobImage, "Black Image");
-		data2 = new Data(doorbell.getId(), blobImage, "Black Image2");
+		data = new Data(doorbell.getId(), image, "Black Image");
+		data2 = new Data(doorbell.getId(), image, "Black Image2");
 		user = new User("TestUser456", "quicksolutions.doorbell@gmail.com",
 				"Password", "user");
 

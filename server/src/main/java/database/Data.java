@@ -8,17 +8,17 @@ import java.util.Objects;
 public class Data {
 	// Object properties
 	private Integer imageID;
-	private Blob image;
+	private byte[] image;
 	private String deviceID;
 	private String personName;
 	private String createdAt;
 
 	// Double constructor for when retrieving data from database and when adding to the database
-	public Data(String deviceID, Blob image, String personName) {
+	public Data(String deviceID, byte[] image, String personName) {
 		this(-1, deviceID, image, personName, null);
 	}
 
-	public Data(Integer imageID, String deviceID, Blob image, String personName, String created_at) {
+	public Data(Integer imageID, String deviceID, byte[] image, String personName, String created_at) {
 		this.imageID = imageID;
 		this.deviceID = deviceID;
 		this.image = image;
@@ -26,14 +26,14 @@ public class Data {
 		this.createdAt = created_at;
 	}
 
-	public Data(String deviceID, Blob image, String personName, String used) {
+	public Data(String deviceID, byte[] image, String personName, String used) {
 		this(-1, deviceID, image, personName, used);
 	}
 
 	public Integer getImageID() { return imageID; }
 	public void setImageID(int imageID) { this.imageID = imageID; }
-	public Blob getImage() { return image; }
-	public void setImage(Blob image) { this.image = image; }
+	public byte[] getImage() { return image; }
+	public void setImage(byte[] image) { this.image = image; }
 	public String getDeviceID() {
 		return deviceID;
 	}

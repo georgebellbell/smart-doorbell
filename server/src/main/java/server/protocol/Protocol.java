@@ -3,7 +3,6 @@ package server.protocol;
 import database.*;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.HashMap;
 
 public abstract class Protocol {

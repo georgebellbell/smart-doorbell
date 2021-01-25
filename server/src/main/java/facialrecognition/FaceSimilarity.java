@@ -6,8 +6,6 @@ import org.openimaj.image.processing.face.detection.HaarCascadeDetector;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -53,33 +51,27 @@ public class FaceSimilarity {
 
 		String name = null;
 
-		dataTable.connect();
 		ArrayList<Data> allImages = dataTable.getAllImages(deviceID);
-		dataTable.disconnect();
 
-		try {
-			for (Data allImage : allImages) {
-				byte[] imageFromDB = allImage.getImage().getBytes(1, (int) allImage.getImage().length());
-				name = allImage.getPersonName();
-				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(imageFromDB);
-				final FImage imageToCompare = ImageUtilities.createFImage(ImageIO.read(byteArrayInputStream));
+		for (Data data : allImages) {
+			byte[] imageFromDB = data.getImage();
+			name = data.getPersonName();
+			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(imageFromDB);
+			final FImage imageToCompare = ImageUtilities.createFImage(ImageIO.read(byteArrayInputStream));
 
-				engine.setQuery(image1, "doorbell");
-				engine.setTest(imageToCompare, allImage.getImageID().toString());
-				engine.performTest();
-			}
-			//checks through faces in both images for best matching pair
-			for (final Entry<String, Map<String, Double>> e : engine.getSimilarityDictionary().entrySet()) {
-				// this computes if the images are similar enough to be deemed the same person
-				double bestScore = 40;
-				for (final Entry<String, Double> matches : e.getValue().entrySet()) {
-					if (matches.getValue() < bestScore) {
-						return matches.getKey().replace(":0", "");
-					}
+			engine.setQuery(image1, "doorbell");
+			engine.setTest(imageToCompare, data.getImageID().toString());
+			engine.performTest();
+		}
+		//checks through faces in both images for best matching pair
+		for (final Entry<String, Map<String, Double>> e : engine.getSimilarityDictionary().entrySet()) {
+			// this computes if the images are similar enough to be deemed the same person
+			double bestScore = 40;
+			for (final Entry<String, Double> matches : e.getValue().entrySet()) {
+				if (matches.getValue() < bestScore) {
+					return matches.getKey().replace(":0", "");
 				}
 			}
-		} catch (SQLException ioException) {
-			ioException.printStackTrace();
 		}
 		return null;
 	}
