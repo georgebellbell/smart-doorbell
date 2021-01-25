@@ -1,7 +1,7 @@
 package server.protocol;
 
 import authentication.PasswordManager;
-import database.Data;
+import database.ImageData;
 import database.User;
 import communication.Email;
 import org.json.JSONArray;
@@ -223,16 +223,16 @@ public class AdminProtocol extends Protocol {
 	}
 
 	public void faces(String id) {
-		ArrayList<Data> allImages = dataTable.getAllImages(id);
+		ArrayList<ImageData> allImages = dataTable.getAllImages(id);
 		ArrayList<JSONObject> jsonImages = new ArrayList<>();
 		if (allImages != null) {
-			for (Data data: allImages) {
+			for (ImageData imageData : allImages) {
 				JSONObject jsonData = new JSONObject();
-				String encodedImage = java.util.Base64.getEncoder().encodeToString(data.getImage());
-				jsonData.put("id", data.getImageID());
-				jsonData.put("person", data.getPersonName());
+				String encodedImage = java.util.Base64.getEncoder().encodeToString(imageData.getImage());
+				jsonData.put("id", imageData.getImageID());
+				jsonData.put("person", imageData.getPersonName());
 				jsonData.put("image", encodedImage);
-				jsonData.put("created", data.getLastUsed());
+				jsonData.put("created", imageData.getLastUsed());
 				jsonImages.add(jsonData);
 			}
 		}

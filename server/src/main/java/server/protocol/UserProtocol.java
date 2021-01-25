@@ -2,11 +2,13 @@ package server.protocol;
 
 import authentication.TwoFactorAuthentication;
 import communication.Email;
-import database.Data;
+import database.ImageData;
 import database.User;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.security.crypto.codec.Base64;
+
 import java.util.ArrayList;
 
 public class UserProtocol extends Protocol {
@@ -223,7 +225,7 @@ public class UserProtocol extends Protocol {
 		try {
 			String username = user.getUsername();
 			JSONObject image = new JSONObject();
-			Data recentImage = dataTable.getRecentImage(username);
+			ImageData recentImage = dataTable.getRecentImage(username);
 			String doorbellName = doorbellTable.getDoorbellName(recentImage.getDeviceID());
 			String encodedImage = java.util.Base64.getEncoder().encodeToString(recentImage.getImage());
 			image.put("image", encodedImage);
@@ -247,8 +249,8 @@ public class UserProtocol extends Protocol {
 	public void addFace() {
 		String doorbellID = request.getString("doorbellID");
 		String personName = request.getString("personname");
-		byte[] image = java.util.Base64.getDecoder().decode(request.getString("image").getBytes());
-		if (dataTable.addRecord(new Data(doorbellID, image, personName))) {
+		byte[] image = Base64.decode(request.getString("image").getBytes());
+		if (dataTable.addRecord(new ImageData(doorbellID, image, personName))) {
 			response.put("response", "success");
 		} else {
 			response.put("response", "fail");
@@ -279,16 +281,16 @@ public class UserProtocol extends Protocol {
 	 */
 	public void faces() {
 		String doorbellID = request.getString("doorbellID");
-		ArrayList<Data> allImages = new ArrayList<>(dataTable.getAllImages(doorbellID));
+		ArrayList<ImageData> allImages = new ArrayList<>(dataTable.getAllImages(doorbellID));
 		ArrayList<JSONObject> jsonImages = new ArrayList<>();
 		if (allImages.size() != 0) {
-			for (Data data: allImages) {
+			for (ImageData imageData : allImages) {
 				JSONObject jsonData = new JSONObject();
-				String encodedImage = java.util.Base64.getEncoder().encodeToString(data.getImage());
-				jsonData.put("id", data.getImageID());
+				String encodedImage = java.util.Base64.getEncoder().encodeToString(imageData.getImage());
+				jsonData.put("id", imageData.getImageID());
 				jsonData.put("image", encodedImage);
-				jsonData.put("person", data.getPersonName());
-				jsonData.put("created", data.getLastUsed());
+				jsonData.put("person", imageData.getPersonName());
+				jsonData.put("created", imageData.getLastUsed());
 				jsonImages.add(jsonData);
 			}
 			response.put("response", "success");
