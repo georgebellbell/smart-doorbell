@@ -21,7 +21,7 @@ public class TwoFactorTable extends DatabaseConnection {
 			statement = conn.prepareStatement(query);
 			statement.setString(1, user.getUsername());
 			statement.setString(2, code);
-			statement.setString(3, LocalDateTime.now().plusMinutes(30).format(DateTimeFormatter.ofPattern("yyyMdd HH:mm:ss")));
+			statement.setString(3, LocalDateTime.now().plusMinutes(30).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 			statement.execute();
 			statement.close();
 			return true;
@@ -41,7 +41,7 @@ public class TwoFactorTable extends DatabaseConnection {
 			String query = "SELECT Code  FROM twofactor WHERE Username=? AND Expiration_time>?";
 			statement = conn.prepareStatement(query);
 			statement.setString(1, user.getUsername());
-			statement.setString(2, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyMdd HH:mm:ss")));
+			statement.setString(2, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 			ResultSet resultSet = statement.executeQuery();
 			if (resultSet.next()) {
 				return resultSet.getString("Code");

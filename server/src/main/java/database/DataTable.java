@@ -164,7 +164,7 @@ public class DataTable extends DatabaseConnection {
 		try {
 			String query = "UPDATE data Set Last_used = ? WHERE Id = ?";
 			statement = conn.prepareStatement(query);
-			statement.setString(1, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyMdd HH:mm:ss")));
+			statement.setString(1, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 			statement.setInt(2, imageID);
 			statement.execute();
 			statement.close();
