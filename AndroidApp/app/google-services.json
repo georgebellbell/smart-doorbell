@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "823852399029",
+    "project_id": "quick-doorbell",
+    "storage_bucket": "quick-doorbell.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:823852399029:android:e9b47dcb64c620a82dc1fc",
+        "android_client_info": {
+          "package_name": "com.example.doorbellandroidapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "823852399029-rj83hqbq4hlodlt2tef57pn3cdf9bcfo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnt5x-aPd5jgw5EmbURb_hYN6B1I7pe30"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "823852399029-rj83hqbq4hlodlt2tef57pn3cdf9bcfo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

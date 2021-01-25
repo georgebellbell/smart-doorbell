@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ * @author George Bell
+ * @version 1.0
+ * @since 25/01/2021
+-->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#D3D3D3"
+    android:layout_gravity="center"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/tvConfirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You are about to remove the following doorbell:"
+        android:padding="5dp"
+        android:layout_centerHorizontal="true"/>
+    <TextView
+        android:id="@+id/tvCurrentDoorbell"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tvConfirm"
+        android:text="current"
+        android:textStyle="bold"
+        android:layout_marginTop="5dp"
+        android:textSize="20dp"/>
+    <TextView
+        android:id="@+id/tvConfirm2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvCurrentDoorbell"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="Are you sure you want to do this?"/>
+
+    <Button
+        android:id="@+id/btnConfirmRemove"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/tvCurrentDoorbell"
+        android:layout_marginTop="35dp"
+        android:layout_alignParentLeft="true"
+        android:background="#F44336"
+        android:text="Yes"
+        />
+
+    <Button
+        android:id="@+id/btnCancelRemove"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/tvCurrentDoorbell"
+        android:layout_alignRight="@id/tvConfirm"
+        android:layout_marginTop="35dp"
+        android:background="#67656A"
+        android:textColor="#F2EFF4"
+        android:text="No"/>
+
+
+
+
+
+
+
+
+</RelativeLayout>

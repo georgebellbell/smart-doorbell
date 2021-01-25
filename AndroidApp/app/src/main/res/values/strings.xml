@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Quick Solutions Doorbell</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="TwoFA">Please check your email for six digit code to verify who you are</string>
+    <string name="TwoFANotif">Please check email for verification code</string>
+    <string name="validEmailError">Please provide valid email</string>
+    <string name="shortPasswordError">Password must be nine characters or greater</string>
+    <string name="noNumberInPasswordError">Password must include a number</string>
+    <string name="noUppercaseError">Password must include at least one upper case character</string>
+    <string name="noLowercaseError">Password must include at least one lower case character</string>
+    <string name="spacesError">Do not use spaces</string>
+    <string name="shortUsernameError">Username must be at least two characters long</string>
+
+
+    <string name="addFaceToNoDoorbells">Please add doorbell before adding faces</string>
+</resources>
