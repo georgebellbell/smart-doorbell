@@ -58,18 +58,6 @@ public class DatabaseConnection {
 			Class.forName(DRIVER_NAME).newInstance();
 			conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
 
-//			jsch.addIdentity(privateKey);
-//			session = jsch.getSession(USER, HOST, PORT);
-//			session.setConfig("PreferredAuthentications", "publickey,keyboard-interactive,password");
-//			java.util.Properties config = new java.util.Properties();
-//			config.put("StrictHostKeyChecking", "no");
-//			session.setConfig(config);
-//			session.connect();
-//			assignedPort = session.setPortForwardingL(PORT, R_HOST, PORT);
-//
-//			Class.forName(DRIVER_NAME).newInstance();
-//			conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
-
 			connected = true;
 
 		} catch (Exception e) {
