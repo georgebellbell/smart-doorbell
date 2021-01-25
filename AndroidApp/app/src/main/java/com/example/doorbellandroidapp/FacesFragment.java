@@ -1,5 +1,5 @@
 /*
- * @author George Bell
+ * @author George Bell, Dominykas Makarovas and Jack Reed
  * @version 1.0
  * @since 24/01/2021
  */
