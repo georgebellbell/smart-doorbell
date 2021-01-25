@@ -229,7 +229,7 @@ public class UserProtocol extends Protocol {
 			image.put("image", encodedImage);
 			response.put("response", "success");
 			response.put("image", image);
-			response.put("time", recentImage.getCreatedAt());
+			response.put("time", recentImage.getLastUsed());
 			response.put("person", recentImage.getPersonName());
 			response.put("imageID", recentImage.getImageID());
 			response.put("doorbellname", doorbellName);
@@ -288,7 +288,7 @@ public class UserProtocol extends Protocol {
 				jsonData.put("id", data.getImageID());
 				jsonData.put("image", encodedImage);
 				jsonData.put("person", data.getPersonName());
-				jsonData.put("created", data.getCreatedAt());
+				jsonData.put("created", data.getLastUsed());
 				jsonImages.add(jsonData);
 			}
 			response.put("response", "success");

@@ -24,7 +24,7 @@ public class DataTable extends DatabaseConnection {
 			Blob blobImage = conn.createBlob();
 			statement.setBlob(2, blobImage);
 			statement.setString(3, data.getPersonName());
-			statement.setString(4, data.getCreatedAt());
+			statement.setString(4, data.getLastUsed());
 			statement.execute();
 			statement.close();
 		} catch (Exception e) {

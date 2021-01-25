@@ -4,14 +4,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.sql.Blob;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -29,7 +21,7 @@ class DataTableTest {
 	private Doorbell doorbell;
 
 	@BeforeEach
-	void setUp() throws SQLException, IOException {
+	void setUp() {
 		dataTable = new DataTable();
 		doorbellTable = new DoorbellTable();
 		accountTable = new AccountTable();
@@ -100,7 +92,7 @@ class DataTableTest {
 		Integer imageID = dataTable.getAllImages(doorbell.getId()).get(0).getImageID();
 		dataTable.updateData(imageID);
 		Data updatedImage = dataTable.getAllImages(doorbell.getId()).get(0);
-		String[] updateTime = updatedImage.getCreatedAt().split(" ");
+		String[] updateTime = updatedImage.getLastUsed().split(" ");
 		String[] currentTime  = LocalDateTime
 				.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).split(" ");
 

@@ -1,8 +1,5 @@
 package database;
 
-import java.sql.Blob;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Data {
@@ -11,19 +8,19 @@ public class Data {
 	private byte[] image;
 	private String deviceID;
 	private String personName;
-	private String createdAt;
+	private String lastUsed;
 
 	// Double constructor for when retrieving data from database and when adding to the database
 	public Data(String deviceID, byte[] image, String personName) {
 		this(-1, deviceID, image, personName, null);
 	}
 
-	public Data(Integer imageID, String deviceID, byte[] image, String personName, String created_at) {
+	public Data(Integer imageID, String deviceID, byte[] image, String personName, String lastUsed) {
 		this.imageID = imageID;
 		this.deviceID = deviceID;
 		this.image = image;
 		this.personName = personName;
-		this.createdAt = created_at;
+		this.lastUsed = lastUsed;
 	}
 
 	public Data(String deviceID, byte[] image, String personName, String used) {
@@ -46,11 +43,11 @@ public class Data {
 	public void setPersonName(String personName) {
 		this.personName = personName;
 	}
-	public String getCreatedAt() {
-		return createdAt;
+	public String getLastUsed() {
+		return lastUsed;
 	}
-	public void setCreatedAt(String createdAt) {
-		this.createdAt = createdAt;
+	public void setLastUsed(String lastUsed) {
+		this.lastUsed = lastUsed;
 	}
 
 	@Override
@@ -60,7 +57,7 @@ public class Data {
 				", image=" + image +
 				", deviceID='" + deviceID + '\'' +
 				", personName='" + personName + '\'' +
-				", createdAt='" + createdAt + '\'' +
+				", createdAt='" + lastUsed + '\'' +
 				'}';
 	}
 
@@ -73,11 +70,11 @@ public class Data {
 				Objects.equals(image, data.image) &&
 				Objects.equals(deviceID, data.deviceID) &&
 				Objects.equals(personName, data.personName) &&
-				Objects.equals(createdAt, data.createdAt);
+				Objects.equals(lastUsed, data.lastUsed);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(imageID, image, deviceID, personName, createdAt);
+		return Objects.hash(imageID, image, deviceID, personName, lastUsed);
 	}
 }

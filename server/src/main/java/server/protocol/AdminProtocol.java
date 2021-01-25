@@ -232,7 +232,7 @@ public class AdminProtocol extends Protocol {
 				jsonData.put("id", data.getImageID());
 				jsonData.put("person", data.getPersonName());
 				jsonData.put("image", encodedImage);
-				jsonData.put("created", data.getCreatedAt());
+				jsonData.put("created", data.getLastUsed());
 				jsonImages.add(jsonData);
 			}
 		}
