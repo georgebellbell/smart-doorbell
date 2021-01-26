@@ -3,6 +3,8 @@ package server.protocol;
 import database.ImageData;
 import facialrecognition.FaceSimilarity;
 import communication.NotificationMessenger;
+import org.springframework.security.crypto.codec.Base64;
+
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -19,7 +21,7 @@ public class DoorbellProtocol extends Protocol{
 	public void image() {
 		String doorbellID = request.getString("id");
 		try {
-			byte[] image = java.util.Base64.getDecoder().decode(request.getString("data").getBytes());
+			byte[] image = Base64.decode(request.getString("data").getBytes());
 			String faceRecognised = faceSimilarity.compareFaces(image,doorbellID);
 			if (faceRecognised == null) {
 				dataTable.addRecord(new ImageData(doorbellID, image, "Unknown", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
