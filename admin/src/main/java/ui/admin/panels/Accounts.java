@@ -113,7 +113,7 @@ public class Accounts extends AdminPanel {
 
 	/**
 	 * Sends request to server to search for user and populates user panel if successful
-	 * @param username - Username of user being searched for
+	 * @param username Username of user being searched for
 	 */
 	private void searchUser(String username) {
 		// Make sure request is not already in progress
@@ -143,11 +143,11 @@ public class Accounts extends AdminPanel {
 
 	/**
 	 * Populates account panel with user information
-	 * @param username - Username of user
-	 * @param email - Email of user
-	 * @param role - Role of user
-	 * @param time - Creation time of user
-	 * @param devices - Doorbell devices of user
+	 * @param username Username of user
+	 * @param email Email of user
+	 * @param role Role of user
+	 * @param time Creation time of user
+	 * @param devices Doorbell devices of user
 	 */
 	private void populateUserInformation(String username, String email, String role, String time, JSONArray devices) {
 		displayedUser = username;
@@ -209,7 +209,7 @@ public class Accounts extends AdminPanel {
 
 	/**
 	 * Sends a request to delete user to server and creates a popup message if it was successful
-	 * @param username - Username of user being deleted
+	 * @param username Username of user being deleted
 	 */
 	private void deleteUser(String username) {
 		// Make sure request is not already in progress

@@ -52,7 +52,7 @@ public class Analytics extends AdminPanel {
 
 	/**
 	 * Creates pie chart for image distribution in analytics
-	 * @param graphData - Data retrieved by the server
+	 * @param graphData Data retrieved by the server
 	 * @return pie chart
 	 */
 	private JFreeChart createAnalyticsPieChart(JSONArray graphData) {
@@ -72,11 +72,11 @@ public class Analytics extends AdminPanel {
 
 	/**
 	 * Populates the analytics panel
-	 * @param users - Total number of users
-	 * @param admins - Total number of admins
-	 * @param images - Total number of images
-	 * @param doorbells - Total number of doorbells
-	 * @param imageGraphData - Image distribution graph data
+	 * @param users Total number of users
+	 * @param admins Total number of admins
+	 * @param images Total number of images
+	 * @param doorbells Total number of doorbells
+	 * @param imageGraphData Image distribution graph data
 	 */
 	private void populateAnalytics(int users, int admins, int images, int doorbells, JSONArray imageGraphData) {
 		// Set overview panel
