@@ -1,3 +1,9 @@
+/**
+ * @author Dominykas Makarovas, Jack Reed
+ * @version 1.0
+ * @since 25/01/2021
+ */
+
 package database;
 
 import java.sql.PreparedStatement;
@@ -9,8 +15,9 @@ public class UserTokenTable extends DatabaseConnection {
 	PreparedStatement statement;
 
 	/**
-	 * @param token - token to add to the database
-	 * @param username - username of the associated user to add the token to
+	 * Add token with token string and username
+	 * @param token token to add to the database
+	 * @param username username of the associated user to add the token to
 	 * @return
 	 */
 	public boolean addToken(String token, String username) {
@@ -30,7 +37,8 @@ public class UserTokenTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param username - username to retrieve all the tokens by from the database
+	 * Get tokens by username
+	 * @param username username to retrieve all the tokens by from the database
 	 * @return list of all tokens assigned to the username
 	 */
 	public ArrayList<String> getTokens(String username) {
@@ -52,7 +60,8 @@ public class UserTokenTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param doorbellID - doorbell id to retrieve all tokens to the associated users
+	 * Get tokens by doorbellID
+	 * @param doorbellID doorbell id to retrieve all tokens to the associated users
 	 * @return list of tokens from assigned users to the doorbell
 	 */
 	public ArrayList<String> getTokensByDoorbell(String doorbellID) {
@@ -74,7 +83,8 @@ public class UserTokenTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param token - token used to search for the user
+	 * Get user by token
+	 * @param token token used to search for the user
 	 * @return a user with their data from the database
 	 */
 	public User getUserByToken(String token) {
@@ -101,7 +111,8 @@ public class UserTokenTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param username - username to delete the token by
+	 * Delete token by username
+	 * @param username username to delete the token by
 	 * @return if token deleted
 	 */
 	public boolean deleteToken(String username) {
@@ -119,7 +130,8 @@ public class UserTokenTable extends DatabaseConnection {
 	}
 
 	/**
-	 * @param token - token to be deleted
+	 * Deletes the token
+	 * @param token token to be deleted
 	 * @return if token deleted
 	 */
 	public boolean deleteByToken(String token) {

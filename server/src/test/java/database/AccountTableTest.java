@@ -1,3 +1,9 @@
+/**
+ * @author Dominykas Makarovas
+ * @version 1.0
+ * @since 25/01/2021
+ */
+
 package database;
 
 import authentication.PasswordManager;
@@ -50,7 +56,7 @@ class AccountTableTest {
 	}
 
 	@Test
-	void addRecord() {
+	void testAddRecord() {
 		assertTrue(accountTable.addRecord(testUser));
 	}
 
@@ -60,28 +66,28 @@ class AccountTableTest {
 	}
 
 	@Test
-	void userAddedCorrectlyToDatabase() {
+	void testUserAddedCorrectlyToDatabase() {
 		accountTable.addRecord(testUser);
 		User fromDB = accountTable.getRecord(testUser.getUsername());
 		assertEquals(testUser, fromDB);
 	}
 
 	@Test
-	void getTotalUsers() {
+	void testGetTotalUsers() {
 		assertEquals(1, accountTable.getTotalUsers("admin"));
 	}
 
 	@Test
-	void getEmailByUsername() {
+	void testGetEmailByUsername() {
 		String email = accountTable.getEmailByUsername(user.getUsername());
 		assertEquals(user.getEmail(), email);
 	}
 
 	@Test
-	void getEmailByInvalidUsername() { assertNull(accountTable.getEmailByUsername("InvalidUser")); }
+	void testGetEmailByInvalidUsername() { assertNull(accountTable.getEmailByUsername("InvalidUser")); }
 
 	@Test
-	void getEmailByDoorbell() {
+	void testGetEmailByDoorbell() {
 		ArrayList<String> email = accountTable.getEmailByDoorbell(doorbell.getId());
 		for (String s : email) {
 			assertEquals(user.getEmail(), s);
@@ -89,57 +95,57 @@ class AccountTableTest {
 	}
 
 	@Test
-	void getAllEmails() {
+	void testGetAllEmails() {
 		ArrayList<String> allEmails = accountTable.getAllEmails();
 		assertTrue(allEmails.contains(user.getEmail()));
 	}
 
 	@Test
-	void getPassword() {
+	void testGetPassword() {
 		String storedPassword = accountTable.getPassword(user.getUsername());
 		String passwordReturned = passwordManager.checkPasswords(storedPassword, user.getPassword());
 		assertEquals(storedPassword, passwordReturned);
 	}
 
 	@Test
-	void getUserNotExistingPassword() { assertNull(accountTable.getPassword("InvalidUser")); }
+	void testGetUserNotExistingPassword() { assertNull(accountTable.getPassword("InvalidUser")); }
 
 	@Test
-	void getLogin() {
+	void testGetLogin() {
 		assertTrue(accountTable.getLogin(user.getUsername(), user.getPassword(), user.getRole()));
 	}
 
 	@Test
-	void getInvalidLogin() { assertFalse(accountTable.getLogin("InvalidUser", user.getPassword(), user.getRole())); }
+	void testGetInvalidLogin() { assertFalse(accountTable.getLogin("InvalidUser", user.getPassword(), user.getRole())); }
 
 	@Test
-	void getDeviceID() {
+	void testGetDeviceID() {
 		ArrayList<String> doorbellsAssigned = accountTable.getDeviceID(user.getUsername());
 		for (String doorbell : doorbellsAssigned)
 			assertEquals(this.doorbell.getId(), doorbell);
 	}
 
 	@Test
-	void getRecord() { assertEquals(user, accountTable.getRecord(user.getUsername())); }
+	void testGetRecord() { assertEquals(user, accountTable.getRecord(user.getUsername())); }
 
 	@Test
-	void getInvalidRecord() { assertNotEquals(user, accountTable.getRecord("InvalidUser")); }
+	void testGetInvalidRecord() { assertNotEquals(user, accountTable.getRecord("InvalidUser")); }
 
 	@Test
-	void changePassword() { assertTrue(accountTable.changePassword(user.getUsername(), newPassword)); }
+	void testChangePassword() { assertTrue(accountTable.changePassword(user.getUsername(), newPassword)); }
 
 	@Test
-	void changeEmail() {
+	void testChangeEmail() {
 		assertTrue(accountTable.changeEmail(user.getUsername(), newEmail));
 	}
 
 	@Test
-	void changeDetails() {
+	void testChangeDetails() {
 		assertTrue(accountTable.changeDetails(user.getUsername(), newUsername, newEmail));
 	}
 
 	@Test
-	void deleteRecord() {
+	void testDeleteRecord() {
 		assertTrue(accountTable.deleteRecord(user.getUsername()));
 	}
 }

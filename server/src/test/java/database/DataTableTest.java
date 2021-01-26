@@ -1,18 +1,15 @@
+/**
+ * @author Dominykas Makarovas
+ * @version 1.0
+ * @since 25/01/2021
+ */
+
 package database;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.crypto.codec.Base64;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.sql.Blob;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -24,87 +21,84 @@ class DataTableTest {
 	private DoorbellTable doorbellTable;
 	private AccountTable accountTable;
 
-	private Data data;
-	private Data data2;
+	private ImageData imageData;
+	private ImageData imageData2;
 	private User user;
 	private Doorbell doorbell;
 
 	@BeforeEach
-	void setUp() throws SQLException, IOException {
+	void setUp() {
 		dataTable = new DataTable();
 		doorbellTable = new DoorbellTable();
 		accountTable = new AccountTable();
 
-		byte[] image = Base64.encode("src/test/resources/testImage.png".getBytes());
-		Connection conn = dataTable.getConn();
-		Blob blobImage = conn.createBlob();
-		blobImage.setBytes(1, image);
+		byte[] image = java.util.Base64.getEncoder().encode("src/test/resources/testImage.png".getBytes());
 
 		doorbell = new Doorbell("QS-12345", "TestDoorbell");
-		data = new Data(doorbell.getId(), blobImage, "Black Image");
-		data2 = new Data(doorbell.getId(), blobImage, "Black Image2");
+		imageData = new ImageData(doorbell.getId(), image, "Black Image");
+		imageData2 = new ImageData(doorbell.getId(), image, "Black Image2");
 		user = new User("TestUser456", "quicksolutions.doorbell@gmail.com",
 				"Password", "user");
 
 		accountTable.addRecord(user);
 		doorbellTable.addNewDoorbell(doorbell);
 		doorbellTable.setDoorbell(user.getUsername(), doorbell.getId());
-		dataTable.addRecord(data);
+		dataTable.addRecord(imageData);
 	}
 
 	@AfterEach
 	void tearDown() {
 		doorbellTable.deleteUsersFromDoorbell(doorbell.getId());
 		doorbellTable.deleteDoorbell(doorbell);
-		dataTable.deleteRecordById(data.getImageID());
-		dataTable.deleteRecordById(data2.getImageID());
+		dataTable.deleteRecordById(imageData.getImageID());
+		dataTable.deleteRecordById(imageData2.getImageID());
 		accountTable.deleteRecord(user);
 	}
 
 	@Test
-	void addRecord() {
-		assertTrue(dataTable.addRecord(data2));
+	void testAddRecord() {
+		assertTrue(dataTable.addRecord(imageData2));
 	}
 
 	@Test
-	void getRecord() {
-		ArrayList<Data> allImages = dataTable.getAllImages(doorbell.getId());
-		Data imageRetrieved = allImages.get(0);
-		assertEquals(data.getPersonName(), imageRetrieved.getPersonName());
+	void testGetRecord() {
+		ArrayList<ImageData> allImages = dataTable.getAllImages(doorbell.getId());
+		ImageData imageRetrieved = allImages.get(0);
+		assertEquals(imageData.getPersonName(), imageRetrieved.getPersonName());
 	}
 
 	@Test
-	void getAllImages() {
-		ArrayList<Data> allImages = dataTable.getAllImages(doorbell.getId());
+	void testGetAllImages() {
+		ArrayList<ImageData> allImages = dataTable.getAllImages(doorbell.getId());
 		assertEquals(1, allImages.size());
 	}
 
 	@Test
-	void getAllImagesByInvalidDoorbell() {
-		ArrayList<Data> allImages = dataTable.getAllImages("InvalidDoorbell");
+	void testGetAllImagesByInvalidDoorbell() {
+		ArrayList<ImageData> allImages = dataTable.getAllImages("InvalidDoorbell");
 		assertTrue(allImages.isEmpty());
 	}
 
 	@Test
-	void getRecentImage() {
-		Data recentImage = dataTable.getAllImages(doorbell.getId()).get(0);
+	void testGetRecentImage() {
+		ImageData recentImage = dataTable.getAllImages(doorbell.getId()).get(0);
 		Integer imageID = recentImage.getImageID();
 		dataTable.updateData(imageID);
 		assertEquals(recentImage.getImageID(), imageID);
 	}
 
 	@Test
-	void getRecentImageByInvalidDoorbell() {
+	void testGetRecentImageByInvalidDoorbell() {
 		 assertTrue(dataTable.getAllImages("InvalidDoorbell").isEmpty());
 
 	}
 
 	@Test
-	void updateData() {
+	void testUpdateData() {
 		Integer imageID = dataTable.getAllImages(doorbell.getId()).get(0).getImageID();
 		dataTable.updateData(imageID);
-		Data updatedImage = dataTable.getAllImages(doorbell.getId()).get(0);
-		String[] updateTime = updatedImage.getCreatedAt().split(" ");
+		ImageData updatedImage = dataTable.getAllImages(doorbell.getId()).get(0);
+		String[] updateTime = updatedImage.getLastUsed().split(" ");
 		String[] currentTime  = LocalDateTime
 				.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).split(" ");
 
@@ -112,14 +106,14 @@ class DataTableTest {
 	}
 
 	@Test
-	void changeName() {
+	void testChangeName() {
 		Integer imageID = dataTable.getAllImages(doorbell.getId()).get(0).getImageID();
 		dataTable.changeName(imageID, "New Person");
 		assertEquals("New Person", dataTable.getRecord(imageID).getPersonName());
 	}
 
 	@Test
-	void deleteRecordById() {
+	void testDeleteRecordById() {
 		Integer imageID = dataTable.getAllImages(doorbell.getId()).get(0).getImageID();
 		assertTrue(dataTable.deleteRecordById(imageID));
 	}

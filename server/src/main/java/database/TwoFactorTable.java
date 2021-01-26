@@ -1,3 +1,9 @@
+/**
+ * @author Dominykas Makarovas, Jack Reed
+ * @version 1.0
+ * @since 25/01/2021
+ */
+
 package database;
 
 import java.sql.PreparedStatement;
@@ -10,8 +16,8 @@ public class TwoFactorTable extends DatabaseConnection {
 
 	/**
 	 * Adds record to twofactor table in the team database
-	 * @param user - the use who's username will be added to the table
-	 * @param code - the authentication code
+	 * @param user the use who's username will be added to the table
+	 * @param code the authentication code
 	 * @return true if added successfully
 	 */
 	public boolean addRecord(User user, String code) {
@@ -33,7 +39,7 @@ public class TwoFactorTable extends DatabaseConnection {
 
 	/**
 	 * Get code of user if code has not expired
-	 * @param user - the user who's record will be retrieved from the database
+	 * @param user the user who's record will be retrieved from the database
 	 * @return code if it's not expired
 	 */
 	public String getCode(User user) {
@@ -55,7 +61,7 @@ public class TwoFactorTable extends DatabaseConnection {
 
 	/**
 	 * Deletes the record of the user
-	 * @param user - takes the user who used the code
+	 * @param user takes the user who used the code
 	 * @return if record is deleted
 	 */
 	public boolean deleteRecord(User user) {

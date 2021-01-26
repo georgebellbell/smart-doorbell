@@ -1,3 +1,9 @@
+/**
+ * @author Jack Reed
+ * @version 1.0
+ * @since 25/01/2021
+ */
+
 package communication;
 
 import javax.mail.*;
@@ -61,7 +67,7 @@ public class Email {
 
 	/**
 	 * Adds a recipient for email to be sent to
-	 * @param email - Email address of recipient
+	 * @param email Email address of recipient
 	 */
 	public void addRecipient(String email) {
 		if (!isValidEmail(email)) {
@@ -72,7 +78,7 @@ public class Email {
 
 	/**
 	 * Adds multiple recipients for email to be sent to
-	 * @param emails - List of emails of recipients
+	 * @param emails List of emails of recipients
 	 */
 	public void addRecipients(ArrayList<String> emails) {
 		for (String recipient : emails) {
@@ -110,7 +116,7 @@ public class Email {
 
 	/**
 	 * Set the subject header of the email
-	 * @param subject - Subject of email
+	 * @param subject Subject of email
 	 */
 	public void setSubject(String subject) {
 		this.subject = subject;
@@ -122,7 +128,7 @@ public class Email {
 
 	/**
 	 * Sets the HTML contents of the email
-	 * @param contents - HTML contents
+	 * @param contents HTML contents
 	 */
 	public void setContents(String contents) {
 		this.contents = contents;

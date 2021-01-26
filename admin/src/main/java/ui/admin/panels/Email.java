@@ -1,3 +1,9 @@
+/**
+ * @author Dominykas Makarovas, Jack Reed
+ * @version 1.0
+ * @since 25/01/2021
+ */
+
 package ui.admin.panels;
 
 import org.json.JSONObject;
@@ -51,7 +57,7 @@ public class Email extends AdminPanel {
 
 	/**
 	 * Sets visible the email recipient option for type of email
-	 * @param type - Type of email
+	 * @param type Type of email
 	 */
 	private void displayEmailRecipientOption(int type) {
 		switch (type) {
@@ -88,10 +94,10 @@ public class Email extends AdminPanel {
 
 	/**
 	 * Send request to server to send email
-	 * @param type - Type of email
-	 * @param recipient - Recipient of email
-	 * @param subject - Subject of email
-	 * @param contents - HTML contents of email
+	 * @param type Type of email
+	 * @param recipient Recipient of email
+	 * @param subject Subject of email
+	 * @param contents HTML contents of email
 	 */
 	private void sendEmail(int type, String recipient, String subject, String contents) {
 		// Make sure request is not already in progress
