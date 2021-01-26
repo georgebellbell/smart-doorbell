@@ -1,3 +1,9 @@
+/**
+ * @author George Bell, Dominykas Makarovas, Jack Reed
+ * @version 1.0
+ * @since 25/01/2021
+ */
+
 package facialrecognition;
 
 import database.ImageData;
