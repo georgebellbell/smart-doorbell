@@ -17,8 +17,6 @@ public class DatabaseConnection {
 	private static final String USER = "b9021925";
 	private static final String PASSWORD = "password";
 
-
-
 	// Database connection info
 	private static final String DB_USERNAME = "t2033t17";
 	private static final String DB_PASSWORD = "KnewBut+(Fin";
