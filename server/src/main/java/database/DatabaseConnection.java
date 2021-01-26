@@ -67,23 +67,6 @@ public class DatabaseConnection {
 	}
 
 	/**
-	 * Connect to the database via SSH
-	 * @return if connection established
-	 */
-	@Deprecated
-	public boolean connect() {
-		return true;
-	}
-
-	/**
-	 * @return if connection closed
-	 */
-	@Deprecated
-	public boolean disconnect() {
-		return true;
-	}
-
-	/**
 	 * Disconnects the current SSH session
 	 */
 	public static void disconnectSession() {
@@ -94,9 +77,5 @@ public class DatabaseConnection {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public Connection getConn() {
-		return conn;
 	}
 }
