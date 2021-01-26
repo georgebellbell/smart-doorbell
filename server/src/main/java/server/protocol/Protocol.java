@@ -32,7 +32,7 @@ public abstract class Protocol {
 
 	/**
 	 * Sets request to be handles
-	 * @param request - Request received by server
+	 * @param request Request received by server
 	 */
 	public void setRequest(String request) {
 		if (!isRequestValid(request)) {
@@ -43,7 +43,7 @@ public abstract class Protocol {
 
 	/**
 	 * Checks if the request is valid
-	 * @param request - Request to be checked
+	 * @param request Request to be checked
 	 * @return if request is valid
 	 */
 	public boolean isRequestValid(String request) {

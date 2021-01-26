@@ -90,8 +90,8 @@ public class UserProtocol extends Protocol {
 
 	/**
 	 * Saves username and token to database
-	 * @param username - Username of token
-	 * @param token - Token of user
+	 * @param username Username of token
+	 * @param token Token of user
 	 */
 	private void saveToken(String username, String token) {
 		userTokenTable.deleteByToken(token);
