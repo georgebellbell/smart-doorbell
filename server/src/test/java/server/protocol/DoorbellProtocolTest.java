@@ -15,15 +15,13 @@ class DoorbellProtocolTest {
 		protocol = new DoorbellProtocol();
 	}
 
-	/*@Test
+	@Test
 	void testValidRequest() {
 		JSONObject request = new JSONObject();
-		request.put("request","login");
-		request.put("username", "Dom");
-		request.put("password", "Password");
-
+		request.put("request","poll");
+		request.put("id", "test");
 		assertTrue(protocol.isRequestValid(request.toString()));
-	}*/
+	}
 
 	@Test
 	void testInvalidJSONRequest() {
