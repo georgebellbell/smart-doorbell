@@ -1,5 +1,5 @@
 /**
- * @author Dominykas Makarovas, Jack Reed
+ * @author Jack Reed
  * @version 1.0
  * @since 25/01/2021
  */
@@ -63,7 +63,7 @@ public class TwoFactorAuthentication {
 
 	/**
 	 * Compares code to generated code stored in database
-	 * @param code - Code to compare to database
+	 * @param code Code to compare to database
 	 * @return if the code is the same to the database
 	 */
 	public boolean checkGeneratedCode(String code) {
