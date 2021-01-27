@@ -50,9 +50,13 @@ public class LoginActivity extends AppCompatActivity {
 				// Get user input
 				String inputUsername = etUsername.getText().toString();
 				String inputPassword = pwdPassword.getText().toString();
-
-				// Send to server for checking
-				authenticate(inputUsername, inputPassword);
+				if (inputUsername.isEmpty() || inputPassword.isEmpty()) {
+					tvInformation.setText("No input given");
+				}
+				else{
+					// Send to server for checking
+					authenticate(inputUsername, inputPassword);
+				}
 			}
 		});
 

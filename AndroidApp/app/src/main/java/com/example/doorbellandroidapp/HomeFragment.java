@@ -159,7 +159,7 @@ public class HomeFragment extends Fragment {
 					case "fail":
 						tvLastFace.setText("No recent user");
 						ivLastFace.setBackgroundResource(R.drawable.ic_null);
-						Toast.makeText(getContext(), "FAILURE TO GET IMAGES", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getContext(), "No recent user", Toast.LENGTH_SHORT).show();
 						btnOpenDoor.setEnabled(false);
 						btnLeaveClosed.setEnabled(false);
 						break;

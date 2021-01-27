@@ -44,10 +44,19 @@ public class LoginTest {
 	@Test
 	public void loginSuccessful() throws InterruptedException {
 		onView(withId(R.id.etUsername)).perform(typeText("george"), closeSoftKeyboard());
-		onView(withId(R.id.pwdPassword)).perform(typeText("YZ9OjJeMHTE;:wf"), closeSoftKeyboard());
+		onView(withId(R.id.pwdPassword)).perform(typeText("password"), closeSoftKeyboard());
 		onView(withId(R.id.btnLogin)).perform(click());
 		Thread.sleep(2000);
 		onView(withId(R.id.tv2FA)).check(matches(isDisplayed()));
+	}
+
+	/**
+	 * Attempting to login without giving details
+	 */
+	@Test
+	public void loginAttemptWithoutInput() {
+		onView(withId(R.id.btnLogin)).perform(click());
+		onView(withText("No input given")).check(matches(isDisplayed()));
 	}
 
 	/**
