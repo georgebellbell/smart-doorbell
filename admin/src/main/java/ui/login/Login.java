@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.net.URL;
 
 public class Login extends JFrame {
 	private JTextField usernameField;
@@ -42,6 +43,7 @@ public class Login extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 		setErrorMessage("");
+		loadLogo();
 
 		loginButton.addActionListener(actionEvent -> {
 			String username = usernameField.getText();
@@ -70,6 +72,14 @@ public class Login extends JFrame {
 
 		cancelButton.addActionListener(actionEvent -> dispose());
 
+	}
+
+	private void loadLogo() {
+		URL logoResource = getClass().getClassLoader().getResource("logo.jpg");
+		if (logoResource != null) {
+			ImageIcon image = new ImageIcon(logoResource);
+			setIconImage(image.getImage());
+		}
 	}
 
 
