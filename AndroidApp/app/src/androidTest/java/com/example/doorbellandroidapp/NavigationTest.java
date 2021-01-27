@@ -42,8 +42,8 @@ public class NavigationTest {
 	 * Checks to see if user is sent to Home Fragment via navigation
 	 */
 	@Test
-	public void navigateToHome() throws InterruptedException {
-		navigateToFaces();
+	public void testNavigateToHome() throws InterruptedException {
+		testNavigateToFaces();
 		Thread.sleep(100);
 		onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
 		onView(withId(R.id.navigationView)).perform(NavigationViewActions.navigateTo(R.id.nav_home));
@@ -53,7 +53,7 @@ public class NavigationTest {
 	 * Checks to see if user is sent to Faces Activity via navigation
 	 */
 	@Test
-	public void navigateToFaces(){
+	public void testNavigateToFaces(){
 		onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
 		onView(withId(R.id.navigationView)).perform(NavigationViewActions.navigateTo(R.id.nav_faces));
 		onView(withId(R.id.tvFaces)).check(matches(isDisplayed()));
@@ -62,7 +62,7 @@ public class NavigationTest {
 	 * Checks to see if user is sent to Settings Fragment via navigation
 	 */
 	@Test
-	public void navigateToSettings(){
+	public void testNavigateToSettings(){
 		onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
 		onView(withId(R.id.navigationView)).perform(NavigationViewActions.navigateTo(R.id.nav_settings));
 		onView(withId(R.id.tvSettings)).check(matches(isDisplayed()));

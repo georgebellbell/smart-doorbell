@@ -56,7 +56,7 @@ public class HomeTest {
 	 * Test if home information popup appears when information icon is pressed
 	 */
 	@Test
-	public void showHomePageInformationPopup(){
+	public void testShowHomePageInformationPopup(){
 		onView(withId(R.id.ivInfo)).perform(click());
 		onView(withText(("How to use the home page"))).perform(click());
 		onView(withText("X")).perform(click());
@@ -66,7 +66,7 @@ public class HomeTest {
 	 * After creating account and linking to existing doorbell, check opening door works as intended
 	 */
 	@Test
-	public void pressOpenDoorButton() throws InterruptedException {
+	public void testPressOpenDoorButton() throws InterruptedException {
 		addDoorbellWithRecentUser();
 		TestHelper.moveToHome();
 		onView(withId(R.id.btnOpenDoor)).perform(click());
@@ -77,7 +77,7 @@ public class HomeTest {
 	 * After creating account and linking to existing doorbell, check close door works as intended
 	 */
 	@Test
-	public void pressKeepDoorClosedButton() throws InterruptedException {
+	public void testPressKeepDoorClosedButton() throws InterruptedException {
 		addDoorbellWithRecentUser();
 		TestHelper.moveToHome();
 		onView(withId(R.id.btnLeaveClosed)).perform(click());
@@ -89,7 +89,7 @@ public class HomeTest {
 	 * Without linking a doorbell, check if buttons on home page are enabled, they should not be
 	 */
 	@Test
-	public void checkIfButtonsAreUsableIfNoRecentFace(){
+	public void testCheckIfButtonsAreUsableIfNoRecentFace(){
 		onView(withId(R.id.btnOpenDoor)).check(matches(not(isEnabled())));
 		onView(withId(R.id.btnLeaveClosed)).check(matches(not(isEnabled())));
 	}

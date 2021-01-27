@@ -50,7 +50,7 @@ public class FacesPageTest {
 	 * Test if faces information popup appears when information icon is pressed
 	 */
 	@Test
-	public void showFacesPageInformationPopup(){
+	public void testShowFacesPageInformationPopup(){
 		onView(withId(R.id.ivInfo)).perform(click());
 		onView(withText(("How to use the faces page"))).perform(click());
 		onView(withText("X")).perform(click());
@@ -60,7 +60,7 @@ public class FacesPageTest {
 	 * Test if you can successfully add a new face
 	 */
 	@Test
-	public void addNewFace() throws InterruptedException {
+	public void testAddNewFace() throws InterruptedException {
 		onView(withText("NewTestFace")).check(doesNotExist());
 		onView(withId(R.id.ivAddFace)).perform(click());
 		onView(withId(R.id.ivAddPicture)).perform(click()); //CAMERA IS OPENED
@@ -83,7 +83,7 @@ public class FacesPageTest {
 	 * Test if you can remove a face from a specific doorbell
 	 */
 	@Test
-	public void removeFaceFromDoorbell() throws InterruptedException {
+	public void testRemoveFaceFromDoorbell() throws InterruptedException {
 		onView(withText("TestFace1")).check(matches(isDisplayed()));
 		onView(withId(R.id.recycler_view))
 				.perform(RecyclerViewActions.actionOnItemAtPosition(
@@ -111,7 +111,7 @@ public class FacesPageTest {
 	 * Test if trying to add a face without taking a picture fails
 	 */
 	@Test
-	public void addFaceWithoutTakingPicture(){
+	public void testAddFaceWithoutTakingPicture(){
 		onView(withId(R.id.ivAddFace)).perform(click());
 		onView(withId(R.id.etEditImageName)).perform(typeText("TestFace2"), closeSoftKeyboard());
 		onView(withId(R.id.btnAddNewFace)).perform(click());
@@ -124,7 +124,7 @@ public class FacesPageTest {
 	 * Test if trying to add a face without naming face fails
 	 */
 	@Test
-	public void addFaceWithoutNamingFace() throws InterruptedException {
+	public void testAddFaceWithoutNamingFace() throws InterruptedException {
 		onView(withId(R.id.ivAddFace)).perform(click());
 		onView(withId(R.id.ivAddPicture)).perform(click()); //CAMERA IS OPENED
 		Thread.sleep(10000); // TIME FOR USER TO TAKE PICTURE
@@ -137,7 +137,7 @@ public class FacesPageTest {
 	 * Test if adding a face with an illegal name fails
 	 */
 	@Test
-	public void addFaceWithNameUnknown() throws InterruptedException {
+	public void testAddFaceWithNameUnknown() throws InterruptedException {
 		onView(withId(R.id.ivAddFace)).perform(click());
 		onView(withId(R.id.ivAddPicture)).perform(click()); //CAMERA IS OPENED
 		Thread.sleep(10000); // TIME FOR USER TO TAKE PICTURE
@@ -152,7 +152,7 @@ public class FacesPageTest {
 	 * Test if changing a face name to nothing fails
 	 */
 	@Test
-	public void changeFaceNameToNothing(){
+	public void testChangeFaceNameToNothing(){
 		onView(withText("TestFace1")).check(matches(isDisplayed()));
 		onView(withId(R.id.recycler_view))
 				.perform(RecyclerViewActions.actionOnItemAtPosition(
@@ -167,7 +167,7 @@ public class FacesPageTest {
 	 * Test if changing a face name to something illegal fails
 	 */
 	@Test
-	public void changeNameToUnknown() throws InterruptedException {
+	public void testChangeNameToUnknown() throws InterruptedException {
 		Thread.sleep(1500);
 		onView(withText("TestFace1")).check(matches(isDisplayed()));
 		Thread.sleep(1500);
@@ -186,7 +186,7 @@ public class FacesPageTest {
 	 * Test if changing a face name to something too long fails
 	 */
 	@Test
-	public void changeFaceNameToSomethingTooLong() throws InterruptedException {
+	public void testChangeFaceNameToSomethingTooLong() throws InterruptedException {
 		onView(withText("TestFace1")).check(matches(isDisplayed()));
 		onView(withId(R.id.recycler_view))
 				.perform(RecyclerViewActions.actionOnItemAtPosition(
@@ -203,7 +203,7 @@ public class FacesPageTest {
 	 * Test successfully changing the name of a face
 	 */
 	@Test
-	public void changeFaceName() throws InterruptedException {
+	public void testChangeFaceName() throws InterruptedException {
 		onView(withText("TestFace1")).check(matches(isDisplayed()));
 		onView(withId(R.id.recycler_view))
 				.perform(RecyclerViewActions.actionOnItemAtPosition(
@@ -227,7 +227,7 @@ public class FacesPageTest {
 	 * Test switching between two doorbells, looking for faces unique to each doorbell
 	 */
 	@Test
-	public void switchingBetweenDoorbells() throws InterruptedException {
+	public void testSwitchingBetweenDoorbells() throws InterruptedException {
 		Thread.sleep(1000);
 		onView(withText("TestFace1")).check(matches(isDisplayed()));
 		onView(withText("OtherDoorbell")).check(doesNotExist());

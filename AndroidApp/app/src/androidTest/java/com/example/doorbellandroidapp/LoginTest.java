@@ -42,7 +42,7 @@ public class LoginTest {
 	 * Checks to see if user is able to log in correctly and be sent to Two Factor Authentication Activity
 	 */
 	@Test
-	public void loginSuccessful() throws InterruptedException {
+	public void testLoginSuccessful() throws InterruptedException {
 		onView(withId(R.id.etUsername)).perform(typeText("george"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("password"), closeSoftKeyboard());
 		onView(withId(R.id.btnLogin)).perform(click());
@@ -54,7 +54,7 @@ public class LoginTest {
 	 * Attempting to login without giving details
 	 */
 	@Test
-	public void loginAttemptWithoutInput() {
+	public void testLoginAttemptWithoutInput() {
 		onView(withId(R.id.btnLogin)).perform(click());
 		onView(withText("No input given")).check(matches(isDisplayed()));
 	}
@@ -63,7 +63,7 @@ public class LoginTest {
 	 * Checks to see if user loses an attempt if login details are incorrect
 	 */
 	@Test
-	public void loginFailedWithAttemptsRemaining() throws InterruptedException {
+	public void testLoginFailedWithAttemptsRemaining() throws InterruptedException {
 		onView(withId(R.id.etUsername)).perform(typeText("Quick"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("Doorbell"), closeSoftKeyboard());
 		onView(withId(R.id.btnLogin)).perform(click());
@@ -75,7 +75,7 @@ public class LoginTest {
 	 * Checks to see if login attempts are prevented after 5 wrong attempts
 	 */
 	@Test
-	public void loginFailedWithNoAttemptsRemaining() throws InterruptedException {
+	public void testLoginFailedWithNoAttemptsRemaining() throws InterruptedException {
 		onView(withId(R.id.etUsername)).perform(typeText("Quick"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("Doorbell"), closeSoftKeyboard());
 		for (int i = 0; i < 5; i++) {
@@ -90,7 +90,7 @@ public class LoginTest {
 	 * Move to the signup page
 	 */
 	@Test
-	public void moveToCreateAccount(){
+	public void testMoveToCreateAccount(){
 		onView(withId(R.id.tvGoToSignUp)).perform(click());
 		onView(withId(R.id.tvSignUp)).check(matches(isDisplayed()));
 	}

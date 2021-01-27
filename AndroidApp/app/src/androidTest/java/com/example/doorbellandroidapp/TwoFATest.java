@@ -36,7 +36,7 @@ public class TwoFATest {
 	 * Test to for an invalid code input with characters that aren't integers
 	 */
 	@Test
-	public void codeContainsNonIntegerValue() {
+	public void testCodeContainsNonIntegerValue() {
 		onView(withId(R.id.etInputDigits)).perform(typeText("george"), closeSoftKeyboard());
 		onView(withId(R.id.btnSubmitDigits)).perform(click());
 		onView(withText("Make sure your code only uses numbers")).check(matches(isDisplayed()));
@@ -46,7 +46,7 @@ public class TwoFATest {
 	 * Test to for an invalid code input with a length less than 6
 	 */
 	@Test
-	public void codeIsLessThanSixDigits() {
+	public void testCodeIsLessThanSixDigits() {
 		onView(withId(R.id.etInputDigits)).perform(typeText("1234"), closeSoftKeyboard());
 		onView(withId(R.id.btnSubmitDigits)).perform(click());
 		onView(withText("Your code needs to be six digits long")).check(matches(isDisplayed()));
@@ -56,7 +56,7 @@ public class TwoFATest {
 	 * Test to for an invalid code input with a length greater than 6
 	 */
 	@Test
-	public void codeIsMoreThanSixDigits() {
+	public void testCodeIsMoreThanSixDigits() {
 		onView(withId(R.id.etInputDigits)).perform(typeText("1234567"), closeSoftKeyboard());
 		onView(withId(R.id.btnSubmitDigits)).perform(click());
 		onView(withText("Your code needs to be six digits long")).check(matches(isDisplayed()));
@@ -66,7 +66,7 @@ public class TwoFATest {
 	 * Check to see if user can return to sign in page
 	 */
 	@Test
-	public void returnToLogin(){
+	public void testReturnToLogin(){
 		onView(withId(R.id.btnReturn)).perform((click()));
 		onView(withId(R.id.tvLogin)).check(matches(isDisplayed()));
 	}

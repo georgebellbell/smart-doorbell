@@ -36,7 +36,7 @@ public class SignupTest {
 	 * Input valid details and create a new account
 	 */
 	@Test
-	public void successfullyCreateAccount() throws InterruptedException {
+	public void testSuccessfullyCreateAccount() throws InterruptedException {
 		onView(withId(R.id.etUsername)).perform(typeText("TestUser"), closeSoftKeyboard());
 		onView(withId(R.id.etEmailAddress)).perform(typeText("TestUser@gmail.com"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("Password123"), closeSoftKeyboard());
@@ -51,7 +51,7 @@ public class SignupTest {
 	 * Move from the signup page to the login page
 	 */
 	@Test
-	public void moveToLogin(){
+	public void testMoveToLogin(){
 		onView(withId(R.id.tvGoToLogin)).perform(click());
 		onView(withId(R.id.tvLogin)).check(matches(isDisplayed()));
 	}
@@ -62,7 +62,7 @@ public class SignupTest {
 	 * Attempting to create an account with a username that has already been taken
 	 */
 	@Test
-	public void usernameIsNotUnique() throws InterruptedException {
+	public void testUsernameIsNotUnique() throws InterruptedException {
 		onView(withId(R.id.etUsername)).perform(typeText("george"), closeSoftKeyboard());
 		onView(withId(R.id.etEmailAddress)).perform(typeText("TestUser@gmail.com"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("Password123"), closeSoftKeyboard());
@@ -75,7 +75,7 @@ public class SignupTest {
 	 * Attempting to create an account with a username that is too short
 	 */
 	@Test
-	public void usernameIsTooShort() {
+	public void testUsernameIsTooShort() {
 		onView(withId(R.id.etUsername)).perform(typeText("t"), closeSoftKeyboard());
 		onView(withId(R.id.etEmailAddress)).perform(typeText("t@gmail.com"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("Password123"), closeSoftKeyboard());
@@ -89,7 +89,7 @@ public class SignupTest {
 	 * Attempting to create an account without giving a username
 	 */
 	@Test
-	public void noUsernameInput()  {
+	public void testNoUsernameInput()  {
 		onView(withId(R.id.etUsername)).perform(typeText(""), closeSoftKeyboard());
 		onView(withId(R.id.etEmailAddress)).perform(typeText("nothing@gmail.com"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("Password123"), closeSoftKeyboard());
@@ -102,7 +102,7 @@ public class SignupTest {
 	 * Attempting to create an account with a space in it
 	 */
 	@Test
-	public void usernameWithSpace() {
+	public void testUsernameWithSpace() {
 		onView(withId(R.id.etUsername)).perform(typeText("    "), closeSoftKeyboard());
 		onView(withId(R.id.etEmailAddress)).perform(typeText("space@gmail.com"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("Password123"), closeSoftKeyboard());
@@ -117,7 +117,7 @@ public class SignupTest {
 	 * Attempting to create an account with an email that isn't in a valid format
 	 */
 	@Test
-	public void emailIsNotValid() {
+	public void testEmailIsNotValid() {
 		onView(withId(R.id.etUsername)).perform(typeText("BadEmail"), closeSoftKeyboard());
 		onView(withId(R.id.etEmailAddress)).perform(typeText("TestUser.com"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("Password123"), closeSoftKeyboard());
@@ -131,7 +131,7 @@ public class SignupTest {
 	 * Attempting to create an account with a too short password
 	 */
 	@Test
-	public void passwordIsTooShort(){
+	public void testPasswordIsTooShort(){
 		onView(withId(R.id.etUsername)).perform(typeText("shortPassword"), closeSoftKeyboard());
 		onView(withId(R.id.etEmailAddress)).perform(typeText("shortPassword@gmail.com"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("Pass1"), closeSoftKeyboard());
@@ -145,7 +145,7 @@ public class SignupTest {
 	 * Attempting to create an account with a password with a space in it
 	 */
 	@Test
-	public void passwordWithASpace() {
+	public void testPasswordWithASpace() {
 		onView(withId(R.id.etUsername)).perform(typeText("spacePassword"), closeSoftKeyboard());
 		onView(withId(R.id.etEmailAddress)).perform(typeText("spacePassword@gmail.com"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("Pass word 123"), closeSoftKeyboard());
@@ -158,7 +158,7 @@ public class SignupTest {
 	 * Attempting to create an account with a password with no lower case characters
 	 */
 	@Test
-	public void passwordWithNoLowerCaseCharacters() {
+	public void testPasswordWithNoLowerCaseCharacters() {
 		onView(withId(R.id.etUsername)).perform(typeText("uppercasePassword"), closeSoftKeyboard());
 		onView(withId(R.id.etEmailAddress)).perform(typeText("cap@gmail.com"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("PASSWORD123"), closeSoftKeyboard());
@@ -171,7 +171,7 @@ public class SignupTest {
 	 * Attempting to create an account with a password with no upper case characters
 	 */
 	@Test
-	public void passwordWithNoUpperCaseCharacters() {
+	public void testPasswordWithNoUpperCaseCharacters() {
 		onView(withId(R.id.etUsername)).perform(typeText("lowercasePassword"), closeSoftKeyboard());
 		onView(withId(R.id.etEmailAddress)).perform(typeText("nocap@gmail.com"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("password123"), closeSoftKeyboard());
@@ -184,7 +184,7 @@ public class SignupTest {
 	 * Attempting to create an account with a password with no numbers
 	 */
 	@Test
-	public void passwordWithNoNumbers() throws InterruptedException {
+	public void testPasswordWithNoNumbers() throws InterruptedException {
 		onView(withId(R.id.etUsername)).perform(typeText("nonumber"), closeSoftKeyboard());
 		onView(withId(R.id.etEmailAddress)).perform(typeText("nonumber@gmail.com"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("Passwords"), closeSoftKeyboard());

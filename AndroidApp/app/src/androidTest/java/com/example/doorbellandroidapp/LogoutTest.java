@@ -35,7 +35,7 @@ public class LogoutTest {
 	 * Test if pressing the logout button creates logout confirm popup
 	 */
 	@Test
-	public void openLogoutConfirmationPopup() throws InterruptedException {
+	public void testOpenLogoutConfirmationPopup() throws InterruptedException {
 		TestHelper.accountCreatedSuccessfully();
 		onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
 		onView(withId(R.id.navigationView)).perform(NavigationViewActions.navigateTo(R.id.nav_logout));
@@ -49,7 +49,7 @@ public class LogoutTest {
 	 * Confirm cancelling logout will get rid of popup
 	 */
 	@Test
-	public void logoutCancel() throws InterruptedException {
+	public void testLogoutCancel() throws InterruptedException {
 		TestHelper.accountCreatedSuccessfully();
 		onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
 		onView(withId(R.id.navigationView)).perform(NavigationViewActions.navigateTo(R.id.nav_logout));
@@ -77,7 +77,7 @@ public class LogoutTest {
 	 * WARNING AFTER RUNNING THIS TEST YOU WILL HAVE TO MANUALLY DELETE ACCOUNT
 	 */
 	@Test
-	public void logoutConfirm() throws InterruptedException {
+	public void testLogoutConfirm() throws InterruptedException {
 		createLogOutAccount();
 		onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
 		onView(withId(R.id.navigationView)).perform(NavigationViewActions.navigateTo(R.id.nav_logout));

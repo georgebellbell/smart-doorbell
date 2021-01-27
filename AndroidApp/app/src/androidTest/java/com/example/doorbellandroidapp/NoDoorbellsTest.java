@@ -37,7 +37,7 @@ public class NoDoorbellsTest {
 	 * Test if attempting to add a new face without a linked doorbell fails
 	 */
 	@Test
-	public void noDoorbellsToAddFacesTo() throws InterruptedException {
+	public void testNoDoorbellsToAddFacesTo() throws InterruptedException {
 		onView(withId(R.id.ivAddFace)).perform(click());
 		Thread.sleep(2000);
 		onView(withId(R.id.ivNewFace)).check(doesNotExist());

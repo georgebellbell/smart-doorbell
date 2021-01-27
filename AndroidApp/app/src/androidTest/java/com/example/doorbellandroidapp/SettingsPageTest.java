@@ -50,8 +50,8 @@ public class SettingsPageTest {
 	 * Attempt to add a doorbell without adding a doorbell ID after successfully adding one
 	 */
 	@Test
-	public void failToAddADoorbell() throws InterruptedException {
-		successfullyAddADoorbell();
+	public void testFailToAddADoorbell() throws InterruptedException {
+		testSuccessfullyAddADoorbell();
 		onView(withId(R.id.spinnerID)).perform(click());
 		onView(withText("TESTDOORBELL2")).check(doesNotExist());
 		onData(allOf(is(instanceOf(String.class)), is("TESTDOORBELL1"))).perform(click());
@@ -67,7 +67,7 @@ public class SettingsPageTest {
 	 *	Successfully adding a doorbell to the user's account
 	 */
 	@Test
-	public void successfullyAddADoorbell() throws InterruptedException {
+	public void testSuccessfullyAddADoorbell() throws InterruptedException {
 		onView(withText("TESTDOORBELL1")).check(doesNotExist());
 		onView(withId(R.id.etDoorbellConnect)).perform(typeText("00001"),closeSoftKeyboard());
 		onView(withId(R.id.etDoorbellConnectName)).perform(typeText("TESTDOORBELL1"),closeSoftKeyboard());
@@ -81,8 +81,8 @@ public class SettingsPageTest {
 	 * The above test is carried out before the doorbell is then removed
 	 */
 	@Test
-	public void removeDoorbell() throws InterruptedException {
-		successfullyAddADoorbell();
+	public void testRemoveDoorbell() throws InterruptedException {
+		testSuccessfullyAddADoorbell();
 		onView(withId(R.id.spinnerID)).perform(click());
 		onData(allOf(is(instanceOf(String.class)), is("TESTDOORBELL1"))).perform(click());
 		onView(withId(R.id.btnRemoveDoorbell)).perform(click());
@@ -97,7 +97,7 @@ public class SettingsPageTest {
 	 * Successfully changing email address of account
 	 */
 	@Test
-	public void successfullyChangingEmail() throws InterruptedException {
+	public void testSuccessfullyChangingEmail() throws InterruptedException {
 		onView(withId(R.id.etChangeEmail)).perform(typeText("TestUser2@gmail.com"), closeSoftKeyboard());
 		onView(withId(R.id.btnChangeEmail)).perform(click());
 		Thread.sleep(500);
@@ -108,7 +108,7 @@ public class SettingsPageTest {
 	 * Attempting to change email to something not valid
 	 */
 	@Test
-	public void emailIsNotValid() throws InterruptedException {
+	public void testEmailIsNotValid() throws InterruptedException {
 		onView(withId(R.id.etChangeEmail)).perform(typeText("TestUser.com"), closeSoftKeyboard());
 		onView(withId(R.id.btnChangeEmail)).perform(click());
 		Thread.sleep(500);
@@ -120,7 +120,7 @@ public class SettingsPageTest {
 	 * Successfully changing the password of the account
 	 */
 	@Test
-	public void successfullyChangingPassword() throws InterruptedException {
+	public void testSuccessfullyChangingPassword() throws InterruptedException {
 		onView(withId(R.id.pwdChangePassword)).perform(scrollTo()).perform(typeText("NewPassword1234"), closeSoftKeyboard());
 		onView(withId(R.id.btnChangePassword)).perform(click());
 		Thread.sleep(500);
@@ -130,7 +130,7 @@ public class SettingsPageTest {
 	 * Attempting to change the password to something that is too short
 	 */
 	@Test
-	public void passwordIsTooShort() throws InterruptedException {
+	public void testPasswordIsTooShort() throws InterruptedException {
 		onView(withId(R.id.pwdChangePassword)).perform(scrollTo()).perform(typeText("Pass1"), closeSoftKeyboard());
 		onView(withId(R.id.btnChangePassword)).perform(click());
 		Thread.sleep(500);
@@ -141,7 +141,7 @@ public class SettingsPageTest {
 	 * Attempting to change password to something with no lowercase characters
 	 */
 	@Test
-	public void passwordWithNoLowerCaseCharacters() throws InterruptedException {
+	public void testPasswordWithNoLowerCaseCharacters() throws InterruptedException {
 		onView(withId(R.id.pwdChangePassword)).perform(scrollTo()).perform(typeText("PASSWORD123"), closeSoftKeyboard());
 		onView(withId(R.id.btnChangePassword)).perform(click());
 		Thread.sleep(500);
@@ -152,7 +152,7 @@ public class SettingsPageTest {
 	 * Attempting to change password to something with no uppercase characters
 	 */
 	@Test
-	public void passwordWithNoUpperCaseCharacters() throws InterruptedException {
+	public void testPasswordWithNoUpperCaseCharacters() throws InterruptedException {
 		onView(withId(R.id.pwdChangePassword)).perform(scrollTo()).perform(typeText("password123"), closeSoftKeyboard());
 		onView(withId(R.id.btnChangePassword)).perform(click());
 		Thread.sleep(500);
