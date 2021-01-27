@@ -1,3 +1,9 @@
+/**
+ * @author Dominykas Makarovas
+ * @version 1.0
+ * @since 25/01/2021
+ */
+
 package database;
 
 import org.junit.jupiter.api.AfterEach;
@@ -36,7 +42,7 @@ class PollingTableTest {
 	}
 
 	@Test
-	void getPolls() {
+	void testGetPolls() {
 		ArrayList<String> messages = pollingTable.getPolls(doorbell.getId());
 		for (int i = 0; i < messages.size(); i++) {
 			assertEquals(message, messages.get(i));
@@ -44,7 +50,7 @@ class PollingTableTest {
 	}
 
 	@Test
-	void deletePolls() {
+	void testDeletePolls() {
 		assertTrue(pollingTable.deletePolls(doorbell.getId()));
 	}
 }

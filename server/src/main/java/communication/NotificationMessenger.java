@@ -1,3 +1,9 @@
+/**
+ * @author Dominykas Makarovas, Jack Reed
+ * @version 1.0
+ * @since 25/01/2021
+ */
+
 package communication;
 
 import com.google.auth.oauth2.GoogleCredentials;
@@ -37,9 +43,7 @@ public class NotificationMessenger {
 	}
 
 	public void setDoorbellGroup(String doorbellID) {
-		userTokenTable.connect();
 		tokens = userTokenTable.getTokensByDoorbell(doorbellID);
-		userTokenTable.disconnect();
 	}
 
 	public void setMessage(String title, String body) {

@@ -1,3 +1,9 @@
+/**
+ * @author Jack Reed
+ * @version 1.0
+ * @since 25/01/2021
+ */
+
 package authentication;
 
 import database.TwoFactorTable;
@@ -28,9 +34,7 @@ class TwoFactorAuthenticationTest {
 	void cleanUp() {
 		// Remove stored record from database
 		TwoFactorTable twoFactorTable = new TwoFactorTable();
-		twoFactorTable.connect();
 		twoFactorTable.deleteRecord(user);
-		twoFactorTable.disconnect();
 	}
 
 	@Test

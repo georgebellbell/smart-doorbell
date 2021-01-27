@@ -1,29 +1,31 @@
-package server;
+/**
+ * @author Jack Reed
+ * @version 1.0
+ * @since 25/01/2021
+ */
+
+package server.protocol;
 
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import server.protocol.Protocol;
-import server.protocol.UserProtocol;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ProtocolTest {
+class DoorbellProtocolTest {
 
 	private Protocol protocol;
 
 	@BeforeEach
 	void setup() {
-		protocol = new UserProtocol();
+		protocol = new DoorbellProtocol();
 	}
 
 	@Test
 	void testValidRequest() {
 		JSONObject request = new JSONObject();
-		request.put("request","login");
-		request.put("username", "Dom");
-		request.put("password", "Password");
-
+		request.put("request","poll");
+		request.put("id", "test");
 		assertTrue(protocol.isRequestValid(request.toString()));
 	}
 

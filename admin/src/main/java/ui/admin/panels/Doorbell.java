@@ -1,3 +1,9 @@
+/**
+ * @author Dominykas Makarovas, Jack Reed
+ * @version 1.0
+ * @since 25/01/2021
+ */
+
 package ui.admin.panels;
 
 import org.json.JSONArray;
@@ -109,10 +115,10 @@ public class Doorbell extends AdminPanel {
 
 	/**
 	 * Populates doorbell information panel with given information
-	 * @param id - Id of doorbell
-	 * @param name - Name of doorbell
-	 * @param faces - Recognised faces from doorbell
-	 * @param users - Users assigned to doorbell
+	 * @param id Id of doorbell
+	 * @param name Name of doorbell
+	 * @param faces Recognised faces from doorbell
+	 * @param users Users assigned to doorbell
 	 */
 	private void populateDoorbellInformation(String id, String name, JSONArray faces,
 											 JSONArray users) {
@@ -145,7 +151,7 @@ public class Doorbell extends AdminPanel {
 
 	/**
 	 * Sends a request to server to search for a doorbell and populates doorbell info panel if successful
-	 * @param id - Doorbell ID of doorbell being searched for
+	 * @param id Doorbell ID of doorbell being searched for
 	 */
 	private void searchDoorbell(String id) {
 		// Make sure request is not already in progress
@@ -201,9 +207,9 @@ public class Doorbell extends AdminPanel {
 
 	/**
 	 * Send request to server to update doorbell's name
-	 * @param id - Doorbell ID of doorbell being changed
-	 * @param name - New name of doorbell
-	 * @param users - Users to be assigned to doorbell
+	 * @param id Doorbell ID of doorbell being changed
+	 * @param name New name of doorbell
+	 * @param users Users to be assigned to doorbell
 	 */
 	private void updateDoorbell(String id, String name, JSONArray users) {
 		// Make sure request is not already in progress
@@ -231,7 +237,7 @@ public class Doorbell extends AdminPanel {
 
 	/**
 	 * Sends request to server to delete doorbell and displays popup message on response
-	 * @param id - Doorbell ID of doorbell being deleted
+	 * @param id Doorbell ID of doorbell being deleted
 	 */
 	private void deleteDoorbell(String id) {
 		// Make sure request is not already in progress

@@ -1,14 +1,17 @@
+/**
+ * @author Dominykas Makarovas, Jack Reed
+ * @version 1.0
+ * @since 25/01/2021
+ */
+
 package server.protocol;
 
 import authentication.PasswordManager;
-import database.Data;
+import database.ImageData;
 import database.User;
 import communication.Email;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.sql.Blob;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class AdminProtocol extends Protocol {
@@ -226,24 +229,16 @@ public class AdminProtocol extends Protocol {
 	}
 
 	public void faces(String id) {
-		ArrayList<Data> allImages = dataTable.getAllImages(id);
+		ArrayList<ImageData> allImages = dataTable.getAllImages(id);
 		ArrayList<JSONObject> jsonImages = new ArrayList<>();
 		if (allImages != null) {
-			for (Data data: allImages) {
+			for (ImageData imageData : allImages) {
 				JSONObject jsonData = new JSONObject();
-				Blob blob = data.getImage();
-				byte[] image;
-				String encodedImage = null;
-				try {
-					image = blob.getBytes(1, (int) blob.length());
-					encodedImage = java.util.Base64.getEncoder().encodeToString(image);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-				jsonData.put("id", data.getImageID());
+				String encodedImage = java.util.Base64.getEncoder().encodeToString(imageData.getImage());
+				jsonData.put("id", imageData.getImageID());
+				jsonData.put("person", imageData.getPersonName());
 				jsonData.put("image", encodedImage);
-				jsonData.put("person", data.getPersonName());
-				jsonData.put("created", data.getCreatedAt());
+				jsonData.put("created", imageData.getLastUsed());
 				jsonImages.add(jsonData);
 			}
 		}

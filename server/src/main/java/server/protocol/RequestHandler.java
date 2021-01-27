@@ -1,3 +1,9 @@
+/**
+ * @author Dominykas Makarovas, Jack Reed
+ * @version 1.0
+ * @since 25/01/2021
+ */
+
 package server.protocol;
 
 import org.json.JSONObject;
@@ -7,8 +13,8 @@ public class RequestHandler {
 	private final String[] requiredKeys;
 
 	/**
-	 * @param method - Method that will deal with the request and create the response
-	 * @param requiredKeys - Required keys needed in request JSON object
+	 * @param method Method that will deal with the request and create the response
+	 * @param requiredKeys Required keys needed in request JSON object
 	 */
 	public RequestHandler(Runnable method, String... requiredKeys) {
 		this.method = method;
@@ -21,7 +27,7 @@ public class RequestHandler {
 
 	/**
 	 * Checks if request has correct required keys
-	 * @param request - Request object to be checked
+	 * @param request Request object to be checked
 	 * @return if request has the required keys
 	 */
 	public boolean requestHasRequiredKeys(JSONObject request) {

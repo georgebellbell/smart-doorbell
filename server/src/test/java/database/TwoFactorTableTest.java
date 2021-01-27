@@ -1,3 +1,9 @@
+/**
+ * @author Dominykas Makarovas
+ * @version 1.0
+ * @since 25/01/2021
+ */
+
 package database;
 
 import authentication.TwoFactorAuthentication;
@@ -27,18 +33,18 @@ class TwoFactorTableTest {
 	}
 
 	@Test
-	void addRecord() {
+	void testAddRecord() {
 		assertTrue(twoFactorTable.addRecord(user, code));
 	}
 
 	@Test
-	void getCode() {
-		addRecord();
+	void testGetCode() {
+		testAddRecord();
 		assertEquals(code, twoFactorTable.getCode(user));
 	}
 
 	@Test
-	void deleteRecord() {
+	void testDeleteRecord() {
 		assertTrue(twoFactorTable.deleteRecord(user));
 	}
 }

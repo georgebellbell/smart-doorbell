@@ -1,39 +1,42 @@
+/**
+ * @author Dominykas Makarovas, Jack Reed
+ * @version 1.0
+ * @since 25/01/2021
+ */
+
 package database;
 
-import java.sql.Blob;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-public class Data {
+public class ImageData {
 	// Object properties
 	private Integer imageID;
-	private Blob image;
+	private byte[] image;
 	private String deviceID;
 	private String personName;
-	private String createdAt;
+	private String lastUsed;
 
 	// Double constructor for when retrieving data from database and when adding to the database
-	public Data(String deviceID, Blob image, String personName) {
+	public ImageData(String deviceID, byte[] image, String personName) {
 		this(-1, deviceID, image, personName, null);
 	}
 
-	public Data(Integer imageID, String deviceID, Blob image, String personName, String created_at) {
+	public ImageData(Integer imageID, String deviceID, byte[] image, String personName, String lastUsed) {
 		this.imageID = imageID;
 		this.deviceID = deviceID;
 		this.image = image;
 		this.personName = personName;
-		this.createdAt = created_at;
+		this.lastUsed = lastUsed;
 	}
 
-	public Data(String deviceID, Blob image, String personName, String used) {
+	public ImageData(String deviceID, byte[] image, String personName, String used) {
 		this(-1, deviceID, image, personName, used);
 	}
 
 	public Integer getImageID() { return imageID; }
 	public void setImageID(int imageID) { this.imageID = imageID; }
-	public Blob getImage() { return image; }
-	public void setImage(Blob image) { this.image = image; }
+	public byte[] getImage() { return image; }
+	public void setImage(byte[] image) { this.image = image; }
 	public String getDeviceID() {
 		return deviceID;
 	}
@@ -46,11 +49,11 @@ public class Data {
 	public void setPersonName(String personName) {
 		this.personName = personName;
 	}
-	public String getCreatedAt() {
-		return createdAt;
+	public String getLastUsed() {
+		return lastUsed;
 	}
-	public void setCreatedAt(String createdAt) {
-		this.createdAt = createdAt;
+	public void setLastUsed(String lastUsed) {
+		this.lastUsed = lastUsed;
 	}
 
 	@Override
@@ -60,7 +63,7 @@ public class Data {
 				", image=" + image +
 				", deviceID='" + deviceID + '\'' +
 				", personName='" + personName + '\'' +
-				", createdAt='" + createdAt + '\'' +
+				", createdAt='" + lastUsed + '\'' +
 				'}';
 	}
 
@@ -68,16 +71,16 @@ public class Data {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		Data data = (Data) o;
-		return imageID == data.imageID &&
-				Objects.equals(image, data.image) &&
-				Objects.equals(deviceID, data.deviceID) &&
-				Objects.equals(personName, data.personName) &&
-				Objects.equals(createdAt, data.createdAt);
+		ImageData imageData = (ImageData) o;
+		return imageID == imageData.imageID &&
+				Objects.equals(image, imageData.image) &&
+				Objects.equals(deviceID, imageData.deviceID) &&
+				Objects.equals(personName, imageData.personName) &&
+				Objects.equals(lastUsed, imageData.lastUsed);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(imageID, image, deviceID, personName, createdAt);
+		return Objects.hash(imageID, image, deviceID, personName, lastUsed);
 	}
 }
