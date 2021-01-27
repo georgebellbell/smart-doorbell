@@ -75,7 +75,7 @@ If using an emulator, use Android Studio's AVD Manager to create the emulator by
 6. In **Your Virtual Devices** you will see your phone has been created.
 <img src="https://i.imgur.com/0aaMG5u.png" alt="Step 6">
 7. You can now run the android app via this emulated phone. <br>
-<img src="https://i.imgur.com/jgXV0QB.png" alt="Step 7">
+<img src="https://i.imgur.com/udrx4Tp.png" alt="Step 7">
 
 ## Usage
 
@@ -123,12 +123,16 @@ When you are ready to run the app, you need to do the following:
 ```java
 public abstract class Client extends Thread {
     // Connection details
-    private static final String HOST = ""; /** <--- CHANGE THIS TO YOU LOCAL IP ADDRESS*/
+    private static final String HOST = "192.0.0.0"; /** <--- CHANGE THIS TO YOU IP ADDRESS*/
     private static final int PORT = 4444;
 ```
 
 After doing this you can run the app and should be greeted by this page: <br>
-<img src="https://i.imgur.com/8PQWrWh.png" alt="IP address">
+<img src="https://i.imgur.com/jgXV0QB.png" alt="IP address"> <br>
+
+We have some existing data in the database under Doorbell ID **00000001** which can be used for trialing the app<br>
+
+Adding the doorbell ID to an account and moving to the faces page will show you this
 
 ## Contributors
 Dominykas Makarovas, George Bell, Jack Reed, Dale Quinn, Zach Smith.
