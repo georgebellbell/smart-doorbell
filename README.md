@@ -36,6 +36,47 @@ the server and the admin app.
 To set up Maven:<br>
 Project Structure > Modules > Add '+' > Select the pom.xml at root level of 'admin' directory.
 
+### Android App
+
+#### Overview
+The android app is how the users will directly interact with their doorbell as well as manage their accounts. From the
+app users can do the following:
+* Users will be able to create and log into existing accounts.
+* Add and remove doorbells to those accounts.
+* Manage recognised faces on linked doorbells by editing, removing and adding faces.
+* Change personal details like email and password as well as deleting account.
+
+#### To install
+Open the AndroidApp folder in Android Studio IDE. 
+
+The first thing you will have to do is Sync Project with Gradle Files. 
+This can be done in one of three ways:
+* File > Sync Project With Gradle Files
+* Ctrl + Shift + A > begin typing Sync Project With Gradle Files
+* In the top left press the Sync Project With Gradle Files button. <br>
+<img src="https://i.imgur.com/jYCZy9F.png" alt="Sync Project With Gradle Files">
+
+After the gradle files have been synced, you will need to set up a device to run the application. You have two options:
+* Run the app from an android phone by enabling USB debugging in Developer Settings
+* Create an emulator
+ 
+If using an emulator, use Android Studio's AVD Manager to create the emulator by following these steps:
+
+1. Select No Devices and open **AVD Manager**. <br>
+<img src="https://i.imgur.com/Ev1OiRc.png" alt="Step 1">
+2. Select **+ Create Virtual Device**.
+<img src="https://i.imgur.com/oLchcE2.png" alt="Step 2">
+3. Select the model of phone to be emulated, we recommend the **Pixel 2**.
+<img src="https://i.imgur.com/76r94h9.png" alt="Step 3">
+4. Select the System Image **R**, you may need to install it.
+<img src="https://i.imgur.com/zAnJXiX.png" alt="Step 4">
+5. Then press **finish**. You can change AVD Name if you wish.
+<img src="https://i.imgur.com/d8ivAih.png" alt="Step 5">
+6. In **Your Virtual Devices** you will see your phone has been created.
+<img src="https://i.imgur.com/0aaMG5u.png" alt="Step 6">
+7. You can now run the android app via this emulated phone. <br>
+<img src="https://i.imgur.com/jgXV0QB.png" alt="Step 7">
+
 ## Usage
 
 ### Server
@@ -55,7 +96,7 @@ public static void main(String[] args) {
 }
 ```
 
-### Admin app
+### Admin App
 
 Requirements to run the app:<br>
 Run the Server.java class main before running the Login.java main in UI > Login directory.
@@ -72,6 +113,22 @@ You will have a Window appear as such: <br>
 Please use the admin details below to login to the application:<br>
 Username: admin <br>
 Password: password
+
+### Android App
+
+When you are ready to run the app, you need to do the following:
+* Run the server
+* Navigate to the **Client** class in **app > java > com.example.doorbellandroidapp**.
+* In the **Client** class set the HOST equal to the IP address of the device running the server.
+```java
+public abstract class Client extends Thread {
+    // Connection details
+    private static final String HOST = ""; /** <--- CHANGE THIS TO YOU LOCAL IP ADDRESS*/
+    private static final int PORT = 4444;
+```
+
+After doing this you can run the app and should be greeted by this page: <br>
+<img src="https://i.imgur.com/8PQWrWh.png" alt="IP address">
 
 ## Contributors
 Dominykas Makarovas, George Bell, Jack Reed, Dale Quinn, Zach Smith.
