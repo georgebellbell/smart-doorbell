@@ -193,6 +193,7 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 			Popups popups = new Popups();
 			popups.loadingPopUp(mContext);
 
+			//images are called for
 			loadImages(doorbellIDs.get(position));
 		}
 	}
@@ -249,15 +250,17 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 	 */
 	void populateImages(final JSONArray jsonArray) {
 		try {
+			//adds the images from server to the required array lists
 			initImageBitmaps(jsonArray);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		//creates the recycler view for the different faces using values just loaded
 		initRecyclerView(view);
 	}
 
 	/**
-	 * Adds image URLS and image names to ArrayLists to be added to view holders
+	 * Adds images and image names to ArrayLists to be added to view holders
 	 */
 	private void initImageBitmaps(JSONArray images) throws JSONException {
 		mImages = new ArrayList<>();
