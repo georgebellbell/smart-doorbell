@@ -61,7 +61,7 @@ public class Doorbell extends AdminPanel {
 
 		addUserButton.addActionListener(actionEvent -> {
 			String newUser = newUserField.getText();
-			if (newUser.equals("")) {
+			if (newUser.equals("") || listModel.contains(newUser)) {
 				return;
 			}
 			listModel.addElement(newUser);

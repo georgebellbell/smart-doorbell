@@ -74,12 +74,13 @@ public class Accounts extends AdminPanel {
 
 		addDoorbellButton.addActionListener(actionEvent -> {
 			String newDevice = newDeviceField.getText();
-			if (newDevice.equals("")) {
+			if (newDevice.equals("") || listModel.contains(newDevice))
 				return;
-			}
+
 			listModel.addElement(newDevice);
 			currentDevices.put(newDevice);
 			newDeviceField.setText("");
+
 		});
 
 		newDeviceField.addKeyListener(new KeyAdapter() {
@@ -184,6 +185,12 @@ public class Accounts extends AdminPanel {
 	private void updateUser(String newUsername, String newEmail, JSONArray newDevices) {
 		// Make sure request is not already in progress
 		if (connection.isRequestInProgress()) {
+			return;
+		}
+
+		if (newUsername.isEmpty()||newUsername.contains(" ")){
+			JOptionPane.showMessageDialog(this,
+					"Please give a valid username", "Account", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
