@@ -26,23 +26,23 @@ class PasswordManagerTest {
 	}
 
 	@Test
-	void generateUniqueSalt() {
+	void testGenerateUniqueSalt() {
 		String newSalt = passwordManager.generateSalt();
 		assertNotEquals(salt, newSalt);
 	}
 
 	@Test
-	void hashPassword() {
+	void testHashPassword() {
 		assertNotEquals(password, hashedPassword);
 	}
 
 	@Test
-	void checkPasswords() {
+	void testCheckPasswords() {
 		assertEquals(passwordManager.checkPasswords(hashedPassword, password), hashedPassword);
 	}
 
 	@Test
-	void generateUniqueString() {
+	void testGenerateUniqueString() {
 		String newPassword = passwordManager.generateString();
 		assertNotEquals(password, newPassword);
 	}
