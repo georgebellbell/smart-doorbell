@@ -147,6 +147,8 @@ the linked installation tool ([Windows](https://downloads.raspberrypi.org/imager
 onto a micro sd card and insert it into the pi. Connect the pi to power and peripherals and finish the setup.
 You need to connect the Raspberry Pi to your network, either through ethernet or Wi-Fi.
 
+<img src="https://i.imgur.com/p9rc0iZ.png" alt="GPIO">
+
 ### Install Project Dependencies
 Once you have installed the latest version of raspberry pi os, you will need to install a few things required for the project
 to run that are not installed by default.  
