@@ -106,8 +106,8 @@ public class LoginActivity extends AppCompatActivity {
 
 	/**
 	 * Takes users information and passes it to server to be checked
-	 * @param username - username inputted by user
-	 * @param password - password inputted by user
+	 * @param username username inputted by user
+	 * @param password password inputted by user
 	 */
 	void authenticate(String username, String password){
 		// Client to handle login response from server
