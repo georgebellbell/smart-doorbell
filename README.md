@@ -172,6 +172,7 @@ git clone https://nucode.ncl.ac.uk/scomp/stage-2/csc2033-software-engineering-te
 Move into the camera folder (`cd smart-doorbell/Camera`). From here, you can run the program.
 
 ### Plug in camera
+**IMPORTANT**  
 It is recommended that you unplug the power to the raspberry pi for this step.    
 Insert the ribbon cable from the camera into the slot labeled "CAMERA" as shown in the diagram below.
 
