@@ -34,7 +34,7 @@ class AccountTableTest {
 		doorbellTable = new DoorbellTable();
 		passwordManager = new PasswordManager();
 
-		user = new User("TestUser", "quicksolutions.doorbell@gmail.com",
+		user = new User("TestUser456", "quicksolutions.doorbell@gmail.com",
 				"Password", "user");
 		testUser = new User("TestUser123", "quicksolutions.doorbell@gmail.com",
 				"Password", "user");

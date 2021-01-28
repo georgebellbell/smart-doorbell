@@ -18,9 +18,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserProtocolTest {
 	private Protocol protocol;
 	private String loggedInToken = "123456123456";
-	private User testUser = new User("testuser",
+	private User testUser = new User("testuser997",
 			"quicksolutions.doorbell@gmail.com", "password", "user");
-	private User testAdmin = new User("testadmin",
+	private User testAdmin = new User("testadmin994",
 			"quicksolutions.doorbell@gmail.com", "password", "admin");
 	private String testToken = "testToken23443534534556546";
 	private TwoFactorAuthentication twoFactor = new TwoFactorAuthentication(testUser);

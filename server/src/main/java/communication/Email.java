@@ -18,7 +18,7 @@ public class Email {
 
 	// Email and password information
 	private final String EMAIL = "quicksolutions.doorbell@gmail.com";
-	private final String PASSWORD = "ReallyGoodPassword1234";
+	private final String PASSWORD = "SmartDoorbell1234";
 
 	// SMTP Settings
 	private final String SERVER = "smtp.gmail.com";
