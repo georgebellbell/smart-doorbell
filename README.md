@@ -178,6 +178,11 @@ Insert the ribbon cable from the camera into the slot labeled "CAMERA" as shown 
 
 <img src="https://i.imgur.com/T20SiAs.jpeg" alt="CAMERA">
 
+### Enable Camera
+**Important**  
+In the terminal run `sudo raspi-config` and with the arrow keys, navigate to "3 Interface Options" and press enter. Next,
+press enter on "Camera", then enter on "yes" and then enter on "ok". Once this is done press escape to exit.
+
 ### Setup GPIO pins
 **IMPORTANT**  
 It is recommended that you unplug the power to the raspberry pi for this step.  
@@ -186,6 +191,12 @@ button and LED's to the pi. These should be connected to the GPIO pins on the pi
 components should be connected.  
 If you are using a breadboard, all components must be connected to ground (black box in the diagram) but this can all be the 
 same ground pin. The red boxes indicate the positive and must be connected to the specified pins.
+
+Diagram 1
+
+<img src="https://i.imgur.com/p9rc0iZ.png" alt="GPIO">
+
+Diagram 2
 
 <img src="https://i.imgur.com/p9rc0iZ.png" alt="GPIO">
 
@@ -196,12 +207,13 @@ same ground pin. The red boxes indicate the positive and must be connected to th
 ### Set the server IP address
 **IMPORTANT**  
 Before running the program, you need to make sure that the ip address is correct for your setup. Open the "ServerIP.txt"
-file and change it to the ip address of the system that your server is running on. If it is not on the same network, ensure
-that port-forwarding is set up for the server.
+file and change it to the ip address of the system that your server is running on (Use `nano ServerIP.txt` from the 
+"Camera" folder in the project). If it is not on the same network, ensure that port-forwarding is set up for the server.
 
 ### Change the device id
 **OPTIONAL**  
-Change the id in the "PiID.txt" file to give your device a new unique id other than the default. Some example faces have 
+Change the id in the "PiID.txt" file to give your device a new unique id other than the default (Use `nano PiID.txt` from the
+"Camera" folder in the project). Some example faces have 
 been left on the default PiID.
 
 ### Run the program on startup
@@ -219,6 +231,13 @@ To run the main program and to see the command line output, use:
 python3 main.py
 ```
 Make sure that the server is running for the Pi to connect to.
+
+### Notes
+- The Pi will only send an image to the server if a face is detected in it. So the camera will have to be pointing at a 
+face in order to ring the doorbell.
+
+- If you are struggling to get the face to match registered faces that were taken through the app, try naming the unrecognised 
+face taken with the pi so that the lighting conditions match the place where the "doorbell is being rung".
 
 
 ## Contributors
