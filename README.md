@@ -207,7 +207,7 @@ Diagram 1
 
 Diagram 2
 
-<img src="https://i.imgur.com/p9rc0iZ.png" alt="GPIO">
+<img src="https://i.imgur.com/5f91U94.png" alt="GPIO">
 
 - One end of the button connected to pin 10 (GPIO 15), and the other to ground.  
 - Positive side of LED (side without the flat edge) connected to pin 13 (GPIO 27), and the other end to ground.
