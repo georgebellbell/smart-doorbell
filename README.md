@@ -144,10 +144,8 @@ Running a system update will not be sufficient)
 The provided link will take you to the installations page, pick the one for your local systems os. Install the os using 
 the linked installation tool ([Windows](https://downloads.raspberrypi.org/imager/imager_1.5.exe), 
 [macOS](https://downloads.raspberrypi.org/imager/imager_1.5.dmg), [Ubuntu](https://downloads.raspberrypi.org/imager/imager_1.5_amd64.deb))
-onto a micro sd card and insert it into the pi. Connect the pi to power and peripherals and finish the setup.
+onto a micro sd card and insert it into the pi. Connect the pi to power and peripherals (keyboard, mouse, monitor) and finish the setup.
 You need to connect the Raspberry Pi to your network, either through ethernet or Wi-Fi.
-
-<img src="https://i.imgur.com/p9rc0iZ.png" alt="GPIO">
 
 ### Install Project Dependencies
 Once you have installed the latest version of raspberry pi os, you will need to install a few things required for the project
@@ -172,6 +170,18 @@ Next, you need to get the project from gitlab.
 git clone https://nucode.ncl.ac.uk/scomp/stage-2/csc2033-software-engineering-team-project/teams/Team-17/smart-doorbell.git
 ```
 Move into the camera folder (`cd smart-doorbell/Camera`). From here, you can run the program.
+
+### Setup GPIO pins
+**IMPORTANT**  
+To take pictures and see that the door gets opened when a request is sent from the app, you will need to connect the 
+button and LED's to the pi. These should be connected to the GPIO pins on the pi. The following diagram shows where the
+components should be connected.  
+If you are using a breadboard, all components must be connected to ground (black box in the diagram) but this can all be the 
+same ground pin. The red boxes indicate the positive and must be connected to the specified pins.
+<img src="https://i.imgur.com/p9rc0iZ.png" alt="GPIO">
+- One end of the button connected to pin 10 (GPIO 15), and the other to ground.  
+- Positive side of LED (side without the flat edge) connected to pin 13 (GPIO 27), and the other end to ground.
+- Positive side of the second LED to pin 19 (GPIO 10), and the other end to ground.
 
 ### Set the server IP address
 **IMPORTANT**  
