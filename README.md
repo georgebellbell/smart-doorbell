@@ -172,12 +172,14 @@ git clone https://nucode.ncl.ac.uk/scomp/stage-2/csc2033-software-engineering-te
 Move into the camera folder (`cd smart-doorbell/Camera`). From here, you can run the program.
 
 ### Plug in camera
+It is recommended that you unplug the power to the raspberry pi for this step.    
 Insert the ribbon cable from the camera into the slot labeled "CAMERA" as shown in the diagram below.
 
 <img src="https://i.imgur.com/T20SiAs.jpeg" alt="CAMERA">
 
 ### Setup GPIO pins
 **IMPORTANT**  
+It is recommended that you unplug the power to the raspberry pi for this step.  
 To take pictures and see that the door gets opened when a request is sent from the app, you will need to connect the 
 button and LED's to the pi. These should be connected to the GPIO pins on the pi. The following diagram shows where the
 components should be connected.  
