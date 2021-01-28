@@ -48,7 +48,7 @@ public class HomeTest {
 		onView(withId(R.id.navigationView)).perform(NavigationViewActions.navigateTo(R.id.nav_settings));
 		Thread.sleep(1000);
 		onView(withId(R.id.etDoorbellConnect)).perform(typeText("00000001"),closeSoftKeyboard());
-		onView(withId(R.id.etDoorbellConnectName)).perform(typeText("RecentUserDoorbell"),closeSoftKeyboard());
+		onView(withId(R.id.etDoorbellConnectName)).perform(typeText("Frontdoor"),closeSoftKeyboard());
 		onView(withId(R.id.btnDoorbellConnect)).perform(click());
 		Thread.sleep(2000);
 	}
