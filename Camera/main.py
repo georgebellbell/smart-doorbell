@@ -24,11 +24,11 @@ class main:
 		# Socket Client addresses
 		# Read the Server IP from a file
 		with open(self.fileLocation + "ServerIP.txt", "r") as file:
-			self.host = file.readline()
+			self.host = file.readline().strip('\n')
 		self.port = 4444
 		# Read the Raspberry Pi's unique ID from a file (ID assigned at factory)
 		with open(self.fileLocation + "PiID.txt", "r") as file:
-			self.PiId = file.readline()
+			self.PiId = file.readline().strip('\n')
 			print("Unique Device ID: " + self.PiId)
 
 	def main(self):
