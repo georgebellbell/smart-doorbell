@@ -143,6 +143,7 @@ Running a system update will not be sufficient)
 
 The provided link will take you to the installations page, pick the one for your local systems os. Install the os using 
 the linked tool onto a micro sd card and insert it into the pi. Connect the pi to power and peripherals and finish the setup.
+You need to connect the Raspberry Pi to your network, either through ethernet or Wi-Fi.
 
 ### Install Project Dependencies
 Once you have installed the latest version of raspberry pi os, you will need to install a few things required for the project
