@@ -134,6 +134,68 @@ We have some existing data in the database under Doorbell ID **00000001** which 
 
 Adding the doorbell ID to an account and moving to the faces page will show you this
 
+## Raspberry Pi Doorbell
+### Install a fresh Raspberry Pi OS
+**IMPORTANT - do not skip**  
+To set up the raspberry pi doorbell, you will first need to install the latest version of [Raspberry Pi OS](https://www.raspberrypi.org/software/).
+(The university raspberry pi's are very out of date and will not meet the minimum software requirements for the project to run. 
+Running a system update will not be sufficient)
+
+The provided link will take you to the installations page, pick the one for your local systems os. Install the os using 
+the linked tool onto a micro sd card and insert it into the pi. Connect the pi to power and peripherals and finish the setup.
+
+### Install Project Dependencies
+Once you have installed the latest version of raspberry pi os, you will need to install a few things required for the project
+to run that are not installed by default.  
+Run the following commands from the terminal:
+```
+pip3 install opencv-utils
+pip3 install opencv-python
+sudo apt install libatlas-base-dev
+```
+
+### Install the Project from nucode
+Once this is done, you need to make a new directory to store the project in and `cd` into that directory.  
+e.g. 
+```
+mkdir SmartDoorbellProject
+cd SmartDoorbellProject
+```
+
+Next, you need to get the project from gitlab.
+```
+git clone https://nucode.ncl.ac.uk/scomp/stage-2/csc2033-software-engineering-team-project/teams/Team-17/smart-doorbell.git
+```
+Move into the camera folder (`cd smart-doorbell/Camera`). From here, you can run the program.
+
+### Set the server IP address
+**IMPORTANT**  
+Before running the program, you need to make sure that the ip address is correct for your setup. Open the "ServerIP.txt"
+file and change it to the ip address of the system that your server is running on. If it is not on the same network, ensure
+that port-forwarding is set up for the server.
+
+### Change the device id
+**OPTIONAL**  
+Change the id in the "PiID.txt" file to give your device a new unique id other than the default. Some example faces have 
+been left on the default PiID.
+
+### Run the program on startup
+**OPTIONAL**  
+To set up the program to run when the device turns on, you can execute "runOnBoot.py". This must be run with sudo.
+```
+sudo python3 runOnBoot.py
+```
+You can pass the optional argument true or false to enable or disable the run on boot functionality.
+Having the program run on boot and then starting it manually through the commandline can sometimes cause issues.
+
+### Run the program
+To run the main program and to see the command line output, use:
+```
+python3 main.py
+```
+Make sure that the server is running for the Pi to connect to.
+
+
 ## Contributors
 Dominykas Makarovas, George Bell, Jack Reed, Dale Quinn, Zach Smith.
 
