@@ -5,15 +5,25 @@
  */
 package com.example.doorbellandroidapp;
 
+import android.app.Instrumentation;
+import android.graphics.Rect;
+
 import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiSelector;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.regex.Pattern;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -24,6 +34,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.uiautomator.Until.findObject;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -31,10 +42,21 @@ import static org.hamcrest.Matchers.is;
 import static androidx.test.espresso.Espresso.onData;
 
 
+
 @RunWith(AndroidJUnit4.class)
 public class FacesPageTest {
+	UiDevice mDevice;
 	@Rule
 	public ActivityScenarioRule<SignUpActivity> signUpActivityActivityScenarioRule = new ActivityScenarioRule<>(SignUpActivity.class);
+
+	public void takePicture() throws InterruptedException {
+		Thread.sleep(3000);
+		Rect pos = mDevice.findObject(By.res("com.android.camera2:id/shutter_button")).getVisibleBounds();
+		mDevice.findObject(By.res("com.android.camera2:id/shutter_button")).click();
+		Thread.sleep(3000);
+		mDevice.click(pos.centerX(),pos.centerY());
+		Thread.sleep(1500);
+	}
 
 	/**
 	 * Before each test set up the faces page by creating a new account and adding a couple doorbells
@@ -44,6 +66,8 @@ public class FacesPageTest {
 		TestHelper.accountCreatedSuccessfully();
 		TestHelper.addDoorbells();
 		TestHelper.moveToFaces();
+		Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
+		mDevice = UiDevice.getInstance(instrumentation);
 	}
 
 	/**
@@ -60,15 +84,14 @@ public class FacesPageTest {
 	 * Test if you can successfully add a new face
 	 */
 	@Test
-	public void testAddNewFace() throws InterruptedException {
+	public void testAddNewFace() throws InterruptedException, UiObjectNotFoundException {
 		onView(withText("NewTestFace")).check(doesNotExist());
 		onView(withId(R.id.ivAddFace)).perform(click());
-		onView(withId(R.id.ivAddPicture)).perform(click()); //CAMERA IS OPENED
-
-		Thread.sleep(10000); // TIME FOR USER TO TAKE PICTURE
+		onView(withId(R.id.ivAddPicture)).perform(click());
+		takePicture();
 		onView(withId(R.id.etEditImageName)).perform(typeText("NewTestFace"), closeSoftKeyboard());
 		onView(withId(R.id.btnAddNewFace)).perform(click());
-		Thread.sleep(1500);
+		Thread.sleep(5000);
 		onView(withText("NewTestFace")).check(matches(isDisplayed()));
 		// Remove face after for future tests
 		onView(withId(R.id.recycler_view))
@@ -85,6 +108,7 @@ public class FacesPageTest {
 	@Test
 	public void testRemoveFaceFromDoorbell() throws InterruptedException {
 		onView(withText("TestFace1")).check(matches(isDisplayed()));
+		Thread.sleep(2000);
 		onView(withId(R.id.recycler_view))
 				.perform(RecyclerViewActions.actionOnItemAtPosition(
 						0, TestHelper.clickChildViewWithId(R.id.ivEdit)));
@@ -98,8 +122,8 @@ public class FacesPageTest {
 		onView(withText("TestFace1")).check(doesNotExist());
 		//add face back for other tests
 		onView(withId(R.id.ivAddFace)).perform(click());
-		onView(withId(R.id.ivAddPicture)).perform(click()); //CAMERA IS OPENED
-		Thread.sleep(10000); // TIME FOR USER TO TAKE PICTURE
+		onView(withId(R.id.ivAddPicture)).perform(click());
+		takePicture();
 		onView(withId(R.id.etEditImageName)).perform(typeText("TestFace1"), closeSoftKeyboard());
 		onView(withId(R.id.btnAddNewFace)).perform(click());
 		Thread.sleep(1500);
@@ -126,8 +150,8 @@ public class FacesPageTest {
 	@Test
 	public void testAddFaceWithoutNamingFace() throws InterruptedException {
 		onView(withId(R.id.ivAddFace)).perform(click());
-		onView(withId(R.id.ivAddPicture)).perform(click()); //CAMERA IS OPENED
-		Thread.sleep(10000); // TIME FOR USER TO TAKE PICTURE
+		onView(withId(R.id.ivAddPicture)).perform(click());
+		takePicture();
 		onView(withId(R.id.btnAddNewFace)).perform(click());
 		onView(withId(R.id.btnAddNewFace)).check(matches(isDisplayed()));
 		onView(withId(R.id.btnCancelAddNewFace)).perform(click());
@@ -139,8 +163,8 @@ public class FacesPageTest {
 	@Test
 	public void testAddFaceWithNameUnknown() throws InterruptedException {
 		onView(withId(R.id.ivAddFace)).perform(click());
-		onView(withId(R.id.ivAddPicture)).perform(click()); //CAMERA IS OPENED
-		Thread.sleep(10000); // TIME FOR USER TO TAKE PICTURE
+		onView(withId(R.id.ivAddPicture)).perform(click());
+		takePicture();
 		onView(withId(R.id.etEditImageName)).perform(typeText("Unknown"), closeSoftKeyboard());
 		onView(withId(R.id.btnAddNewFace)).perform(click());
 		onView(withId(R.id.btnAddNewFace)).check(matches(isDisplayed()));
@@ -152,8 +176,9 @@ public class FacesPageTest {
 	 * Test if changing a face name to nothing fails
 	 */
 	@Test
-	public void testChangeFaceNameToNothing(){
+	public void testChangeFaceNameToNothing() throws InterruptedException {
 		onView(withText("TestFace1")).check(matches(isDisplayed()));
+		Thread.sleep(2000);
 		onView(withId(R.id.recycler_view))
 				.perform(RecyclerViewActions.actionOnItemAtPosition(
 						0, TestHelper.clickChildViewWithId(R.id.ivEdit)));
@@ -168,9 +193,8 @@ public class FacesPageTest {
 	 */
 	@Test
 	public void testChangeNameToUnknown() throws InterruptedException {
-		Thread.sleep(1500);
 		onView(withText("TestFace1")).check(matches(isDisplayed()));
-		Thread.sleep(1500);
+		Thread.sleep(2000);
 		onView(withId(R.id.recycler_view))
 				.perform(RecyclerViewActions.actionOnItemAtPosition(
 						0, TestHelper.clickChildViewWithId(R.id.ivEdit)));
@@ -188,6 +212,7 @@ public class FacesPageTest {
 	@Test
 	public void testChangeFaceNameToSomethingTooLong() throws InterruptedException {
 		onView(withText("TestFace1")).check(matches(isDisplayed()));
+		Thread.sleep(2000);
 		onView(withId(R.id.recycler_view))
 				.perform(RecyclerViewActions.actionOnItemAtPosition(
 						0, TestHelper.clickChildViewWithId(R.id.ivEdit)));
@@ -205,9 +230,11 @@ public class FacesPageTest {
 	@Test
 	public void testChangeFaceName() throws InterruptedException {
 		onView(withText("TestFace1")).check(matches(isDisplayed()));
+		Thread.sleep(2000);
 		onView(withId(R.id.recycler_view))
 				.perform(RecyclerViewActions.actionOnItemAtPosition(
 						0, TestHelper.clickChildViewWithId(R.id.ivEdit)));
+		Thread.sleep(2000);
 		onView(withId(R.id.etEditImageName)).perform(typeText("Renamed"), closeSoftKeyboard());
 		onView(withId(R.id.btnSaveAndClose)).perform(click());
 		Thread.sleep(2000);

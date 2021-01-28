@@ -79,9 +79,9 @@ public class SignUpActivity extends AppCompatActivity {
 
 	/**
 	 * Validates all of the users inputs
-	 * @param inputUsername - username inputted by the user
-	 * @param inputEmail - email inputted by the user
-	 * @param inputPassword - password inputted by the user
+	 * @param inputUsername  username inputted by the user
+	 * @param inputEmail  email inputted by the user
+	 * @param inputPassword  password inputted by the user
 	 * @return - returns true if all validation checks have succeeded otherwise, returns false
 	 */
 	boolean validate(String inputUsername, String inputEmail, String inputPassword) {
@@ -157,9 +157,9 @@ public class SignUpActivity extends AppCompatActivity {
 
 	/**
 	 * Takes user's information from register and passes it to the server to be checked
-	 * @param inputUsername - username inputted by the user
-	 * @param inputEmail - email inputted by the user
-	 * @param inputPassword - password inputted by the user
+	 * @param inputUsername  username inputted by the user
+	 * @param inputEmail email inputted by the user
+	 * @param inputPassword  password inputted by the user
 	 */
 	void signUp(String inputUsername, String inputEmail, String inputPassword){
 		currentUser = inputUsername;

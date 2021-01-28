@@ -373,9 +373,12 @@ public class FacesFragment extends Fragment implements AdapterView.OnItemSelecte
 		if (requestCode == 100) {
 
 			if (data!=null){
-				newFaceBitmap = (Bitmap) data.getExtras().get("data");
-				ivNewFace.setImageBitmap(newFaceBitmap);
-				pictureTaken = true;
+				if(data.getExtras().get("data")!=null){
+					newFaceBitmap = (Bitmap) data.getExtras().get("data");
+					ivNewFace.setImageBitmap(newFaceBitmap);
+					pictureTaken = true;
+				}
+
 			}
 		}
 	}

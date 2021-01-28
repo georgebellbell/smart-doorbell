@@ -58,7 +58,7 @@ public class TestHelper {
 		onView(withId(R.id.etEmailAddress)).perform(typeText("TestUser@gmail.com"), closeSoftKeyboard());
 		onView(withId(R.id.pwdPassword)).perform(typeText("Password123"), closeSoftKeyboard());
 		onView(withId(R.id.btnSignUp)).perform(click());
-		Thread.sleep(2000);
+		Thread.sleep(3000);
 		onView(withId(R.id.tvLastFace)).check(matches(isDisplayed()));
 	}
 
