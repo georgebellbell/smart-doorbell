@@ -171,6 +171,11 @@ git clone https://nucode.ncl.ac.uk/scomp/stage-2/csc2033-software-engineering-te
 ```
 Move into the camera folder (`cd smart-doorbell/Camera`). From here, you can run the program.
 
+### Plug in camera
+Insert the ribbon cable from the camera into the slot labeled "CAMERA" as shown in the diagram below.
+
+<img src="https://i.imgur.com/T20SiAs.jpeg" alt="CAMERA">
+
 ### Setup GPIO pins
 **IMPORTANT**  
 To take pictures and see that the door gets opened when a request is sent from the app, you will need to connect the 
@@ -178,7 +183,9 @@ button and LED's to the pi. These should be connected to the GPIO pins on the pi
 components should be connected.  
 If you are using a breadboard, all components must be connected to ground (black box in the diagram) but this can all be the 
 same ground pin. The red boxes indicate the positive and must be connected to the specified pins.
+
 <img src="https://i.imgur.com/p9rc0iZ.png" alt="GPIO">
+
 - One end of the button connected to pin 10 (GPIO 15), and the other to ground.  
 - Positive side of LED (side without the flat edge) connected to pin 13 (GPIO 27), and the other end to ground.
 - Positive side of the second LED to pin 19 (GPIO 10), and the other end to ground.
