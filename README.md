@@ -142,7 +142,9 @@ To set up the raspberry pi doorbell, you will first need to install the latest v
 Running a system update will not be sufficient)
 
 The provided link will take you to the installations page, pick the one for your local systems os. Install the os using 
-the linked tool onto a micro sd card and insert it into the pi. Connect the pi to power and peripherals and finish the setup.
+the linked installation tool ([Windows](https://downloads.raspberrypi.org/imager/imager_1.5.exe), 
+[macOS](https://downloads.raspberrypi.org/imager/imager_1.5.dmg), [Ubuntu](https://downloads.raspberrypi.org/imager/imager_1.5_amd64.deb))
+onto a micro sd card and insert it into the pi. Connect the pi to power and peripherals and finish the setup.
 You need to connect the Raspberry Pi to your network, either through ethernet or Wi-Fi.
 
 ### Install Project Dependencies
