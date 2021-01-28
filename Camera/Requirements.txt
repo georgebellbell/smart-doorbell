@@ -1,4 +1,0 @@
-pip3 install opencv-utils
-pip3 install opencv-python
-
-sudo apt install libatlas-base-dev

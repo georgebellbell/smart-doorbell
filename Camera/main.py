@@ -21,9 +21,11 @@ class main:
 		self.button1 = Button(15)
 		# self.button2 = Button(3)
 
-		# Socket Client
-		self.host, self.port = "192.168.1.123", 4444
-
+		# Socket Client addresses
+		# Read the Server IP from a file
+		with open(self.fileLocation + "ServerIP.txt", "r") as file:
+			self.host = file.readline()
+		self.port = 4444
 		# Read the Raspberry Pi's unique ID from a file (ID assigned at factory)
 		with open(self.fileLocation + "PiID.txt", "r") as file:
 			self.PiId = file.readline()
