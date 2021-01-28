@@ -6,6 +6,15 @@ Result is then displayed to the user via a notification in the Android App.
 
 Nucode clone: https://nucode.ncl.ac.uk/scomp/stage-2/csc2033-software-engineering-team-project/teams/Team-17/smart-doorbell.git
 
+Database connection information:<br>
+DB_USERNAME = "t2033t17"<br>
+DB_NAME = "t2033t17"<br>
+DB_PASSWORD = "KnewBut+(Fin"<br>
+
+Email information, you will need to login to the Gmail using the details below to use the email functionality of the system:<br>
+EMAIL = "quicksolutions.doorbell@gmail.com"<br>
+PASSWORD = "SmartDoorbell1234"
+
 ## Installation
 
 ### Server 
