@@ -165,7 +165,7 @@ mkdir SmartDoorbellProject
 cd SmartDoorbellProject
 ```
 
-Next, you need to get the project from gitlab.
+Next, you need to get the project from gitlab. You will be prompted to enter your username and password.
 ```
 git clone https://nucode.ncl.ac.uk/scomp/stage-2/csc2033-software-engineering-team-project/teams/Team-17/smart-doorbell.git
 ```
