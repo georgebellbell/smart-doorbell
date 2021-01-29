@@ -196,10 +196,12 @@ press enter on "Camera", then enter on "yes" and then enter on "ok". Once this i
 **IMPORTANT**  
 It is recommended that you unplug the power to the raspberry pi for this step.  
 To take pictures and see that the door gets opened when a request is sent from the app, you will need to connect the 
-button and LED's to the pi. These should be connected to the GPIO pins on the pi. The following diagram shows where the
+button and LED's to the pi. These should be connected to the GPIO pins on the pi. The following diagrams show where the
 components should be connected.  
-If you are using a breadboard, all components must be connected to ground (black box in the diagram) but this can all be the 
-same ground pin. The red boxes indicate the positive and must be connected to the specified pins.
+Diagram 1 shows the pins and how the components would be connected if they were plugged in directly. Diagram 2 shows how 
+you would use a breadboard to connect the components. The read lines represent positive, the black lines ground. To find 
+the negative side of the LED, look for the flat side around the rim. This can also be indicated by the shorter leg. 
+Diagram 2 shows two examples of types of LED's you may have and how to connect them.
 
 Diagram 1
 
@@ -207,7 +209,7 @@ Diagram 1
 
 Diagram 2
 
-<img src="https://i.imgur.com/5f91U94.png" alt="GPIO">
+<img src="https://i.imgur.com/Yy4QdYL.png" alt="GPIO">
 
 - One end of the button connected to pin 10 (GPIO 15), and the other to ground.  
 - Positive side of LED (side without the flat edge) connected to pin 13 (GPIO 27), and the other end to ground.
